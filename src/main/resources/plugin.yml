@@ -2,6 +2,7 @@ name: PluginManager
 description: Allows admins to manage other plugins, players, permissions, and groups
 prefix: APPM
 author: APotterhead
+website: https://github.com/APotterhead1/PluginManager
 version: 1.0
 main: me.apotterhead.pluginmanager.PluginManager
 load: STARTUP
