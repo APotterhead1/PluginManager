@@ -12,7 +12,8 @@ public enum CommandErrorMessage {
     PERMISSION,
     INCOMPLETE,
     INCORRECT,
-    UNKNOWN;
+    UNKNOWN,
+    EXTRA_ARGUMENT;
 
     public TextComponent getMessage( String label, String[] args ) {
         return getMessage( label, args, args.length );
@@ -27,16 +28,17 @@ public enum CommandErrorMessage {
         TextComponent component;
         if( this == INCOMPLETE ) component = Component.text( "Unknown or incomplete command, see below for error" ).color( NamedTextColor.RED );
         else if( this == INCORRECT ) component = Component.text( "Incorrect argument for command" ).color( NamedTextColor.RED );
+        else if( this == EXTRA_ARGUMENT ) component = Component.text( "Expected whitespace to end one argument, but found trailing data" ).color( NamedTextColor.RED );
         else return null;
 
         String command = label;
         for( int i = 0; i < args.length && i < errorArgument; i++ ) command += " " + args[i];
-        if( this == INCORRECT ) command += " ";
+        if( this == INCORRECT || this == EXTRA_ARGUMENT ) command += " ";
         if( command.length() > 10 ) command = "..." + command.substring( command.length() - 10 );
 
         component.append( Component.text( command ).color( NamedTextColor.GRAY ) );
 
-        if( this == INCORRECT ) {
+        if( this == INCORRECT || this == EXTRA_ARGUMENT ) {
             String error = args[errorArgument];
             for( int i = errorArgument + 1; i < args.length; i++ ) error += " " + args[i];
             component.append( Component.text( error ).color( NamedTextColor.RED ).decorate( TextDecoration.UNDERLINED ) );
