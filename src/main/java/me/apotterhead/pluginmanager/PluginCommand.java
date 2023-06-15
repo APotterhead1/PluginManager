@@ -13,6 +13,7 @@ public class PluginCommand implements TabExecutor {
 
     public boolean onCommand( CommandSender sender, Command cmd, String label, String[] args ) {
         if( args.length == 0 );
+        return true;
     }
 
     public List<String> onTabComplete( CommandSender sender, Command cmd, String label, String[] args ) {
