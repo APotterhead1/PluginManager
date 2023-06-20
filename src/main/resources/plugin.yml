@@ -6,3 +6,61 @@ website: https://github.com/APotterhead1/PluginManager
 version: 1.0
 main: me.apotterhead.pluginmanager.PluginManager
 load: STARTUP
+permissions:
+  pm:
+    description: Allows access to all pm permissions
+    default: op
+    children:
+      pm.commands: true
+  pm.commands:
+    description: Allows access to all pm command permissions
+    default: op
+    children:
+      pm.commands.plugin: true
+  pm.commands.plugin:
+    description: Allows access to all pm plugin subcommands
+    default: op
+    children:
+      pm.commands.plugin.list: true
+      pm.commands.plugin.enable: true
+      pm.commands.plugin.disable: true
+      pm.commands.plugin.reload: true
+  pm.commands.plugin.list:
+    description: Allows access to the pm plugin list subcommand
+    default: op
+    children:
+      pm.help-tab-complete.plugin: true
+  pm.commands.plugin.enable:
+    description: Allows access to the pm plugin enable subcommand
+    default: op
+    children:
+      pm.help-tab-complete.plugin: true
+  pm commands.plugin.disable:
+    description: Allows access to the pm plugin disable subcommand
+    default: op
+    children:
+      pm.help-tab-complete.plugin: true
+  pm.commands.plugin.reload:
+    description: Allows access to the pm plugin reload subcommand further subcommands
+    default: op
+    children:
+      pm.commands.plugin.reload.this: true
+      pm.commands.plugin.reload.plugin-name: true
+  pm.commands.plugin.reload.this:
+    description: Allows access to the pm plugin reload subcommand
+    default: op
+    children:
+      pm.help-tab-complete.plugin: true
+  pm.commands.plugin.reload.plugin-name:
+    description: Allows access to the pm plugin reload plugin-name subcommand
+    default: op
+    children:
+      pm.help-tab-complete.plugin: true
+  pm.help-tab-complete:
+    description: Puts all pm commands on the help page and tab complete
+    default: op
+    children:
+      pm.help-tab-complete.plugin: true
+  pm.help-tab-complete.plugin:
+    description: Puts the pm plugin command on the help page and tab complete
+    default: op
