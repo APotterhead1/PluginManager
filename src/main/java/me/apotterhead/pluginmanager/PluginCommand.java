@@ -1,5 +1,5 @@
 // APotterhead
-// 13062023-13062023
+// 13062023-20062023
 
 package me.apotterhead.pluginmanager;
 
@@ -12,8 +12,7 @@ import java.util.ArrayList;
 public class PluginCommand implements TabExecutor {
 
     public boolean onCommand( CommandSender sender, Command cmd, String label, String[] args ) {
-        if( args.length == 0 );
-        return true;
+        if( args.length == 0 && sender.hasPermission( "pm.help-tab-complete.plugin" ) ) sender.sendPlainMessage( CommandErrorMessage.UNKNOWN.send )
     }
 
     public List<String> onTabComplete( CommandSender sender, Command cmd, String label, String[] args ) {

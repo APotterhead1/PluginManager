@@ -15,13 +15,16 @@ public enum CommandErrorMessage {
     UNKNOWN,
     EXTRA_ARGUMENT;
 
-    public TextComponent getMessage( String label, String[] args ) {
-        return getMessage( label, args, args.length );
+    public TextComponent send() {
+        
     }
-    public TextComponent getMessage( String label, String[] args, int errorArgument ) {
-        return getMessage( label, args, errorArgument, null );
+    public TextComponent send( String label, String[] args ) {
+        return send( label, args, args.length );
     }
-    public TextComponent getMessage( String label, String[] args, int errorArgument, String unknownVariable ) {
+    public TextComponent send( String label, String[] args, int errorArgument ) {
+        return send( label, args, errorArgument, null );
+    }
+    public TextComponent send( String label, String[] args, int errorArgument, String unknownVariable ) {
 
         if( this == PERMISSION ) return Component.text( "Unknown command. Type \"/help\" for help." );
         if( this == UNKNOWN ) return Component.text( "Unknown " + unknownVariable + " '" + args[ errorArgument ] + "'").color( NamedTextColor.RED );
