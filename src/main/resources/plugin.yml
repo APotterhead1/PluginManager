@@ -9,7 +9,6 @@ load: STARTUP
 commands:
   plugin:
     description: Allows user to utilize admin controls revolving around plugins
-    aliases: pl
     usage: /plugin
     permission: pm.help-tab-complete.plugin
     permission-message: Unknown command. Type "/help" for help.

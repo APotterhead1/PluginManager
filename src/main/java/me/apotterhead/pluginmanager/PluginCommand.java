@@ -34,17 +34,16 @@ public class PluginCommand implements TabExecutor {
                 return true;
             }
             if( args.length == 1 ) {
-                TextComponent component = Component.text( "Plugins:" ).color( NamedTextColor.GOLD );
-                component.appendNewline();
+                TextComponent component = Component.text( "Plugins:\n" ).color( NamedTextColor.GOLD );
 
                 Plugin[] plugins = plugin.getServer().getPluginManager().getPlugins();
-                if( plugins[0].isEnabled() ) component.append( Component.text( "[" + plugins[0].getName() + "]" ).color( NamedTextColor.GREEN ) );
-                else component.append( Component.text( "[" + plugins[0].getName() + "]" ).color( NamedTextColor.RED ) );
+                if( plugins[0].isEnabled() ) component = component.append( Component.text( "[" + plugins[0].getName() + "]" ).color( NamedTextColor.GREEN ) );
+                else component = component.append( Component.text( "[" + plugins[0].getName() + "]" ).color( NamedTextColor.RED ) );
 
                 for( int i = 1; i < plugins.length; i++ ) {
-                    component.append( Component.text( "," ) );
-                    if( plugins[i].isEnabled() ) component.append( Component.text( "[" + plugins[i].getName() + "]" ).color( NamedTextColor.GREEN ) );
-                    else component.append( Component.text( "[" + plugins[i].getName() + "]" ).color( NamedTextColor.RED ) );
+                    component = component.append( Component.text( "," ) ).color( NamedTextColor.WHITE );
+                    if( plugins[i].isEnabled() ) component = component.append( Component.text( "[" + plugins[i].getName() + "]" ).color( NamedTextColor.GREEN ) );
+                    else component = component.append( Component.text( "[" + plugins[i].getName() + "]" ).color( NamedTextColor.RED ) );
                 }
 
                 sender.sendMessage( component );

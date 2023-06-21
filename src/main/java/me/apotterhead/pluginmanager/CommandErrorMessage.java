@@ -26,7 +26,7 @@ public enum CommandErrorMessage {
     }
     public TextComponent send( String label, String[] args, int errorArgument, String unknownVariable ) {
 
-        if( this == PERMISSION ) return Component.text( "Unknown command. Type \"/help\" for help." );
+        if( this == PERMISSION ) return Component.text( "Unknown command. Type \"/help\" for help." ).color( NamedTextColor.WHITE );
         if( this == UNKNOWN ) return Component.text( "Unknown " + unknownVariable + " '" + args[ errorArgument ] + "'").color( NamedTextColor.RED );
         TextComponent component;
         if( this == INCOMPLETE ) component = Component.text( "Unknown or incomplete command, see below for error" ).color( NamedTextColor.RED );
@@ -39,15 +39,15 @@ public enum CommandErrorMessage {
         if( this == INCORRECT || this == EXTRA_ARGUMENT ) command += " ";
         if( command.length() > 10 ) command = "..." + command.substring( command.length() - 10 );
 
-        component.append( Component.text( command ).color( NamedTextColor.GRAY ) );
+        component = component.append( Component.text( "\n" + command ).color( NamedTextColor.GRAY ) );
 
         if( this == INCORRECT || this == EXTRA_ARGUMENT ) {
             String error = args[errorArgument];
             for( int i = errorArgument + 1; i < args.length; i++ ) error += " " + args[i];
-            component.append( Component.text( error ).color( NamedTextColor.RED ).decorate( TextDecoration.UNDERLINED ) );
+            component = component.append( Component.text( error ).color( NamedTextColor.RED ).decorate( TextDecoration.UNDERLINED ) );
         }
 
-        component.append( Component.text( "<--[HERE]").color( NamedTextColor.RED ) );
+        component = component.append( Component.text( "<--[HERE]").color( NamedTextColor.RED ) );
 
         return component;
     }
