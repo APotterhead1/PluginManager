@@ -16,7 +16,7 @@ public enum CommandErrorMessage {
     EXTRA_ARGUMENT;
 
     public TextComponent send() {
-        return send( null, null );
+        return send( "", new String[0] );
     }
     public TextComponent send( String label, String[] args ) {
         return send( label, args, args.length );
