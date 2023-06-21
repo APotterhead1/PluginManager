@@ -48,11 +48,10 @@ public class PluginCommand implements TabExecutor {
                 }
 
                 sender.sendMessage( component );
-                return true;
             } else {
                 sender.sendMessage( CommandErrorMessage.EXTRA_ARGUMENT.send( label, args, 1 ) );
-                return true;
             }
+            return true;
         }
 
         sender.sendMessage( CommandErrorMessage.INCORRECT.send( label, args, 0 ) );
