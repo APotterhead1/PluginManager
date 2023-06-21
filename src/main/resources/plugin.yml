@@ -31,6 +31,7 @@ permissions:
       pm.commands.plugin.list: true
       pm.commands.plugin.enable: true
       pm.commands.plugin.disable: true
+      pm.commands.plugin.get: true
       pm.commands.plugin.reload: true
   pm.commands.plugin.list:
     description: Allows access to the pm plugin list subcommand
@@ -42,9 +43,14 @@ permissions:
     default: op
     children:
       pm.help-tab-complete.plugin: true
-  pm commands.plugin.disable:
+  pm.commands.plugin.disable:
     description: Allows access to the pm plugin disable subcommand
     default: op
+    children:
+      pm.help-tab-complete.plugin: true
+  pm.commands.plugin.get:
+    description: Allows access to the pm plugin get subcommand
+    default: true
     children:
       pm.help-tab-complete.plugin: true
   pm.commands.plugin.reload:
@@ -70,4 +76,4 @@ permissions:
       pm.help-tab-complete.plugin: true
   pm.help-tab-complete.plugin:
     description: Puts the pm plugin command on the help page and tab complete
-    default: op
+    default: true
