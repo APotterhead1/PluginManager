@@ -1,5 +1,5 @@
 // APotterhead
-// 13062023-14062023
+// 13062023-20062023
 
 package me.apotterhead.pluginmanager;
 
@@ -16,7 +16,7 @@ public enum CommandErrorMessage {
     EXTRA_ARGUMENT;
 
     public TextComponent send() {
-        
+        return send( null, null );
     }
     public TextComponent send( String label, String[] args ) {
         return send( label, args, args.length );
