@@ -33,17 +33,17 @@ public enum CommandErrorMessage {
         else if( this == INCORRECT ) component = Component.text( "Incorrect argument for command" ).color( NamedTextColor.RED );
         else if( this == EXTRA_ARGUMENT ) component = Component.text( "Expected whitespace to end one argument, but found trailing data" ).color( NamedTextColor.RED );
 
-        String command = label;
-        for( int i = 0; i < args.length && i < errorArgument; i++ ) command += " " + args[i];
-        if( this == INCORRECT || this == EXTRA_ARGUMENT ) command += " ";
-        if( command.length() > 10 ) command = "..." + command.substring( command.length() - 10 );
+        StringBuilder command = new StringBuilder( label );
+        for( int i = 0; i < args.length && i < errorArgument; i++ ) command.append( " " ).append( args[i] );
+        if( this == INCORRECT || this == EXTRA_ARGUMENT ) command.append( " " );
+        if( command.length() > 10 ) command = new StringBuilder("..." + command.substring( command.length() - 10 ) );
 
         component = component.append( Component.text( "\n" + command ).color( NamedTextColor.GRAY ) );
 
         if( this == INCORRECT || this == EXTRA_ARGUMENT ) {
-            String error = args[errorArgument];
-            for( int i = errorArgument + 1; i < args.length; i++ ) error += " " + args[i];
-            component = component.append( Component.text( error ).color( NamedTextColor.RED ).decorate( TextDecoration.UNDERLINED ) );
+            StringBuilder error = new StringBuilder( args[errorArgument] );
+            for( int i = errorArgument + 1; i < args.length; i++ ) error.append( " " ).append( args[i] );
+            component = component.append( Component.text( error.toString() ).color( NamedTextColor.RED ).decorate( TextDecoration.UNDERLINED ) );
         }
 
         component = component.append( Component.text( "<--[HERE]").color( NamedTextColor.RED ) );
