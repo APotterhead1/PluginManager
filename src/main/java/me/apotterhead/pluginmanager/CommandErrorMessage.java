@@ -28,11 +28,10 @@ public enum CommandErrorMessage {
 
         if( this == PERMISSION ) return Component.text( "Unknown command. Type \"/help\" for help." ).color( NamedTextColor.WHITE );
         if( this == UNKNOWN ) return Component.text( "Unknown " + unknownVariable + " '" + args[ errorArgument ] + "'").color( NamedTextColor.RED );
-        TextComponent component;
+        TextComponent component = Component.text("");
         if( this == INCOMPLETE ) component = Component.text( "Unknown or incomplete command, see below for error" ).color( NamedTextColor.RED );
         else if( this == INCORRECT ) component = Component.text( "Incorrect argument for command" ).color( NamedTextColor.RED );
         else if( this == EXTRA_ARGUMENT ) component = Component.text( "Expected whitespace to end one argument, but found trailing data" ).color( NamedTextColor.RED );
-        else return null;
 
         String command = label;
         for( int i = 0; i < args.length && i < errorArgument; i++ ) command += " " + args[i];

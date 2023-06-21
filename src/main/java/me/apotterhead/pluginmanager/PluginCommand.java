@@ -12,6 +12,7 @@ import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.plugin.Plugin;
+import java.util.Arrays;
 
 public class PluginCommand implements TabExecutor {
 
@@ -21,15 +22,16 @@ public class PluginCommand implements TabExecutor {
         this.plugin = plugin;
     }
 
+    @Override
     public boolean onCommand( CommandSender sender, Command cmd, String label, String[] args ) {
         if( args.length == 0 ) {
-            if( sender.hasPermission( "pm.help-tab-complete.plugin" ) ) sender.sendMessage( CommandErrorMessage.INCOMPLETE.send( label, args ) );
-            else sender.sendMessage( CommandErrorMessage.UNKNOWN.send() );
+            if( sender.hasPermission( "appm.help-tab-complete.plugin" ) ) sender.sendMessage( CommandErrorMessage.INCOMPLETE.send( label, args ) );
+            else sender.sendMessage( CommandErrorMessage.PERMISSION.send() );
             return true;
         }
 
         if( args[0].equals( "list" ) ) {
-            if( !sender.hasPermission( "pm.commands.plugin.list" ) ) {
+            if( !sender.hasPermission( "appm.commands.plugin.list" ) ) {
                 sender.sendMessage( CommandErrorMessage.INCORRECT.send( label, args, 0 ) );
                 return true;
             }
@@ -47,16 +49,75 @@ public class PluginCommand implements TabExecutor {
                 }
 
                 sender.sendMessage( component );
-            } else {
-                sender.sendMessage( CommandErrorMessage.EXTRA_ARGUMENT.send( label, args, 1 ) );
+                return true;
             }
+            sender.sendMessage( CommandErrorMessage.EXTRA_ARGUMENT.send( label, args, 1 ) );
             return true;
         }
+
+        if( args[0].equals( "enable" ) ) {
+            if( !sender.hasPermission( "appm.commands.plugin.enable" ) ) {
+                sender.sendMessage( CommandErrorMessage.INCORRECT.send( label, args, 0 ) );
+                return true;
+            }
+            if( args.length == 1 ) {
+                sender.sendMessage( CommandErrorMessage.INCOMPLETE.send( label, args ) );
+                return true;
+            }
+            if( args.length == 2 ) {
+                Plugin[] plugins = plugin.getServer().getPluginManager().getPlugins();
+                boolean matchesPlugin = false;
+                for( int i = 0; i < plugins.length && !matchesPlugin; i++ ) if( plugins[i].getName().equals( args[1] ) ) matchesPlugin = true;
+                if( !matchesPlugin ) {
+                    sender.sendMessage( CommandErrorMessage.UNKNOWN.send( label, args, 1, "plugin" ) );
+                    return true;
+                }
+
+                Plugin serverPlugin = plugin.getServer().getPluginManager().getPlugin( args[1] );
+
+                if( !serverPlugin.isEnabled() ) plugin.getServer().getPluginManager().enablePlugin( serverPlugin );
+                sender.sendMessage( Component.text( "[" + serverPlugin.getName() + "] has been enabled" ).color( NamedTextColor.GREEN ) );
+                return true;
+            }
+            sender.sendMessage( CommandErrorMessage.EXTRA_ARGUMENT.send( label, args, 2 ) );
+            return true;
+        }
+
+        if( args[0].equals( "disable" ) ) {
+            if( !sender.hasPermission( "appm.commands.plugin.disable" ) ) {
+                sender.sendMessage( CommandErrorMessage.INCORRECT.send( label, args, 0 ) );
+                return true;
+            }
+            if( args.length == 1 ) {
+                sender.sendMessage( CommandErrorMessage.INCOMPLETE.send( label, args ) );
+                return true;
+            }
+            if( args.length == 2 ) {
+                Plugin[] plugins = plugin.getServer().getPluginManager().getPlugins();
+                boolean matchesPlugin = false;
+                for( int i = 0; i < plugins.length && !matchesPlugin; i++ ) if( plugins[i].getName().equals( args[1] ) ) matchesPlugin = true;
+                if( !matchesPlugin ) {
+                    sender.sendMessage( CommandErrorMessage.UNKNOWN.send( label, args, 1, "plugin" ) );
+                    return true;
+                }
+
+                Plugin serverPlugin = plugin.getServer().getPluginManager().getPlugin( args[1] );
+
+                if( serverPlugin.isEnabled() ) plugin.getServer().getPluginManager().disablePlugin( serverPlugin );
+                sender.sendMessage( Component.text( "[" + serverPlugin.getName() + "] has been disabled" ).color( NamedTextColor.RED ) );
+                return true;
+            }
+            sender.sendMessage( CommandErrorMessage.EXTRA_ARGUMENT.send( label, args, 2 ) );
+            return true;
+        }
+
+        if( args[0].equals( "reload" ) )
 
         sender.sendMessage( CommandErrorMessage.INCORRECT.send( label, args, 0 ) );
         return true;
     }
 
+    @Override
     public List<String> onTabComplete( CommandSender sender, Command cmd, String label, String[] args ) {
         List<String> commands = new ArrayList<>();
         List<String> completions = new ArrayList<>();

@@ -10,69 +10,69 @@ commands:
   plugin:
     description: Allows user to utilize admin controls revolving around plugins
     usage: /plugin
-    permission: pm.help-tab-complete.plugin
+    permission: appm.help-tab-complete.plugin
     permission-message: Unknown command. Type "/help" for help.
 permissions:
-  pm:
-    description: Allows access to all pm permissions
+  appm:
+    description: Allows access to all appm permissions
     default: op
     children:
-      pm.commands: true
-  pm.commands:
-    description: Allows access to all pm command permissions
+      appm.commands: true
+  appm.commands:
+    description: Allows access to all appm command permissions
     default: op
     children:
-      pm.commands.plugin: true
-  pm.commands.plugin:
-    description: Allows access to all pm plugin subcommands
+      appm.commands.plugin: true
+  appm.commands.plugin:
+    description: Allows access to all appm plugin subcommands
     default: op
     children:
-      pm.commands.plugin.list: true
-      pm.commands.plugin.enable: true
-      pm.commands.plugin.disable: true
-      pm.commands.plugin.get: true
-      pm.commands.plugin.reload: true
-  pm.commands.plugin.list:
-    description: Allows access to the pm plugin list subcommand
+      appm.commands.plugin.list: true
+      appm.commands.plugin.enable: true
+      appm.commands.plugin.disable: true
+      appm.commands.plugin.get: true
+      appm.commands.plugin.reload: true
+  appm.commands.plugin.list:
+    description: Allows access to the appm plugin list subcommand
     default: op
     children:
-      pm.help-tab-complete.plugin: true
-  pm.commands.plugin.enable:
-    description: Allows access to the pm plugin enable subcommand
+      appm.help-tab-complete.plugin: true
+  appm.commands.plugin.enable:
+    description: Allows access to the appm plugin enable subcommand
     default: op
     children:
-      pm.help-tab-complete.plugin: true
-  pm.commands.plugin.disable:
-    description: Allows access to the pm plugin disable subcommand
+      appm.help-tab-complete.plugin: true
+  appm.commands.plugin.disable:
+    description: Allows access to the appm plugin disable subcommand
     default: op
     children:
-      pm.help-tab-complete.plugin: true
-  pm.commands.plugin.get:
-    description: Allows access to the pm plugin get subcommand
+      appm.help-tab-complete.plugin: true
+  appm.commands.plugin.get:
+    description: Allows access to the appm plugin get subcommand
     default: true
     children:
-      pm.help-tab-complete.plugin: true
-  pm.commands.plugin.reload:
-    description: Allows access to the pm plugin reload subcommand further subcommands
+      appm.help-tab-complete.plugin: true
+  appm.commands.plugin.reload:
+    description: Allows access to the appm plugin reload subcommand further subcommands
     default: op
     children:
-      pm.commands.plugin.reload.this: true
-      pm.commands.plugin.reload.plugin-name: true
-  pm.commands.plugin.reload.this:
-    description: Allows access to the pm plugin reload subcommand
+      appm.commands.plugin.reload.this: true
+      appm.commands.plugin.reload.plugin-name: true
+  appm.commands.plugin.reload.this:
+    description: Allows access to the appm plugin reload subcommand
     default: op
     children:
-      pm.help-tab-complete.plugin: true
-  pm.commands.plugin.reload.plugin-name:
-    description: Allows access to the pm plugin reload plugin-name subcommand
+      appm.help-tab-complete.plugin: true
+  appm.commands.plugin.reload.plugin-name:
+    description: Allows access to the appm plugin reload plugin-name subcommand
     default: op
     children:
-      pm.help-tab-complete.plugin: true
-  pm.help-tab-complete:
-    description: Puts all pm commands on the help page and tab complete
+      appm.help-tab-complete.plugin: true
+  appm.help-tab-complete:
+    description: Puts all appm commands on the help page and tab complete
     default: op
     children:
-      pm.help-tab-complete.plugin: true
-  pm.help-tab-complete.plugin:
-    description: Puts the pm plugin command on the help page and tab complete
+      appm.help-tab-complete.plugin: true
+  appm.help-tab-complete.plugin:
+    description: Puts the appm plugin command on the help page and tab complete
     default: true
