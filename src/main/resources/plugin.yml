@@ -6,6 +6,13 @@ website: https://github.com/APotterhead1/PluginManager
 version: 1.0
 main: me.apotterhead.pluginmanager.PluginManager
 load: STARTUP
+commands:
+  plugin:
+    description: Allows user to utilize admin controls revolving around plugins
+    aliases: pl
+    usage: /plugin
+    permission: pm.help-tab-complete.plugin
+    permission-message: Unknown command. Type "/help" for help.
 permissions:
   pm:
     description: Allows access to all pm permissions

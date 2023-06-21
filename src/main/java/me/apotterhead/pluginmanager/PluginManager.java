@@ -9,6 +9,9 @@ public final class PluginManager extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        PluginCommand pluginCommand = new PluginCommand();
+        getCommand( "plugin" ).setExecutor( pluginCommand );
+        getCommand( "plugin" ).setTabCompleter( pluginCommand );
     }
 
     @Override
