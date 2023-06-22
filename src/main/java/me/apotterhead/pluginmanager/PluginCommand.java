@@ -12,7 +12,7 @@ import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.plugin.Plugin;
-import java.util.Arrays;
+import org.jetbrains.annotations.NotNull;
 
 public class PluginCommand implements TabExecutor {
 
@@ -23,7 +23,7 @@ public class PluginCommand implements TabExecutor {
     }
 
     @Override
-    public boolean onCommand( CommandSender sender, Command cmd, String label, String[] args ) {
+    public boolean onCommand( @NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, String[] args ) {
         if( args.length == 0 ) {
             if( sender.hasPermission( "appm.help-tab-complete.plugin" ) ) sender.sendMessage( CommandErrorMessage.INCOMPLETE.send( label, args ) );
             else sender.sendMessage( CommandErrorMessage.PERMISSION.send() );
@@ -65,6 +65,7 @@ public class PluginCommand implements TabExecutor {
                 return true;
             }
             if( args.length == 2 ) {
+
                 Plugin[] plugins = plugin.getServer().getPluginManager().getPlugins();
                 boolean matchesPlugin = false;
                 for( int i = 0; i < plugins.length && !matchesPlugin; i++ ) if( plugins[i].getName().equals( args[1] ) ) matchesPlugin = true;
@@ -74,6 +75,7 @@ public class PluginCommand implements TabExecutor {
                 }
 
                 Plugin serverPlugin = plugin.getServer().getPluginManager().getPlugin( args[1] );
+                assert serverPlugin != null;
 
                 if( !serverPlugin.isEnabled() ) plugin.getServer().getPluginManager().enablePlugin( serverPlugin );
                 sender.sendMessage( Component.text( "[" + serverPlugin.getName() + "] has been enabled" ).color( NamedTextColor.GREEN ) );
@@ -93,6 +95,7 @@ public class PluginCommand implements TabExecutor {
                 return true;
             }
             if( args.length == 2 ) {
+
                 Plugin[] plugins = plugin.getServer().getPluginManager().getPlugins();
                 boolean matchesPlugin = false;
                 for( int i = 0; i < plugins.length && !matchesPlugin; i++ ) if( plugins[i].getName().equals( args[1] ) ) matchesPlugin = true;
@@ -102,6 +105,7 @@ public class PluginCommand implements TabExecutor {
                 }
 
                 Plugin serverPlugin = plugin.getServer().getPluginManager().getPlugin( args[1] );
+                assert serverPlugin != null;
 
                 if( serverPlugin.isEnabled() ) plugin.getServer().getPluginManager().disablePlugin( serverPlugin );
                 sender.sendMessage( Component.text( "[" + serverPlugin.getName() + "] has been disabled" ).color( NamedTextColor.RED ) );
@@ -111,14 +115,31 @@ public class PluginCommand implements TabExecutor {
             return true;
         }
 
-        if( args[0].equals( "reload" ) )
+        if( args[0].equals( "get" ) ) {
+            if( !sender.hasPermission( "appm.commands.plugin.get" ) ) {
+                sender.sendMessage( CommandErrorMessage.INCORRECT.send( label, args, 0 ) );
+                return true;
+            }
+
+            if( args.length == 1 ) {
+                sender.sendMessage( CommandErrorMessage.INCOMPLETE.send( label, args ) );
+                return true;
+            }
+
+            if( args.length == 2 ) {
+
+            }
+
+            sender.sendMessage( CommandErrorMessage.EXTRA_ARGUMENT.send( label, args, 2 ) );
+            return true;
+        }
 
         sender.sendMessage( CommandErrorMessage.INCORRECT.send( label, args, 0 ) );
         return true;
     }
 
     @Override
-    public List<String> onTabComplete( CommandSender sender, Command cmd, String label, String[] args ) {
+    public List<String> onTabComplete( @NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, String[] args ) {
         List<String> commands = new ArrayList<>();
         List<String> completions = new ArrayList<>();
 

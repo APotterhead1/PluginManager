@@ -31,7 +31,6 @@ permissions:
       appm.commands.plugin.enable: true
       appm.commands.plugin.disable: true
       appm.commands.plugin.get: true
-      appm.commands.plugin.reload: true
   appm.commands.plugin.list:
     description: Allows access to the appm plugin list subcommand
     default: op
@@ -50,22 +49,6 @@ permissions:
   appm.commands.plugin.get:
     description: Allows access to the appm plugin get subcommand
     default: true
-    children:
-      appm.help-tab-complete.plugin: true
-  appm.commands.plugin.reload:
-    description: Allows access to the appm plugin reload subcommand further subcommands
-    default: op
-    children:
-      appm.commands.plugin.reload.this: true
-      appm.commands.plugin.reload.plugin-name: true
-  appm.commands.plugin.reload.this:
-    description: Allows access to the appm plugin reload subcommand
-    default: op
-    children:
-      appm.help-tab-complete.plugin: true
-  appm.commands.plugin.reload.plugin-name:
-    description: Allows access to the appm plugin reload plugin-name subcommand
-    default: op
     children:
       appm.help-tab-complete.plugin: true
   appm.help-tab-complete:
