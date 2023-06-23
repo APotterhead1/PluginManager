@@ -7,13 +7,13 @@ import java.io.File;
 import org.bukkit.configuration.file.YamlConfiguration;
 import java.util.logging.Level;
 
-public class DisabledPlugins {
+public class DisabledPluginsFile {
 
     private final PluginManager plugin;
     private File file;
     public YamlConfiguration config;
 
-    public DisabledPlugins( PluginManager plugin ) {
+    public DisabledPluginsFile(PluginManager plugin ) {
         this.plugin = plugin;
         try {
             file = new File( plugin.getDataFolder(), "disabledPlugins.yml" );
