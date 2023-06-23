@@ -93,7 +93,13 @@ public class PluginCommand implements TabExecutor {
                 Plugin serverPlugin = plugin.getServer().getPluginManager().getPlugin( args[1] );
                 assert serverPlugin != null;
 
-                if( !serverPlugin.isEnabled() ) plugin.getServer().getPluginManager().enablePlugin( serverPlugin );
+                if( !serverPlugin.isEnabled() ) {
+                    plugin.getServer().getPluginManager().enablePlugin( serverPlugin );
+                    List<String> disabledPlugins = plugin.disabledPlugins.config.getStringList( "plugins" );
+                    disabledPlugins.remove( serverPlugin.getName() );
+                    plugin.disabledPlugins.config.set( "plugins", disabledPlugins );
+                    plugin.disabledPlugins.save();
+                }
                 sender.sendMessage( Component.text( "[" + serverPlugin.getName() + "] has been enabled" ).color( NamedTextColor.GREEN ) );
                 return true;
             }
@@ -123,7 +129,13 @@ public class PluginCommand implements TabExecutor {
                 Plugin serverPlugin = plugin.getServer().getPluginManager().getPlugin( args[1] );
                 assert serverPlugin != null;
 
-                if( serverPlugin.isEnabled() ) plugin.getServer().getPluginManager().disablePlugin( serverPlugin );
+                if( serverPlugin.isEnabled() ) {
+                    plugin.getServer().getPluginManager().disablePlugin( serverPlugin );
+                    List<String> disabledPlugins = plugin.disabledPlugins.config.getStringList( "plugins" );
+                    disabledPlugins.add( serverPlugin.getName() );
+                    plugin.disabledPlugins.config.set( "plugins", disabledPlugins );
+                    plugin.disabledPlugins.save();
+                }
                 sender.sendMessage( Component.text( "[" + serverPlugin.getName() + "] has been disabled" ).color( NamedTextColor.RED ) );
                 return true;
             }

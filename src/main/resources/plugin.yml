@@ -6,6 +6,7 @@ website: https://github.com/APotterhead1/PluginManager
 version: 1.0
 main: me.apotterhead.pluginmanager.PluginManager
 load: STARTUP
+api-version: '1.20'
 commands:
   plugin:
     description: Allows user to utilize admin controls revolving around plugins
