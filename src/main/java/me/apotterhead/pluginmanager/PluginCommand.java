@@ -99,6 +99,11 @@ public class PluginCommand implements TabExecutor {
                     disabledPlugins.remove( serverPlugin.getName() );
                     plugin.disabledPlugins.config.set( "plugins", disabledPlugins );
                     plugin.disabledPlugins.save();
+                } else if( serverPlugin.getName().equals( "PluginManager" ) ) {
+                    List<String> disabledPlugins = plugin.disabledPlugins.config.getStringList( "plugins" );
+                    disabledPlugins.remove( serverPlugin.getName() );
+                    plugin.disabledPlugins.config.set( "plugins", disabledPlugins );
+                    plugin.disabledPlugins.save();
                 }
                 sender.sendMessage( Component.text( "[" + serverPlugin.getName() + "] has been enabled" ).color( NamedTextColor.GREEN ) );
                 return true;
