@@ -133,7 +133,7 @@ public class PluginCommand implements TabExecutor {
                     plugin.getServer().getPluginManager().disablePlugin( serverPlugin );
                     List<String> disabledPlugins = plugin.disabledPlugins.config.getStringList( "plugins" );
                     disabledPlugins.add( serverPlugin.getName() );
-                    plugin.disabledPlugins.config.set( "plugins", disabledPlugins );
+                    if( !plugin.disabledPlugins.config.getStringList( "plugins" ).contains( serverPlugin.getName() ) ) plugin.disabledPlugins.config.set( "plugins", disabledPlugins );
                     plugin.disabledPlugins.save();
                 }
                 sender.sendMessage( Component.text( "[" + serverPlugin.getName() + "] has been disabled" ).color( NamedTextColor.RED ) );
