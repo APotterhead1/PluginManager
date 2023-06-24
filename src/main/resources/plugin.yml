@@ -20,10 +20,11 @@ permissions:
     children:
       appm.commands: true
   appm.commands:
-    description: Allows access to all appm command permissions
+    description: Allows access to all appm commands
     default: op
     children:
       appm.commands.plugin: true
+      appm.commands.group: true
   appm.commands.plugin:
     description: Allows access to all appm plugin subcommands
     default: op
@@ -34,7 +35,7 @@ permissions:
       appm.commands.plugin.get: true
   appm.commands.plugin.list:
     description: Allows access to the appm plugin list subcommand
-    default: op
+    default: true
     children:
       appm.help-tab-complete.plugin: true
   appm.commands.plugin.enable:
@@ -52,11 +53,95 @@ permissions:
     default: true
     children:
       appm.help-tab-complete.plugin: true
+  appm.commands.group:
+    description: Allows access to all appm group subcommands
+    default: op
+    children:
+      appm.commands.group.create: true
+      appm.commands.group.delete: true
+      appm.commands.group.list: true
+      appm.commands.group.setHierarchy: true
+      appm.commands.group.join: true
+      appm.commands.group.leave: true
+      appm.commands.group.empty: true
+      appm.commands.group.get: true
+      appm.commands.group.setDefaultGroup: true
+  appm.commands.group.create:
+    description: Allows access to the appm group create subcommand
+    default: op
+    children:
+      appm.help-tab-complete.group: true
+  appm.commands.group.delete:
+    description: Allows access to the appm group delete subcommand
+    default: op
+    children:
+      appm.help-tab-complete: true
+  appm.commands.group.list:
+    description: Allows access to the appm group list subcommand
+    default: op
+    children:
+      appm.help-tab-complete.group: true
+  appm.commands.group.setHierarchy:
+    description: Allows access to the appm setHierarchy subcommand
+    default: op
+    children:
+      appm.help-tab-complete.group: true
+  appm.commands.group.join:
+    description: Allows access to all appm group join subcommands
+    default: op
+    children:
+      appm.commands.group.join.name: true
+      appm.commands.group.join.uuid: true
+  appm.commands.group.join.name:
+    description: Allows access to the appm group join name subcommand
+    default: op
+    children:
+      appm.help-tab-complete.group: true
+  appm.commands.group.join.uuid:
+    description: Allows access to the appm group join uuid subcommand
+    default: op
+    children:
+      appm.help-tab-complete.group: true
+  appm.commands.group.leave:
+    description: Allows access to all the appm leave subcommand
+    default: op
+    children:
+      appm.commands.group.leave.name: true
+      appm.commands.group.leave.uuid: true
+  appm.commands.group.leave.name:
+    description: Allows access to the appm group leave name subcommand
+    default: op
+    children:
+      appm.help-tab-complete.group: true
+  appm.commands.group.leave.uuid:
+    description: Allows access to the appm group leave uuid subcommand
+    default: op
+    children:
+      appm.help-tab-complete.group: true
+  appm.commands.group.empty:
+    description: Allows access to the appm group empty subcommand
+    default: op
+    children:
+      appm.help-tab-complete: true
+  appm.commands.group.get:
+    description: Allows access to the appm group set subcommand
+    default: op
+    children:
+      appm.help-tab-complete.group: true
+  appm.commands.group.setDefaultGroup:
+    description: Allows access to the appm group setDefaultGroup subcommand
+    default: op
+    children:
+      appm.help-tab-complete.group: true
   appm.help-tab-complete:
     description: Puts all appm commands on the help page and tab complete
     default: op
     children:
       appm.help-tab-complete.plugin: true
+      appm.help-tab-complete.group: true
   appm.help-tab-complete.plugin:
     description: Puts the appm plugin command on the help page and tab complete
     default: true
+  appm.help-tab-complete.group:
+    description: Puts the appm group command on the help page and tab complete
+    default: op
