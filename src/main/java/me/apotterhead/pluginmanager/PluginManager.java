@@ -19,7 +19,7 @@ public final class PluginManager extends JavaPlugin {
         Objects.requireNonNull( getCommand( "plugin" ) ).setExecutor( pluginCommand );
         Objects.requireNonNull( getCommand( "plugin" ) ).setTabCompleter( pluginCommand );
 
-        GroupCommand groupCommand = new GroupCommand();
+        GroupCommand groupCommand = new GroupCommand( this );
         Objects.requireNonNull( getCommand( "group" ) ).setExecutor( groupCommand );
         Objects.requireNonNull( getCommand( "group" ) ).setTabCompleter( groupCommand );
 
