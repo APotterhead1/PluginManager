@@ -48,6 +48,7 @@ public class GroupCommand implements TabExecutor {
                 plugin.groups.config.set( "groups", groups );
                 plugin.groups.config.set( "group." + args[1] + ".hierarchyValue", 0 );
                 plugin.groups.save();
+                sender.sendMessage( Component.text( "Group '" + args[1] + "' successfully created" ).color( NamedTextColor.GREEN ) );
                 return true;
             }
 
