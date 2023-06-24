@@ -56,6 +56,35 @@ public class GroupCommand implements TabExecutor {
             return true;
         }
 
+        if( args[0].equals( "delete" ) ) {
+            if( !sender.hasPermission( "appm.commands.group.delete" ) ) {
+                sender.sendMessage( CommandErrorMessage.INCORRECT.send( label, args, 0 ) );
+                return true;
+            }
+
+            if( args.length == 1 ) {
+                sender.sendMessage( CommandErrorMessage.INCOMPLETE.send( label, args ) );
+                return true;
+            }
+
+            if( args.length == 2 ) {
+                List<String> groups = plugin.groups.config.getStringList( "groups" );
+                if( !groups.contains( args[1] ) ) {
+                    sender.sendMessage( CommandErrorMessage.UNKNOWN.send( label, args, 1, "group" ) );
+                    return true;
+                }
+                groups.remove( args[1] );
+                plugin.groups.config.set( "groups", groups );
+                plugin.groups.config.set( "group." + args[1], null );
+                plugin.groups.save();
+                sender.sendMessage( Component.text( "Group '" + args[1] + "' has been deleted" ).color( NamedTextColor.GREEN ) );
+                return true;
+            }
+
+            sender.sendMessage( CommandErrorMessage.EXTRA_ARGUMENT.send( label, args, 2 ) );
+            return true;
+        }
+
         sender.sendMessage( CommandErrorMessage.INCORRECT.send( label, args, 0 ) );
         return true;
     }
