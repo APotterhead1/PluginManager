@@ -13,6 +13,11 @@ commands:
     usage: /plugin
     permission: appm.help-tab-complete.plugin
     permission-message: Unknown command. Type "/help" for help.
+  group:
+    description: Allows user to create groups to better manage permissions
+    usage: /group
+    permission: appm.help-tab-complete.group
+    permission-message: Unknown command. Type "/help" for help.
 permissions:
   appm:
     description: Allows access to all appm permissions
