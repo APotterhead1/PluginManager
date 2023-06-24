@@ -11,6 +11,9 @@ import java.util.ArrayList;
 import org.jetbrains.annotations.NotNull;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.event.ClickEvent;
 
 public class GroupCommand implements TabExecutor {
 
@@ -82,6 +85,39 @@ public class GroupCommand implements TabExecutor {
             }
 
             sender.sendMessage( CommandErrorMessage.EXTRA_ARGUMENT.send( label, args, 2 ) );
+            return true;
+        }
+
+        if( args[0].equals( "list" ) ) {
+            if( !sender.hasPermission( "appm.commands.group.list" ) ) {
+                sender.sendMessage( CommandErrorMessage.INCORRECT.send( label, args, 0 ) );
+                return true;
+            }
+            if( args.length == 1 ) {
+                TextComponent component = Component.text( "Groups: " ).color( NamedTextColor.GOLD );
+                List<String> groups = plugin.groups.config.getStringList( "groups" );
+                if( groups.size() == 0 ) {
+                    sender.sendMessage( component );
+                    return true;
+                }
+                if( sender.hasPermission( "appm.commands.group.get" ) ) {
+                    component = component.append( Component.text( "\n[" + groups.get( 0 ) + "]" ).color( NamedTextColor.AQUA ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/group get " + groups.get( 0 ) ) ) );
+                    for( int i = 1; i < groups.size(); i++ ) {
+                        component = component.append( Component.text( "," ).color( NamedTextColor.WHITE ) );
+                        component = component.append( Component.text( "[" + groups.get( i ) + "]" ).color( NamedTextColor.AQUA ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/group get " + groups.get( i ) ) ) );
+                    }
+                } else {
+                    component = component.append( Component.text( "\n[" + groups.get( 0 ) + "]" ).color( NamedTextColor.AQUA ) );
+                    for( int i = 1; i < groups.size(); i++ ) {
+                        component = component.append( Component.text( "," ).color( NamedTextColor.WHITE ) );
+                        component = component.append( Component.text( "[" + groups.get( i ) + "]" ).color( NamedTextColor.AQUA ) );
+                    }
+                }
+                sender.sendMessage( component );
+                return true;
+            }
+
+            sender.sendMessage( CommandErrorMessage.EXTRA_ARGUMENT.send( label, args, 1 ) );
             return true;
         }
 
