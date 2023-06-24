@@ -13,6 +13,13 @@ import org.jetbrains.annotations.NotNull;
 public class GroupCommand implements TabExecutor {
 
     public boolean onCommand( @NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args ) {
+        if( args.length == 0 ) {
+            if( sender.hasPermission( "appm.help-tab-complete.group" ) ) sender.sendMessage( CommandErrorMessage.INCOMPLETE.send( label, args ) );
+            else sender.sendMessage( CommandErrorMessage.PERMISSION.send() );
+            return true;
+        }
+
+
         return true;
     }
 
