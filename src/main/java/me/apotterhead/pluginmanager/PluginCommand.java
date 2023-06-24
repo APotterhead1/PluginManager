@@ -1,5 +1,5 @@
 // APotterhead
-// 13062023-22062023
+// 13062023-23062023
 
 package me.apotterhead.pluginmanager;
 
@@ -228,8 +228,9 @@ public class PluginCommand implements TabExecutor {
             StringUtil.copyPartialMatches( args[0], commands, completions );
         }
         if( args.length == 2 ) {
-            if( args[0].equals( "enable" ) && sender.hasPermission( "appm.commands.plugin.enable" ) ) for( Plugin serverPlugin : plugin.getServer().getPluginManager().getPlugins() ) commands.add( serverPlugin.getName() );
-            if( args[0].equals( "disable" ) && sender.hasPermission( "appm.commands.plugin.disable" ) ) for( Plugin serverPlugin : plugin.getServer().getPluginManager().getPlugins() ) commands.add( serverPlugin.getName() );
+            if( args[0].equals( "enable" ) && sender.hasPermission( "appm.commands.plugin.enable" ) ) for( Plugin serverPlugin : plugin.getServer().getPluginManager().getPlugins() ) if( !serverPlugin.isEnabled() ) commands.add( serverPlugin.getName() );
+            if( args[0].equals( "enable" ) && sender.hasPermission( "appm.commands.plugin.enable" ) && plugin.disabledPlugins.config.getStringList( "plugins" ).contains( "PluginManager" ) ) commands.add( "PluginManager" );
+            if( args[0].equals( "disable" ) && sender.hasPermission( "appm.commands.plugin.disable" ) ) for( Plugin serverPlugin : plugin.getServer().getPluginManager().getPlugins() ) if( serverPlugin.isEnabled() ) commands.add( serverPlugin.getName() );
             if( args[0].equals( "get" ) && sender.hasPermission( "appm.commands.plugin.get" ) ) for( Plugin serverPlugin : plugin.getServer().getPluginManager().getPlugins() ) commands.add( serverPlugin.getName() );
             StringUtil.copyPartialMatches( args[1], commands, completions );
         }
