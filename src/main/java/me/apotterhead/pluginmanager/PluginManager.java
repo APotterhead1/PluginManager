@@ -10,10 +10,12 @@ public final class PluginManager extends JavaPlugin {
 
     public DisabledPluginsFile disabledPlugins;
     public GroupsFile groups;
+    public PlayersFile players;
     @Override
     public void onEnable() {
         disabledPlugins = new DisabledPluginsFile( this );
         groups = new GroupsFile( this );
+        players = new PlayersFile( this );
 
         PluginCommand pluginCommand = new PluginCommand( this );
         Objects.requireNonNull( getCommand( "plugin" ) ).setExecutor( pluginCommand );

@@ -19,7 +19,7 @@ import org.bukkit.util.StringUtil;
 
 public class PluginCommand implements TabExecutor {
 
-    PluginManager plugin;
+    private final PluginManager plugin;
 
     public PluginCommand( PluginManager plugin ) {
         this.plugin = plugin;
