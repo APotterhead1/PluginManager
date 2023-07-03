@@ -121,6 +121,40 @@ public class GroupCommand implements TabExecutor {
             return true;
         }
 
+        if( args[0].equals( "setHierarchy" ) ) {
+            if( !sender.hasPermission( "appm.commands.group.setHierarchy" ) ) {
+                sender.sendMessage( CommandErrorMessage.INCORRECT.send( label, args, 0 ) );
+                return true;
+            }
+
+            if( args.length < 3 )  {
+                sender.sendMessage( CommandErrorMessage.INCOMPLETE.send( label, args ) );
+                return true;
+            }
+
+            if( args.length == 3 ) {
+                if( !plugin.groups.config.getStringList( "groups" ).contains( args[1] ) ) {
+                    sender.sendMessage( CommandErrorMessage.UNKNOWN.send( label, args, 1, "group" ) );
+                    return true;
+                }
+
+                try{
+                    Integer.parseInt( args[2] );
+                } catch( Exception e ) {
+                    sender.sendMessage( Component.text( "'" + args[2] + "' is not a number, too large, or too small" ).color( NamedTextColor.RED ) );
+                    return true;
+                }
+
+                plugin.groups.config.set( "group." + args[1] + ".hierarchyValue", Integer.parseInt( args[2] ) );
+                plugin.groups.save();
+                sender.sendMessage( Component.text( "The hierarchy value for '" + args[1] + "' has been set to " + args[2] ) );
+                return true;
+            }
+
+            sender.sendMessage( CommandErrorMessage.EXTRA_ARGUMENT.send( label, args, 3 ) );
+            return true;
+        }
+
         sender.sendMessage( CommandErrorMessage.INCORRECT.send( label, args, 0 ) );
         return true;
     }
