@@ -14,6 +14,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.event.ClickEvent;
+import org.bukkit.OfflinePlayer;
 
 public class GroupCommand implements TabExecutor {
 
@@ -152,6 +153,57 @@ public class GroupCommand implements TabExecutor {
             }
 
             sender.sendMessage( CommandErrorMessage.EXTRA_ARGUMENT.send( label, args, 3 ) );
+            return true;
+        }
+
+        if( args[0].equals( "join" ) ) {
+            if( !sender.hasPermission( "appm.commands.group.join.name" ) && !sender.hasPermission( "appm.commands.group.join.uuid" ) ) {
+                sender.sendMessage( CommandErrorMessage.INCORRECT.send( label, args, 0 ) );
+                return true;
+            }
+
+            if( args.length < 4 ) {
+                sender.sendMessage( CommandErrorMessage.INCOMPLETE.send( label, args ) );
+                return true;
+            }
+
+            if( args.length == 4 ) {
+                if( !( args[2].equals( "name" ) && sender.hasPermission( "appm.commands.group.join.name" ) ) && !( args[2].equals( "uuid" ) && sender.hasPermission( "appm.commands.group.join.uuid" ) ) ) {
+                    sender.sendMessage( CommandErrorMessage.INCORRECT.send( label, args, 2 ) );
+                    return true;
+                }
+
+                if( !plugin.groups.config.getStringList( "groups" ).contains( args[1] ) ) {
+                    sender.sendMessage( CommandErrorMessage.UNKNOWN.send( label, args, 1, "group" ) );
+                    return true;
+                }
+
+                String uuid = null;
+                OfflinePlayer[] players = plugin.getServer().getOfflinePlayers();
+
+                if( args[2].equals( "name") ) {
+                    for( OfflinePlayer player : players ) {
+                        assert player.getName() != null;
+                        if( player.getName().equals( args[3] ) ) uuid = player.getUniqueId().toString();
+                    }
+                }
+
+                if( args[2].equals( "uuid" ) ) {
+                    for( OfflinePlayer player : players )
+                        if( player.getUniqueId().toString().equalsIgnoreCase( args[3] ) ) uuid = player.getUniqueId().toString();
+                }
+
+                if( uuid == null ) {
+                    sender.sendMessage( CommandErrorMessage.UNKNOWN.send( label, args, 3, "player" ) );
+                    return true;
+                }
+
+
+
+                return true;
+            }
+
+            sender.sendMessage( CommandErrorMessage.EXTRA_ARGUMENT.send( label, args, 4 ) );
             return true;
         }
 
