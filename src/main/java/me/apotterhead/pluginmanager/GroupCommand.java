@@ -1,5 +1,5 @@
 // APotterhead
-// 23062023-02072023
+// 23062023-03072023
 
 package me.apotterhead.pluginmanager;
 
@@ -144,7 +144,7 @@ public class GroupCommand implements TabExecutor {
                 try{
                     Integer.parseInt( args[2] );
                 } catch( Exception e ) {
-                    sender.sendMessage( Component.text( "'" + args[2] + "' is not a number, too large, or too small" ).color( NamedTextColor.RED ) );
+                    sender.sendMessage( Component.text( "'" + args[2] + "' is not a number, is too large, or is too small" ).color( NamedTextColor.RED ) );
                     return true;
                 }
 
@@ -164,7 +164,7 @@ public class GroupCommand implements TabExecutor {
                     return true;
                 }
 
-                sender.sendMessage( Component.text( "The hierarchy value for '" + args[1] + "' has been set to " + args[2] ) );
+                sender.sendMessage( Component.text( "The hierarchy value for '" + args[1] + "' has been set to " + args[2] ).color( NamedTextColor.GREEN ) );
                 return true;
             }
 
