@@ -1,5 +1,5 @@
 // APotterhead
-// 23062023-03072023
+// 23062023-11072023
 
 package me.apotterhead.pluginmanager;
 
@@ -17,6 +17,7 @@ import net.kyori.adventure.text.event.ClickEvent;
 import org.bukkit.OfflinePlayer;
 import java.util.UUID;
 import me.apotterhead.pluginmanager.ReloadPermissions.ReloadType;
+import java.util.logging.Level;
 
 public class GroupCommand implements TabExecutor {
 
@@ -79,6 +80,12 @@ public class GroupCommand implements TabExecutor {
                     sender.sendMessage( CommandErrorMessage.UNKNOWN.send( label, args, 1, "group" ) );
                     return true;
                 }
+
+                if( plugin.groups.config.getStringList( "group." + args[1] + ".players" ).size() != 0 ) {
+                    sender.sendMessage( Component.text( "Group '" + args[1] + "' is not empty. Groups must be empty in order to be deleted" ).color( NamedTextColor.RED ) );
+                    return true;
+                }
+
                 groups.remove( args[1] );
                 plugin.groups.config.set( "groups", groups );
                 plugin.groups.config.set( "group." + args[1], null );
@@ -156,6 +163,7 @@ public class GroupCommand implements TabExecutor {
                 Component reloadMessage = ReloadPermissions.reload( ReloadType.GROUP, args[1], plugin );
                 if( reloadMessage != null ) {
                     sender.sendMessage( reloadMessage );
+                    plugin.getLogger().log( Level.WARNING, ( (TextComponent) reloadMessage ).content() );
 
                     plugin.groups.config.set( "group." + args[1] + ".hierarchyValue", oldHierarchyValue );
                     plugin.groups.save();
@@ -197,7 +205,7 @@ public class GroupCommand implements TabExecutor {
                 String uuid = null;
                 OfflinePlayer[] players = plugin.getServer().getOfflinePlayers();
 
-                if( args[2].equals( "name") ) {
+                if( args[2].equals( "name" ) ) {
                     for( OfflinePlayer player : players ) {
                         assert player.getName() != null;
                         if( player.getName().equals( args[3] ) ) {
@@ -221,10 +229,12 @@ public class GroupCommand implements TabExecutor {
                 }
 
                 List<String> groupPlayers = plugin.groups.config.getStringList( "group." + args[1] + ".players" );
+
                 if( groupPlayers.contains( uuid ) ) {
                     sender.sendMessage( Component.text( plugin.getServer().getOfflinePlayer( UUID.fromString( uuid ) ).getName() + "(" + uuid + ") is already a member of the group '" + args[1] + "'" ).color( NamedTextColor.RED ) );
                     return true;
                 }
+
                 groupPlayers.add( uuid );
                 plugin.groups.config.set( "group." + args[1] + ".players", groupPlayers );
                 plugin.groups.save();
@@ -234,9 +244,10 @@ public class GroupCommand implements TabExecutor {
                 plugin.players.config.set( uuid + ".groups", playerGroups );
                 plugin.players.save();
 
-                Component reloadMessage = ReloadPermissions.reload( ReloadType.PLAYER, args[3], plugin );
+                Component reloadMessage = ReloadPermissions.reload( ReloadType.PLAYER, uuid, plugin );
                 if( reloadMessage != null ) {
                     sender.sendMessage( reloadMessage );
+                    plugin.getLogger().log( Level.WARNING, ( (TextComponent) reloadMessage ).content() );
 
                     groupPlayers.remove( uuid );
                     plugin.groups.config.set( "group." + args[1] + ".players", groupPlayers );
@@ -246,11 +257,102 @@ public class GroupCommand implements TabExecutor {
                     plugin.players.config.set( uuid + ".groups", playerGroups );
                     plugin.players.save();
 
-                    ReloadPermissions.reload( ReloadType.PLAYER, args[3], plugin );
+                    ReloadPermissions.reload( ReloadType.PLAYER, uuid, plugin );
                     return true;
                 }
 
                 sender.sendMessage( Component.text( plugin.getServer().getOfflinePlayer( UUID.fromString( uuid ) ).getName() + "(" + uuid + ") has joined group '" + args[1] + "'" ).color( NamedTextColor.GREEN ) );
+                return true;
+            }
+
+            sender.sendMessage( CommandErrorMessage.EXTRA_ARGUMENT.send( label, args, 4 ) );
+            return true;
+        }
+
+        if( args[0].equals( "leave" ) ) {
+            if( !sender.hasPermission( "appm.commands.group.leave.name" ) && !sender.hasPermission( "appm.commands.group.leave.uuid" ) ) {
+                sender.sendMessage( CommandErrorMessage.INCORRECT.send( label,args, 0 ) );
+                return true;
+            }
+
+            if( args.length < 4 ) {
+                sender.sendMessage( CommandErrorMessage.INCOMPLETE.send( label, args ) );
+                return true;
+            }
+
+            if( args.length == 4 ) {
+                if( !( args[2].equals( "name" ) && sender.hasPermission( "appm.commands.group.leave.name" ) ) && !( args[2].equals( "uuid" ) && sender.hasPermission( "appm.commands.group.leave.uuid" ) ) ) {
+                    sender.sendMessage( CommandErrorMessage.INCORRECT.send( label, args, 2 ) );
+                    return true;
+                }
+
+                if( !plugin.groups.config.getStringList( "groups" ).contains( args[1] ) ) {
+                    sender.sendMessage( CommandErrorMessage.UNKNOWN.send( label, args, 1, "group" ) );
+                    return true;
+                }
+
+                String uuid = null;
+                OfflinePlayer[] players = plugin.getServer().getOfflinePlayers();
+
+                if( args[2].equals( "name" ) ) {
+                    for( OfflinePlayer player : players ) {
+                        assert player.getName() != null;
+                        if( player.getName().equals( args[3] ) ) {
+                            uuid = player.getUniqueId().toString();
+                            break;
+                        }
+                    }
+                }
+
+                if( args[2].equals( "uuid" ) ) {
+                    for( OfflinePlayer player : players ) {
+                        if( player.getUniqueId().toString().equalsIgnoreCase( args[3] ) ) {
+                            uuid = player.getUniqueId().toString();
+                            break;
+                        }
+                    }
+                }
+
+                if( uuid == null ) {
+                    sender.sendMessage( CommandErrorMessage.UNKNOWN.send( label, args, 3, "player" ) );
+                    return true;
+                }
+
+                List<String> groupPlayers = plugin.groups.config.getStringList( "group." + args[1] + ".players" );
+
+                if( !groupPlayers.contains( uuid ) ) {
+                    sender.sendMessage( Component.text( "Group '" + args[1] + "' does not contain " + plugin.getServer().getOfflinePlayer( UUID.fromString( uuid ) ).getName() + "(" + uuid + ")" ) );
+                    return true;
+                }
+
+                groupPlayers.remove( uuid );
+                plugin.groups.config.set( "group." + args[1] + ".players", groupPlayers );
+                plugin.groups.save();
+
+                List<String> playerGroups = plugin.players.config.getStringList( uuid + ".groups" );
+                playerGroups.remove( args[1] );
+                plugin.players.config.set( uuid + ".groups", playerGroups );
+                plugin.players.save();
+
+                Component reloadMessage = ReloadPermissions.reload( ReloadType.PLAYER, uuid, plugin );
+
+                if( reloadMessage != null ) {
+                    sender.sendMessage( reloadMessage );
+                    plugin.getLogger().log( Level.WARNING, ( (TextComponent) reloadMessage ).content() );
+
+                    groupPlayers.add( uuid );
+                    plugin.groups.config.set( "group." + args[1] + ".players", groupPlayers );
+                    plugin.groups.save();
+
+                    playerGroups.add( args[1] );
+                    plugin.players.config.set( uuid + ".groups", playerGroups );
+                    plugin.players.save();
+
+                    ReloadPermissions.reload( ReloadType.PLAYER, uuid, plugin );
+                    return true;
+                }
+
+                sender.sendMessage( Component.text( plugin.getServer().getOfflinePlayer( UUID.fromString( uuid ) ).getName() + "(" + uuid + ") has left group '" + args[1] + "'" ).color( NamedTextColor.GREEN ) );
                 return true;
             }
 
