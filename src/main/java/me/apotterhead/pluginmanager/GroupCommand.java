@@ -459,6 +459,7 @@ public class GroupCommand implements TabExecutor {
             }
 
             sender.sendMessage( CommandErrorMessage.EXTRA_ARGUMENT.send( label, args, 2 ) );
+            return true;
         }
 
         sender.sendMessage( CommandErrorMessage.INCORRECT.send( label, args, 0 ) );
