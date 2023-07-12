@@ -407,7 +407,7 @@ public class GroupCommand implements TabExecutor {
                     return true;
                 }
 
-                sender.sendMessage( Component.text( players.size() + " players have been removed from group '" + args[1] + "'" ).color( NamedTextColor.GREEN ) );
+                sender.sendMessage( Component.text( players.size() + ( players.size() == 1 ? " player has" : " players have" ) + " been removed from group '" + args[1] + "'" ).color( NamedTextColor.GREEN ) );
                 return true;
             }
 
