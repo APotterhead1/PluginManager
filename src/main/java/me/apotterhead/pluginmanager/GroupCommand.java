@@ -6,6 +6,7 @@ package me.apotterhead.pluginmanager;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+
 import java.util.List;
 import java.util.ArrayList;
 import org.jetbrains.annotations.NotNull;
@@ -357,6 +358,60 @@ public class GroupCommand implements TabExecutor {
             }
 
             sender.sendMessage( CommandErrorMessage.EXTRA_ARGUMENT.send( label, args, 4 ) );
+            return true;
+        }
+
+        if( args[0].equals( "empty" ) ) {
+            if( !sender.hasPermission( "appm.commands.group.empty" ) ) {
+                sender.sendMessage( CommandErrorMessage.INCORRECT.send( label, args, 0 ) );
+                return true;
+            }
+
+            if( args.length < 2 ) {
+                sender.sendMessage( CommandErrorMessage.INCOMPLETE.send( label, args ) );
+                return true;
+            }
+
+            if( args.length == 2 ) {
+                if( !plugin.groups.config.getStringList( "groups" ).contains( args[1] ) ) {
+                    sender.sendMessage( CommandErrorMessage.UNKNOWN.send( label, args, 1, "group" ) );
+                    return true;
+                }
+
+                List<String> players = plugin.groups.config.getStringList( "group." + args[1] + ".players" );
+                for( String player : players ) {
+                    List<String> groups = plugin.players.config.getStringList( player + ".groups" );
+                    groups.remove( args[1] );
+                    plugin.players.config.set( player + ".groups", groups );
+                    plugin.players.save();
+                }
+
+                plugin.groups.config.set( "group." + args[1] + ".players", null );
+                plugin.groups.save();
+
+                Component reloadMessage = ReloadPermissions.reload( ReloadType.GROUP, args[1], plugin );
+                if( reloadMessage != null ) {
+                    sender.sendMessage( reloadMessage );
+                    plugin.getLogger().log( Level.WARNING, ( (TextComponent) reloadMessage ).content() );
+
+                    for( String player : players ) {
+                        List<String> groups = plugin.players.config.getStringList( player + ".groups" );
+                        groups.add( args[1] );
+                        plugin.groups.config.set( player + ".groups", groups );
+                        plugin.groups.save();
+                    }
+                    plugin.groups.config.set( "group." + args[1] + ".players", players );
+                    plugin.groups.save();
+
+                    ReloadPermissions.reload( ReloadType.GROUP, args[1], plugin );
+                    return true;
+                }
+
+                sender.sendMessage( Component.text( players.size() + " players have been removed from group '" + args[1] + "'" ).color( NamedTextColor.GREEN ) );
+                return true;
+            }
+
+            sender.sendMessage( CommandErrorMessage.EXTRA_ARGUMENT.send( label, args, 2 ) );
             return true;
         }
 

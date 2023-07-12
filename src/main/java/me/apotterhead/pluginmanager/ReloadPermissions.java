@@ -8,7 +8,7 @@ import net.kyori.adventure.text.Component;
 
 public class ReloadPermissions {
 
-    enum ReloadType {
+    public enum ReloadType {
         PLAYER,
         GROUP
     }
