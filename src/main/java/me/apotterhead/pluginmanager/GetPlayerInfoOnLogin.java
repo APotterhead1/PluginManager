@@ -32,12 +32,12 @@ public class GetPlayerInfoOnLogin implements Listener {
 
             List<String> groupPlayers = plugin.groups.config.getStringList( "group." + group + ".players" );
             groupPlayers.add( uuid );
-            plugin.groups.config.set( "group" + group + ".players", groupPlayers );
+            plugin.groups.config.set( "group." + group + ".players", groupPlayers );
             plugin.groups.save();
 
             List<String> playerGroups = plugin.players.config.getStringList( uuid + ".groups" );
             playerGroups.add( group );
-            plugin.players.config.set( uuid + ".players", playerGroups );
+            plugin.players.config.set( uuid + ".groups", playerGroups );
             plugin.players.save();
         }
 
