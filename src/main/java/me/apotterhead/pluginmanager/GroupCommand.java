@@ -105,20 +105,20 @@ public class GroupCommand implements TabExecutor {
                 return true;
             }
             if( args.length == 1 ) {
-                TextComponent component = Component.text( "Groups: " ).color( NamedTextColor.GOLD );
+                Component component = Component.text( "Groups: " ).color( NamedTextColor.GOLD );
                 List<String> groups = plugin.groups.config.getStringList( "groups" );
                 if( groups.size() == 0 ) {
                     sender.sendMessage( component );
                     return true;
                 }
                 if( sender.hasPermission( "appm.commands.group.get" ) ) {
-                    component = component.append( Component.text( "\n[" + groups.get( 0 ) + "]" ).color( NamedTextColor.AQUA ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/group get " + groups.get( 0 ) ) ) );
+                    component = component.appendNewline().append( Component.text( "[" + groups.get( 0 ) + "]" ).color( NamedTextColor.AQUA ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/group get " + groups.get( 0 ) ) ) );
                     for( int i = 1; i < groups.size(); i++ ) {
                         component = component.append( Component.text( "," ).color( NamedTextColor.WHITE ) );
                         component = component.append( Component.text( "[" + groups.get( i ) + "]" ).color( NamedTextColor.AQUA ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/group get " + groups.get( i ) ) ) );
                     }
                 } else {
-                    component = component.append( Component.text( "\n[" + groups.get( 0 ) + "]" ).color( NamedTextColor.AQUA ) );
+                    component = component.appendNewline().append( Component.text( "[" + groups.get( 0 ) + "]" ).color( NamedTextColor.AQUA ) );
                     for( int i = 1; i < groups.size(); i++ ) {
                         component = component.append( Component.text( "," ).color( NamedTextColor.WHITE ) );
                         component = component.append( Component.text( "[" + groups.get( i ) + "]" ).color( NamedTextColor.AQUA ) );
@@ -413,6 +413,52 @@ public class GroupCommand implements TabExecutor {
 
             sender.sendMessage( CommandErrorMessage.EXTRA_ARGUMENT.send( label, args, 2 ) );
             return true;
+        }
+
+        if( args[0].equals( "get" ) ) {
+            if( !sender.hasPermission( "appm.commands.group.get" ) ) {
+                sender.sendMessage( CommandErrorMessage.INCORRECT.send( label, args, 0 ) );
+                return true;
+            }
+
+            if( args.length < 2 ) {
+                sender.sendMessage( CommandErrorMessage.INCOMPLETE.send( label, args ) );
+                return true;
+            }
+
+            if( args.length == 2 ) {
+                if( !plugin.groups.config.getStringList( "groups" ).contains( args[1] ) ) {
+                    sender.sendMessage( CommandErrorMessage.UNKNOWN.send( label, args, 1, "group" ) );
+                    return true;
+                }
+
+                Component component = Component.text( args[1] + ":" ).color( NamedTextColor.GOLD ).appendNewline();
+                component = component.append( Component.text( "Hierarchy Value:" ).color( NamedTextColor.AQUA ) ).appendSpace();
+                component = component.append( Component.text( Integer.toString( plugin.groups.config.getInt( "group." + args[1] + ".hierarchyValue" ) ) ).color( NamedTextColor.WHITE ) );
+                List<String> players = plugin.groups.config.getStringList( "group." + args[1] + ".players" );
+
+                if( players.size() > 0 ) {
+                    component = component.appendNewline().append( Component.text( "Players:" ).color( NamedTextColor.AQUA ) ).appendSpace();
+                    if( sender.hasPermission( "appm.commands.player.get.uuid" ) ) {
+                        component = component.append( Component.text( plugin.getServer().getOfflinePlayer( UUID.fromString( players.get( 0 ) ) ).getName() + "(" + players.get( 0 ) + ")" ).color( NamedTextColor.WHITE ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get uuid " + players.get( 0 ) ) ) );
+                        for (int i = 1; i < players.size(); i++)
+                            component = component.append( Component.text( ", " + plugin.getServer().getOfflinePlayer( UUID.fromString( players.get( 0 ) ) ).getName() + "(" + players.get( i ) + ")" ).color( NamedTextColor.WHITE ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get uuid " + players.get( 0 ) ) ) );
+                    } else if( sender.hasPermission( "appm.commands.player.get.name" ) ) {
+                        component = component.append( Component.text( plugin.getServer().getOfflinePlayer( UUID.fromString( players.get( 0 ) ) ).getName() + "(" + players.get( 0 ) + ")" ).color( NamedTextColor.WHITE ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get name " + plugin.getServer().getOfflinePlayer( UUID.fromString( players.get( 0 ) ) ).getName() ) ) );
+                        for (int i = 1; i < players.size(); i++)
+                            component = component.append( Component.text( ", " + plugin.getServer().getOfflinePlayer( UUID.fromString( players.get( 0 ) ) ).getName() + "(" + players.get( i ) + ")" ).color( NamedTextColor.WHITE ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get name " + plugin.getServer().getOfflinePlayer( UUID.fromString( players.get( 0 ) ) ).getName() ) ) );
+                    } else {
+                        component = component.append( Component.text( plugin.getServer().getOfflinePlayer( UUID.fromString( players.get( 0 ) ) ).getName() + "(" + players.get( 0 ) + ")" ).color( NamedTextColor.WHITE ) );
+                        for (int i = 1; i < players.size(); i++)
+                            component = component.append( Component.text( ", " + plugin.getServer().getOfflinePlayer( UUID.fromString( players.get( 0 ) ) ).getName() + "(" + players.get( i ) + ")" ).color( NamedTextColor.WHITE ) );
+                    }
+                }
+
+                sender.sendMessage( component );
+                return true;
+            }
+
+            sender.sendMessage( CommandErrorMessage.EXTRA_ARGUMENT.send( label, args, 2 ) );
         }
 
         sender.sendMessage( CommandErrorMessage.INCORRECT.send( label, args, 0 ) );
