@@ -15,6 +15,7 @@ import org.jetbrains.annotations.NotNull;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.util.StringUtil;
+import java.util.Collections;
 
 public class PluginCommand implements TabExecutor {
 
@@ -236,6 +237,7 @@ public class PluginCommand implements TabExecutor {
             StringUtil.copyPartialMatches( args[1], commands, completions );
         }
 
+        Collections.sort( completions );
         return completions;
     }
 }
