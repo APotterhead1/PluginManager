@@ -27,6 +27,20 @@ public class GetPlayerInfoOnLogin implements Listener {
         plugin.permissions.put( player, player.addAttachment( plugin ) );
         ReloadPermissions.reload( ReloadType.PLAYER, uuid, plugin );
 
+        if( !event.getPlayer().hasPlayedBefore() && plugin.groups.config.contains( "defaultGroup" ) ) {
+            String group = plugin.groups.config.getString( "defaultGroup" );
+
+            List<String> groupPlayers = plugin.groups.config.getStringList( "group." + group + ".players" );
+            groupPlayers.add( uuid );
+            plugin.groups.config.set( "group" + group + ".players", groupPlayers );
+            plugin.groups.save();
+
+            List<String> playerGroups = plugin.players.config.getStringList( uuid + ".groups" );
+            playerGroups.add( group );
+            plugin.players.config.set( uuid + ".players", playerGroups );
+            plugin.players.save();
+        }
+
         if( plugin.players.config.contains( uuid + ".lastName" ) && !Objects.requireNonNull( plugin.players.config.getString( uuid + ".lastName" ) ).equals( player.getName() ) ) {
             List<String> names = plugin.players.config.getStringList( uuid + ".pastNames" );
             names.add( plugin.players.config.getString( uuid + ".lastName" ) );
