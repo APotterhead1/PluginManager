@@ -19,6 +19,7 @@ import org.bukkit.OfflinePlayer;
 import java.util.UUID;
 import me.apotterhead.pluginmanager.ReloadPermissions.ReloadType;
 import java.util.logging.Level;
+import java.util.Objects;
 
 public class GroupCommand implements TabExecutor {
 
@@ -87,6 +88,8 @@ public class GroupCommand implements TabExecutor {
                     return true;
                 }
 
+                if( plugin.groups.config.contains( "defaultGroup" ) && Objects.requireNonNull( plugin.groups.config.getString( "defaultGroup" ) ).equals( args[1] ) )
+                    plugin.groups.config.set( "defaultGroup", null );
                 groups.remove( args[1] );
                 plugin.groups.config.set( "groups", groups );
                 plugin.groups.config.set( "group." + args[1], null );
@@ -433,6 +436,8 @@ public class GroupCommand implements TabExecutor {
                 }
 
                 Component component = Component.text( args[1] + ":" ).color( NamedTextColor.GOLD ).appendNewline();
+                if( plugin.groups.config.contains( "defaultGroup" ) && Objects.requireNonNull( plugin.groups.config.getString( "defaultGroup" ) ).equals( args[1] ) )
+                    component.append( Component.text( "Default Group" ).color( NamedTextColor.GREEN ) ).appendNewline();
                 component = component.append( Component.text( "Hierarchy Value:" ).color( NamedTextColor.AQUA ) ).appendSpace();
                 component = component.append( Component.text( Integer.toString( plugin.groups.config.getInt( "group." + args[1] + ".hierarchyValue" ) ) ).color( NamedTextColor.WHITE ) );
                 List<String> players = plugin.groups.config.getStringList( "group." + args[1] + ".players" );
@@ -455,6 +460,34 @@ public class GroupCommand implements TabExecutor {
                 }
 
                 sender.sendMessage( component );
+                return true;
+            }
+
+            sender.sendMessage( CommandErrorMessage.EXTRA_ARGUMENT.send( label, args, 2 ) );
+            return true;
+        }
+
+        if( args[0].equals( "setDefaultGroup" ) ) {
+            if( !sender.hasPermission( "appm.commands.group.setDefaultGroup" ) ) {
+                sender.sendMessage( CommandErrorMessage.INCORRECT.send( label, args, 0 ) );
+                return true;
+            }
+
+            if( args.length < 2 ) {
+                sender.sendMessage( CommandErrorMessage.INCOMPLETE.send( label, args ) );
+                return true;
+            }
+
+            if( args.length == 2 ) {
+                if( !plugin.groups.config.getStringList( "groups" ).contains( args[1] ) ) {
+                    sender.sendMessage( CommandErrorMessage.UNKNOWN.send( label, args, 1, "group" ) );
+                    return true;
+                }
+
+                plugin.groups.config.set( "defaultGroup", args[1] );
+                plugin.groups.save();
+
+                sender.sendMessage( Component.text( "Group '" + args[1] + "' has been made the default group" ).color( NamedTextColor.GREEN ) );
                 return true;
             }
 
