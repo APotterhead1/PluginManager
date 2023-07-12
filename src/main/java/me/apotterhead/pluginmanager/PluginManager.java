@@ -34,10 +34,13 @@ public final class PluginManager extends JavaPlugin {
         Objects.requireNonNull( getCommand( "group" ) ).setTabCompleter( groupCommand );
 
         getServer().getPluginManager().registerEvents( new DisablePluginsOnLoad( this ), this );
+        getServer().getPluginManager().registerEvents( new GetPlayerInfoOnLogin( this ), this );
+        getServer().getPluginManager().registerEvents( new RemoveAttachmentOnQuit( this ), this );
     }
 
     public void onDisable() {
         for( Player player : permissions.keySet() ) player.removeAttachment( permissions.get( player ) );
+        permissions.clear();
     }
 
 }
