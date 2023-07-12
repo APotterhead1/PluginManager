@@ -445,7 +445,8 @@ public class GroupCommand implements TabExecutor {
                 List<String> players = plugin.groups.config.getStringList( "group." + args[1] + ".players" );
 
                 if( players.size() > 0 ) {
-                    component = component.appendNewline().append( Component.text( "Players:" ).color( NamedTextColor.AQUA ) ).appendSpace();
+                    if( players.size() == 1 ) component = component.appendNewline().append( Component.text( "1 Player:" ).color( NamedTextColor.AQUA ) ).appendSpace();
+                    else component = component.appendNewline().append( Component.text( players.size() + " Players:" ).color( NamedTextColor.AQUA ) ).appendSpace();
                     if( sender.hasPermission( "appm.commands.player.get.uuid" ) ) {
                         component = component.append( Component.text( plugin.getServer().getOfflinePlayer( UUID.fromString( players.get( 0 ) ) ).getName() + "(" + players.get( 0 ) + ")" ).color( NamedTextColor.WHITE ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get uuid " + players.get( 0 ) ) ) );
                         for (int i = 1; i < players.size(); i++)
@@ -521,27 +522,27 @@ public class GroupCommand implements TabExecutor {
         if( args.length == 2 ) {
             if( args[0].equals( "delete" ) && sender.hasPermission( "appm.commands.group.delete" ) ) for( String group : plugin.groups.config.getStringList( "groups" ) ) if( plugin.groups.config.getStringList( "group." + group + ".players" ).size() == 0 ) commands.add( group );
             if( args[0].equals( "setHierarchy" ) && sender.hasPermission( "appm.commands.group.setHierarchy" ) ) commands.addAll( plugin.groups.config.getStringList( "groups" ) );
-            if( args[0].equals( "join" ) && ( sender.hasPermission( "appm.commands.group.join.name" ) || sender.hasPermission( "appm.commands.group.join.uuid" ) ) ) commands.addAll( plugin.groups.config.getStringList( "groups" ) );
-            if( args[0].equals( "leave" ) && ( sender.hasPermission( "appm.commands.group.leave.name" ) || sender.hasPermission( "appm.commands.group.leave" ) ) ) commands.addAll( plugin.groups.config.getStringList( "groups" ) );
-            if( args[0].equals( "empty" ) && sender.hasPermission( "appm.commands.group.empty" ) ) commands.addAll( plugin.groups.config.getStringList( "groups" ) );
+            if( args[0].equals( "join" ) && ( sender.hasPermission( "appm.commands.group.join.name" ) || sender.hasPermission( "appm.commands.group.join.uuid" ) ) ) for( String group : plugin.groups.config.getStringList( "groups" ) ) if( plugin.groups.config.getStringList( "group." + group + ".players").size() != plugin.getServer().getOfflinePlayers().length ) commands.add( group );
+            if( args[0].equals( "leave" ) && ( sender.hasPermission( "appm.commands.group.leave.name" ) || sender.hasPermission( "appm.commands.group.leave" ) ) ) for( String group : plugin.groups.config.getStringList( "groups" ) ) if( plugin.groups.config.getStringList( "group." + group + ".players" ).size() != 0 ) commands.add( group );
+            if( args[0].equals( "empty" ) && sender.hasPermission( "appm.commands.group.empty" ) ) for( String group : plugin.groups.config.getStringList( "groups" ) ) if( plugin.groups.config.getStringList( "group." + group + ".players" ).size() != 0 ) commands.add( group );
             if( args[0].equals( "get" ) && sender.hasPermission( "appm.commands.group.get" ) ) commands.addAll( plugin.groups.config.getStringList( "groups" ) );
             if( args[0].equals( "setDefaultGroup" ) && sender.hasPermission( "appm.commands.group.setDefaultGroup" ) ) for( String group : plugin.groups.config.getStringList( "groups" ) ) if( !plugin.groups.config.contains( "defaultGroup" ) || !Objects.requireNonNull( plugin.groups.config.getString( "defaultGroup" ) ).equals( group ) ) commands.add( group );
             StringUtil.copyPartialMatches( args[1], commands, completions );
         }
 
         if( args.length == 3 ) {
-            if( args[0].equals( "join" ) && plugin.groups.config.getStringList( "groups" ).contains( args[1] ) && sender.hasPermission( "appm.commands.group.join.name" ) ) commands.add( "name" );
-            if( args[0].equals( "join" ) && plugin.groups.config.getStringList( "groups" ).contains( args[1] ) && sender.hasPermission( "appm.commands.group.join.uuid" ) ) commands.add( "uuid" );
-            if( args[0].equals( "leave" ) && plugin.groups.config.getStringList( "groups" ).contains( args[1] ) && sender.hasPermission( "appm.commands.group.leave.name" ) ) commands.add( "name" );
-            if( args[0].equals( "leave" ) && plugin.groups.config.getStringList( "groups" ).contains( args[1] ) && sender.hasPermission( "appm.commands.group.leave.uuid" ) ) commands.add( "uuid" );
+            if( args[0].equals( "join" ) && sender.hasPermission( "appm.commands.group.join.name" ) ) commands.add( "name" );
+            if( args[0].equals( "join" ) && sender.hasPermission( "appm.commands.group.join.uuid" ) ) commands.add( "uuid" );
+            if( args[0].equals( "leave" ) && sender.hasPermission( "appm.commands.group.leave.name" ) ) commands.add( "name" );
+            if( args[0].equals( "leave" ) && sender.hasPermission( "appm.commands.group.leave.uuid" ) ) commands.add( "uuid" );
             StringUtil.copyPartialMatches( args[2], commands, completions );
         }
 
         if( args.length == 4 ) {
-            if( args[0].equals( "join" ) && plugin.groups.config.getStringList( "groups" ).contains( args[1] ) && args[2].equals( "name" ) && sender.hasPermission( "appm.commands.group.join.name" ) ) for( OfflinePlayer player : plugin.getServer().getOfflinePlayers() ) if( !plugin.groups.config.getStringList( "group." + args[1] + ".players" ).contains( player.getUniqueId().toString() ) ) commands.add( player.getName() );
-            if( args[0].equals( "join" ) && plugin.groups.config.getStringList( "groups" ).contains( args[1] ) && args[2].equals( "uuid" ) && sender.hasPermission( "appm.commands.group.join.uuid" ) ) for( OfflinePlayer player : plugin.getServer().getOfflinePlayers() ) if( !plugin.groups.config.getStringList( "group." + args[1] + ".players" ).contains( player.getUniqueId().toString() ) ) commands.add( player.getUniqueId().toString() );
-            if( args[0].equals( "leave" ) && plugin.groups.config.getStringList( "groups" ).contains( args[1] ) && args[2].equals( "name" ) && sender.hasPermission( "appm.commands.group.leave.name" ) ) for( String player : plugin.groups.config.getStringList( "group." + args[1] + ".players" ) ) commands.add( plugin.getServer().getOfflinePlayer( UUID.fromString( player ) ).getName() );
-            if( args[0].equals( "leave" ) && plugin.groups.config.getStringList( "groups" ).contains( args[1] ) && args[2].equals( "uuid" ) && sender.hasPermission( "appm.commands.group.leave.uuid" ) ) commands.addAll( plugin.groups.config.getStringList( "group." + args[1] + ".players" ) );
+            if( args[0].equals( "join" ) && args[2].equals( "name" ) && sender.hasPermission( "appm.commands.group.join.name" ) ) for( OfflinePlayer player : plugin.getServer().getOfflinePlayers() ) if( !plugin.groups.config.getStringList( "group." + args[1] + ".players" ).contains( player.getUniqueId().toString() ) ) commands.add( player.getName() );
+            if( args[0].equals( "join" ) && args[2].equals( "uuid" ) && sender.hasPermission( "appm.commands.group.join.uuid" ) ) for( OfflinePlayer player : plugin.getServer().getOfflinePlayers() ) if( !plugin.groups.config.getStringList( "group." + args[1] + ".players" ).contains( player.getUniqueId().toString() ) ) commands.add( player.getUniqueId().toString() );
+            if( args[0].equals( "leave" ) && args[2].equals( "name" ) && sender.hasPermission( "appm.commands.group.leave.name" ) ) for( String player : plugin.groups.config.getStringList( "group." + args[1] + ".players" ) ) commands.add( plugin.getServer().getOfflinePlayer( UUID.fromString( player ) ).getName() );
+            if( args[0].equals( "leave" ) && args[2].equals( "uuid" ) && sender.hasPermission( "appm.commands.group.leave.uuid" ) ) commands.addAll( plugin.groups.config.getStringList( "group." + args[1] + ".players" ) );
             StringUtil.copyPartialMatches( args[3], commands, completions );
         }
 
