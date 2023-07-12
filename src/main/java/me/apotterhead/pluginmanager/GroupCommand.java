@@ -437,7 +437,7 @@ public class GroupCommand implements TabExecutor {
 
                 Component component = Component.text( args[1] + ":" ).color( NamedTextColor.GOLD ).appendNewline();
                 if( plugin.groups.config.contains( "defaultGroup" ) && Objects.requireNonNull( plugin.groups.config.getString( "defaultGroup" ) ).equals( args[1] ) )
-                    component.append( Component.text( "Default Group" ).color( NamedTextColor.GREEN ) ).appendNewline();
+                    component = component.append( Component.text( "Default Group" ).color( NamedTextColor.GREEN ) ).appendNewline();
                 component = component.append( Component.text( "Hierarchy Value:" ).color( NamedTextColor.AQUA ) ).appendSpace();
                 component = component.append( Component.text( Integer.toString( plugin.groups.config.getInt( "group." + args[1] + ".hierarchyValue" ) ) ).color( NamedTextColor.WHITE ) );
                 List<String> players = plugin.groups.config.getStringList( "group." + args[1] + ".players" );
