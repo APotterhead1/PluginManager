@@ -18,18 +18,25 @@ commands:
     usage: /group
     permission: appm.help-tab-complete.group
     permission-message: Unknown command. Type "/help" for help.
+  player:
+    description: Allows user to get information, ban, pardon, and setHierarchy values of players
+    usage: /player
+    permission: appm.help-tab-complete.player
+    permission-message: Unknown command. Type "/help" for help.
 permissions:
   appm:
     description: Allows access to all appm permissions
     default: op
     children:
       appm.commands: true
+      appm.help-tab-complete: true
   appm.commands:
     description: Allows access to all appm commands
     default: op
     children:
       appm.commands.plugin: true
       appm.commands.group: true
+      appm.commands.player: true
   appm.commands.plugin:
     description: Allows access to all appm plugin subcommands
     default: op
@@ -108,7 +115,7 @@ permissions:
     children:
       appm.help-tab-complete.group: true
   appm.commands.group.leave:
-    description: Allows access to all the appm leave subcommand
+    description: Allows access to all the appm leave subcommands
     default: op
     children:
       appm.commands.group.leave.name: true
@@ -138,15 +145,210 @@ permissions:
     default: op
     children:
       appm.help-tab-complete.group: true
+  appm.commands.player:
+    description: Allows access to all appm player subcommands
+    default: op
+    children:
+      appm.commands.player.get: true
+      appm.commands.player.ban: true
+      appm.commands.player.pardon: true
+      appm.commands.player.setHierarchy: true
+  appm.commands.player.get:
+    description: Allows access to all appm player get subcommands
+    default: op
+    children:
+      appm.commands.player.get.name: true
+      appm.commands.player.get.uuid: true
+      appm.commands.player.get.ip: true
+  appm.commands.player.get.name:
+    description: Allows access to the appm player get name subcommand
+    default: op
+    children:
+      appm.help-tab-complete.player: true
+  appm.commands.player.get.uuid:
+    description: Allows access to the appm player get uuid subcommand
+    default: op
+    children:
+      appm.help-tab-complete.player: true
+  appm.commands.player.get.ip:
+    description: Allows access to the appm player get ip subcommand
+    default: op
+    children:
+      appm.help-tab-complete.player: true
+  appm.commands.player.ban:
+    description: Allows access to all the appm player ban subcommands
+    default: op
+    children:
+      appm.commands.player.ban.name: true
+      appm.commands.player.ban.uuid: true
+      appm.commands.player.ban.ip: true
+      appm.commands.player.ban.minute: true
+      appm.commands.player.ban.hour: true
+      appm.commands.player.ban.day: true
+      appm.commands.player.ban.infinite: true
+  appm.commands.player.ban.name:
+    description: Allows access to all the appm player ban name subcommands
+    default: op
+    children:
+      appm.commands.player.ban.name.minute: true
+      appm.commands.player.ban.name.hour: true
+      appm.commands.player.ban.name.day: true
+      appm.commands.player.ban.name.infinite: true
+  appm.commands.player.ban.uuid:
+    description: Allows access to all the appm player ban uuid subcommands
+    default: op
+    children:
+      appm.commands.player.ban.uuid.minute: true
+      appm.commands.player.ban.uuid.hour: true
+      appm.commands.player.ban.uuid.day: true
+      appm.commands.player.ban.uuid.infinite: true
+  appm.commands.player.ban.ip:
+    description: Allows access to all the appm player ban ip subcommands
+    default: op
+    children:
+      appm.commands.player.ban.ip.minute: true
+      appm.commands.player.ban.ip.hour: true
+      appm.commands.player.ban.ip.day: true
+      appm.commands.player.ban.ip.infinite: true
+  appm.commands.player.ban.minute:
+    description: Allows access to all the appm player ban minute subcommands
+    default: op
+    children:
+      appm.commands.player.ban.name.minute: true
+      appm.commands.player.ban.uuid.minute: true
+      appm.commands.player.ban.ip.minute: true
+  appm.commands.player.ban.hour:
+    description: Allows access to all the appm player ban hour subcommands
+    default: op
+    children:
+      appm.commands.player.ban.name.hour: true
+      appm.commands.player.ban.uuid.hour: true
+      appm.commands.player.ban.ip.hour: true
+  appm.commands.player.ban.day:
+    description: Allows access to all the appm player ban day subcommands
+    default: op
+    children:
+      appm.commands.player.ban.name.day: true
+      appm.commands.player.ban.uuid.day: true
+      appm.commands.player.ban.ip.day: true
+  appm.commands.player.ban.infinite:
+    description: Allows access to all teh appm player ban infinite subcommands
+    default: op
+    children:
+      appm.commands.player.ban.name.infinite: true
+      appm.commands.player.ban.uuid.infinite: true
+      appm.commands.player.ban.ip.infinite: true
+  appm.commands.player.ban.name.minute:
+    description: Allows access to the appm player ban name minute subcommand
+    default: op
+    children:
+      appm.help-tab-complete.player: true
+  appm.commands.player.ban.name.hour:
+    description: Allows access to the appm player ban name hour subcommand
+    default: op
+    children:
+      appm.help-tab-complete.player: true
+  appm.commands.player.ban.name.day:
+    description: Allows access to the appm player ban name day subcommand
+    default: op
+    children:
+      appm.help-tab-complete.player: true
+  appm.commands.player.ban.name.infinite:
+    description: Allows access to the appm player ban name infinite subcommand
+    default: op
+    children:
+      appm.help-tab-complete.player: true
+  appm.commands.player.ban.uuid.minute:
+    description: Allows access to the appm player ban uuid minute subcommand
+    default: op
+    children:
+      appm.help-tab-complete.player: true
+  appm.commands.player.ban.uuid.hour:
+    description: Allows access to the appm player ban uuid hour subcommand
+    default: op
+    children:
+      appm.help-tab-complete.player: true
+  appm.commands.player.ban.uuid.day:
+    description: Allows access to the appm player ban uuid day subcommand
+    default: op
+    children:
+      appm.help-tab-complete.player: true
+  appm.commands.player.ban.uuid.infinite:
+    description: Allows access to the appm player ban uuid infinite subcommand
+    default: op
+    children:
+      appm.help-tab-complete.player: true
+  appm.commands.player.ban.ip.minute:
+    description: Allows access to the appm player ban ip minute subcommand
+    default: op
+    children:
+      appm.help-tab-complete.player: true
+  appm.commands.player.ban.ip.hour:
+    description: Allows access to the appm player ban ip hour subcommand
+    default: op
+    children:
+      appm.help-tab-complete.player: true
+  appm.commands.player.ban.ip.day:
+    description: Allows access to the appm player ban ip day subcommand
+    default: op
+    children:
+      appm.help-tab-complete.player: true
+  appm.commands.player.ban.ip.infinite:
+    description: Allows access to the appm player ban ip infinite subcommand
+    default: op
+    children:
+      appm.help-tab-complete.player: true
+  appm.commands.player.pardon:
+    description: Allows access to all appm player pardon subcommands
+    default: op
+    children:
+      appm.commands.player.pardon.name: true
+      appm.commands.player.pardon.uuid: true
+      appm.commands.player.pardon.ip: true
+  appm.commands.player.pardon.name:
+    description: Allows access to the appm player pardon name subcommand
+    default: op
+    children:
+      appm.help-tab-complete.player: true
+  appm.commands.player.pardon.uuid:
+    description: Allows access to the appm player pardon uuid subcommand
+    default: op
+    children:
+      appm.help-tab-complete.player: true
+  appm.commands.player.pardon.ip:
+    description: Allows access to the appm player pardon ip subcommand
+    default: op
+    children:
+      appm.help-tab-complete.player: true
+  appm.commands.player.setHierarchy:
+    description: Allows access to all appm player setHierarchy subcommands
+    default: op
+    children:
+      appm.commands.player.setHierarchy.name: true
+      appm.commands.player.setHierarchy.uuid: true
+  appm.commands.player.setHierarchy.name:
+    description: Allows access to the appm player setHierarchy name subcommand
+    default: op
+    children:
+      appm.help-tab-complete.player: true
+  appm.commands.player.setHierarchy.uuid:
+    description: Allows access to the appm player setHierarchy uuid subcommand
+    default: op
+    children:
+      appm.help-tab-complete.player: true
   appm.help-tab-complete:
     description: Puts all appm commands on the help page and tab complete
     default: op
     children:
       appm.help-tab-complete.plugin: true
       appm.help-tab-complete.group: true
+      appm.help-tab-complete.player: true
   appm.help-tab-complete.plugin:
     description: Puts the appm plugin command on the help page and tab complete
     default: true
   appm.help-tab-complete.group:
     description: Puts the appm group command on the help page and tab complete
+    default: op
+  appm.help-tab-complete.player:
+    description: Puts the appm player command on the help page and tab complete
     default: op
