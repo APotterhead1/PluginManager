@@ -17,7 +17,7 @@ public class RemoveAttachmentOnQuit implements Listener {
 
     @EventHandler
     public void onQuit( PlayerQuitEvent event ) {
-        event.getPlayer().removeAttachment( plugin.permissions.get( event.getPlayer() ) );
-        plugin.permissions.remove( event.getPlayer() );
+        event.getPlayer().removeAttachment( plugin.attachments.get( event.getPlayer() ) );
+        plugin.attachments.remove( event.getPlayer() );
     }
 }

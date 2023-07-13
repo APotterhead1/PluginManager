@@ -15,11 +15,11 @@ public final class PluginManager extends JavaPlugin {
     public DisabledPluginsFile disabledPlugins;
     public GroupsFile groups;
     public PlayersFile players;
-    public Map<Player, PermissionAttachment> permissions;
+    public Map<Player, PermissionAttachment> attachments;
     @Override
     public void onEnable() {
-        permissions = new HashMap<>();
-        for( Player player : getServer().getOnlinePlayers() ) permissions.put( player, player.addAttachment( this ) );
+        attachments = new HashMap<>();
+        for( Player player : getServer().getOnlinePlayers() ) attachments.put( player, player.addAttachment( this ) );
 
         disabledPlugins = new DisabledPluginsFile( this );
         groups = new GroupsFile( this );
@@ -33,14 +33,18 @@ public final class PluginManager extends JavaPlugin {
         Objects.requireNonNull( getCommand( "group" ) ).setExecutor( groupCommand );
         Objects.requireNonNull( getCommand( "group" ) ).setTabCompleter( groupCommand );
 
+        PlayerCommand playerCommand = new PlayerCommand();
+        Objects.requireNonNull( getCommand( "player" ) ).setExecutor( playerCommand );
+        Objects.requireNonNull( getCommand( "player" ) ).setTabCompleter( playerCommand );
+
         getServer().getPluginManager().registerEvents( new DisablePluginsOnLoad( this ), this );
         getServer().getPluginManager().registerEvents( new GetPlayerInfoOnLogin( this ), this );
         getServer().getPluginManager().registerEvents( new RemoveAttachmentOnQuit( this ), this );
     }
 
     public void onDisable() {
-        for( Player player : permissions.keySet() ) player.removeAttachment( permissions.get( player ) );
-        permissions.clear();
+        for( Player player : attachments.keySet() ) player.removeAttachment( attachments.get( player ) );
+        attachments.clear();
     }
 
 }

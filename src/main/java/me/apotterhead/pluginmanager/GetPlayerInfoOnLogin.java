@@ -24,7 +24,7 @@ public class GetPlayerInfoOnLogin implements Listener {
         Player player = event.getPlayer();
         String uuid = player.getUniqueId().toString();
 
-        plugin.permissions.put( player, player.addAttachment( plugin ) );
+        plugin.attachments.put( player, player.addAttachment( plugin ) );
         ReloadPermissions.reload( ReloadType.PLAYER, uuid, plugin );
 
         if( !event.getPlayer().hasPlayedBefore() && plugin.groups.config.contains( "defaultGroup" ) ) {
