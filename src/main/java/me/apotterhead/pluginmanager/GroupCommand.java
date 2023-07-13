@@ -157,7 +157,7 @@ public class GroupCommand implements TabExecutor {
                 try{
                     Integer.parseInt( args[2] );
                 } catch( Exception e ) {
-                    sender.sendMessage( Component.text( "'" + args[2] + "' is not a number, is too large, or is too small" ).color( NamedTextColor.RED ) );
+                    sender.sendMessage( Component.text( "'" + args[2] + "' is not a whole number, is too large, or is too small" ).color( NamedTextColor.RED ) );
                     return true;
                 }
 

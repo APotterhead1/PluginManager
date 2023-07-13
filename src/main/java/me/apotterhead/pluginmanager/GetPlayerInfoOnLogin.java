@@ -1,5 +1,5 @@
 // APotterhead
-// 12072023-12072023
+// 12072023-13072023
 
 package me.apotterhead.pluginmanager;
 
@@ -24,10 +24,12 @@ public class GetPlayerInfoOnLogin implements Listener {
         Player player = event.getPlayer();
         String uuid = player.getUniqueId().toString();
 
-        plugin.attachments.put( player, player.addAttachment( plugin ) );
-        ReloadPermissions.reload( ReloadType.PLAYER, uuid, plugin );
+        if( !player.hasPlayedBefore() ) {
+            plugin.players.config.set( uuid + ".hierarchyValue", 0 );
+            plugin.players.save();
+        }
 
-        if( !event.getPlayer().hasPlayedBefore() && plugin.groups.config.contains( "defaultGroup" ) ) {
+        if( !player.hasPlayedBefore() && plugin.groups.config.contains( "defaultGroup" ) ) {
             String group = plugin.groups.config.getString( "defaultGroup" );
 
             List<String> groupPlayers = plugin.groups.config.getStringList( "group." + group + ".players" );
@@ -40,6 +42,9 @@ public class GetPlayerInfoOnLogin implements Listener {
             plugin.players.config.set( uuid + ".groups", playerGroups );
             plugin.players.save();
         }
+
+        plugin.attachments.put( player, player.addAttachment( plugin ) );
+        ReloadPermissions.reload( ReloadType.PLAYER, uuid, plugin );
 
         if( plugin.players.config.contains( uuid + ".lastName" ) && !Objects.requireNonNull( plugin.players.config.getString( uuid + ".lastName" ) ).equals( player.getName() ) ) {
             List<String> names = plugin.players.config.getStringList( uuid + ".pastNames" );

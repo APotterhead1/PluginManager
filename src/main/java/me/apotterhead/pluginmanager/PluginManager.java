@@ -1,5 +1,5 @@
 // APotterhead
-// 12062023-12072023
+// 12062023-13072023
 
 package me.apotterhead.pluginmanager;
 
@@ -33,7 +33,7 @@ public final class PluginManager extends JavaPlugin {
         Objects.requireNonNull( getCommand( "group" ) ).setExecutor( groupCommand );
         Objects.requireNonNull( getCommand( "group" ) ).setTabCompleter( groupCommand );
 
-        PlayerCommand playerCommand = new PlayerCommand();
+        PlayerCommand playerCommand = new PlayerCommand( this );
         Objects.requireNonNull( getCommand( "player" ) ).setExecutor( playerCommand );
         Objects.requireNonNull( getCommand( "player" ) ).setTabCompleter( playerCommand );
 
