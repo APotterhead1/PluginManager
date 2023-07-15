@@ -35,17 +35,22 @@ public class PlayerCommand implements TabExecutor {
                 return true;
             }
 
+            if( args.length < 2 ) {
+                sender.sendMessage( CommandErrorMessage.INCOMPLETE.send( label, args ) );
+                return true;
+            }
+
+            if( !( args[1].equals( "name" ) && sender.hasPermission( "appm.commands.player.setHierarchy.name" ) ) && !( args[1].equals( "uuid" ) && sender.hasPermission( "appm.commands.player.setHierarchy.uuid" ) ) ) {
+                sender.sendMessage( CommandErrorMessage.INCORRECT.send( label, args, 1 ) );
+                return true;
+            }
+
             if( args.length < 4 ) {
                 sender.sendMessage( CommandErrorMessage.INCOMPLETE.send( label, args ) );
                 return true;
             }
 
             if( args.length == 4 ) {
-                if( !( args[1].equals( "name" ) && sender.hasPermission( "appm.commands.player.setHierarchy.name" ) ) && !( args[1].equals( "uuid" ) && sender.hasPermission( "appm.commands.player.setHierarchy.uuid" ) ) ) {
-                    sender.sendMessage( CommandErrorMessage.INCORRECT.send( label, args, 1 ) );
-                    return true;
-                }
-
                 String uuid = null;
                 OfflinePlayer[] players = plugin.getServer().getOfflinePlayers();
 

@@ -192,16 +192,23 @@ public class GroupCommand implements TabExecutor {
                 return true;
             }
 
+            if( args.length < 3 ) {
+                sender.sendMessage( CommandErrorMessage.INCOMPLETE.send( label, args ) );
+                return true;
+            }
+
+            if( !( args[2].equals( "name" ) && sender.hasPermission( "appm.commands.group.join.name" ) ) && !( args[2].equals( "uuid" ) && sender.hasPermission( "appm.commands.group.join.uuid" ) ) ) {
+                sender.sendMessage( CommandErrorMessage.INCORRECT.send( label, args, 2 ) );
+                return true;
+            }
+
             if( args.length < 4 ) {
                 sender.sendMessage( CommandErrorMessage.INCOMPLETE.send( label, args ) );
                 return true;
             }
 
             if( args.length == 4 ) {
-                if( !( args[2].equals( "name" ) && sender.hasPermission( "appm.commands.group.join.name" ) ) && !( args[2].equals( "uuid" ) && sender.hasPermission( "appm.commands.group.join.uuid" ) ) ) {
-                    sender.sendMessage( CommandErrorMessage.INCORRECT.send( label, args, 2 ) );
-                    return true;
-                }
+
 
                 if( !plugin.groups.config.getStringList( "groups" ).contains( args[1] ) ) {
                     sender.sendMessage( CommandErrorMessage.UNKNOWN.send( label, args, 1, "group" ) );
@@ -281,17 +288,22 @@ public class GroupCommand implements TabExecutor {
                 return true;
             }
 
+            if( args.length < 3 ) {
+                sender.sendMessage( CommandErrorMessage.INCOMPLETE.send( label, args ) );
+                return true;
+            }
+
+            if( !( args[2].equals( "name" ) && sender.hasPermission( "appm.commands.group.leave.name" ) ) && !( args[2].equals( "uuid" ) && sender.hasPermission( "appm.commands.group.leave.uuid" ) ) ) {
+                sender.sendMessage( CommandErrorMessage.INCORRECT.send( label, args, 2 ) );
+                return true;
+            }
+
             if( args.length < 4 ) {
                 sender.sendMessage( CommandErrorMessage.INCOMPLETE.send( label, args ) );
                 return true;
             }
 
             if( args.length == 4 ) {
-                if( !( args[2].equals( "name" ) && sender.hasPermission( "appm.commands.group.leave.name" ) ) && !( args[2].equals( "uuid" ) && sender.hasPermission( "appm.commands.group.leave.uuid" ) ) ) {
-                    sender.sendMessage( CommandErrorMessage.INCORRECT.send( label, args, 2 ) );
-                    return true;
-                }
-
                 if( !plugin.groups.config.getStringList( "groups" ).contains( args[1] ) ) {
                     sender.sendMessage( CommandErrorMessage.UNKNOWN.send( label, args, 1, "group" ) );
                     return true;
