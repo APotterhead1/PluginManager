@@ -24,11 +24,6 @@ public class GetPlayerInfoOnLogin implements Listener {
         Player player = event.getPlayer();
         String uuid = player.getUniqueId().toString();
 
-        if( !plugin.players.config.contains( uuid ) ) {
-            plugin.players.config.set( uuid + ".hierarchyValue", 0 );
-            plugin.players.save();
-        }
-
         if( !plugin.players.config.contains( uuid ) && plugin.groups.config.contains( "defaultGroup" ) ) {
             String group = plugin.groups.config.getString( "defaultGroup" );
 

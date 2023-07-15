@@ -73,15 +73,18 @@ public class PlayerCommand implements TabExecutor {
                     return true;
                 }
 
-                try{
-                    Integer.parseInt( args[3] );
-                } catch( Exception e ) {
-                    sender.sendMessage( Component.text( "'" + args[3] + "' is not a whole number, is too large, or is too small" ).color( NamedTextColor.RED ) );
-                    return true;
+                if( args[3].equals( "default" ) ) {
+                    plugin.players.config.set( uuid + ".hierarchyValue", null );
+                    plugin.players.save();
+                } else {
+                    try {
+                        plugin.players.config.set(uuid + ".hierarchyValue", Integer.parseInt(args[3]));
+                        plugin.players.save();
+                    } catch (Exception e) {
+                        sender.sendMessage(Component.text("'" + args[3] + "' is not a whole number, is too large, or is too small").color(NamedTextColor.RED));
+                        return true;
+                    }
                 }
-
-                plugin.players.config.set( uuid + ".hierarchyValue", Integer.parseInt( args[3] ) );
-                plugin.players.save();
 
                 sender.sendMessage( Component.text( "The hierarchy value for " + plugin.getServer().getOfflinePlayer( UUID.fromString( uuid ) ).getName() + "(" + uuid + ") has been set to " + args[3] ).color( NamedTextColor.GREEN ) );
                 return true;
@@ -90,6 +93,8 @@ public class PlayerCommand implements TabExecutor {
             sender.sendMessage( CommandErrorMessage.EXTRA_ARGUMENT.send( label, args, 4 ) );
             return true;
         }
+
+        if( args[0].equals( "ban" ) ) {}
 
         sender.sendMessage( CommandErrorMessage.INCORRECT.send( label, args, 0 ) );
         return true;
