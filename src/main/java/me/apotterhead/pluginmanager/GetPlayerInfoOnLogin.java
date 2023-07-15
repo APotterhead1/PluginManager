@@ -1,5 +1,5 @@
 // APotterhead
-// 12072023-13072023
+// 12072023-14072023
 
 package me.apotterhead.pluginmanager;
 
@@ -24,12 +24,12 @@ public class GetPlayerInfoOnLogin implements Listener {
         Player player = event.getPlayer();
         String uuid = player.getUniqueId().toString();
 
-        if( !player.hasPlayedBefore() ) {
+        if( !plugin.players.config.contains( uuid ) ) {
             plugin.players.config.set( uuid + ".hierarchyValue", 0 );
             plugin.players.save();
         }
 
-        if( !player.hasPlayedBefore() && plugin.groups.config.contains( "defaultGroup" ) ) {
+        if( !plugin.players.config.contains( uuid ) && plugin.groups.config.contains( "defaultGroup" ) ) {
             String group = plugin.groups.config.getString( "defaultGroup" );
 
             List<String> groupPlayers = plugin.groups.config.getStringList( "group." + group + ".players" );
