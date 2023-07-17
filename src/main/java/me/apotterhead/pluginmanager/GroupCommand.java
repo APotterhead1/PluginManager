@@ -6,7 +6,6 @@ package me.apotterhead.pluginmanager;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-
 import java.util.List;
 import java.util.ArrayList;
 import org.jetbrains.annotations.NotNull;
