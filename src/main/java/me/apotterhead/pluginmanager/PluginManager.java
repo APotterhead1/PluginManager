@@ -13,6 +13,8 @@ import java.util.List;
 import me.apotterhead.pluginmanager.files.*;
 import me.apotterhead.pluginmanager.commands.*;
 import me.apotterhead.pluginmanager.events.*;
+import me.apotterhead.pluginmanager.util.ReloadPermissions;
+import me.apotterhead.pluginmanager.util.ReloadPermissions.ReloadType;
 
 public final class PluginManager extends JavaPlugin {
 
@@ -32,7 +34,7 @@ public final class PluginManager extends JavaPlugin {
 
         for( Player player : getServer().getOnlinePlayers() ) {
             attachments.put( player, player.addAttachment( this ) );
-
+            ReloadPermissions.reload( ReloadType.PLAYER, player.getUniqueId().toString(), this );
 
             List<String> currentPlayers = ips.config.getStringList( "ip." + players.config.getString( player.getUniqueId() + ".lastIP" ) + ".currentPlayers" );
             currentPlayers.add( player.getUniqueId().toString() );
