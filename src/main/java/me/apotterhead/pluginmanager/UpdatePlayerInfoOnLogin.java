@@ -11,11 +11,11 @@ import me.apotterhead.pluginmanager.ReloadPermissions.ReloadType;
 import java.util.Objects;
 import java.util.List;
 
-public class GetPlayerInfoOnLogin implements Listener {
+public class UpdatePlayerInfoOnLogin implements Listener {
 
     private final PluginManager plugin;
 
-    public GetPlayerInfoOnLogin(PluginManager plugin ) {
+    public UpdatePlayerInfoOnLogin(PluginManager plugin ) {
         this.plugin = plugin;
     }
 
@@ -59,5 +59,20 @@ public class GetPlayerInfoOnLogin implements Listener {
         }
         plugin.players.config.set( uuid + ".lastIP", currentIP );
         plugin.players.save();
+
+        List<String> ips = plugin.ips.config.getStringList( "ips" );
+        if( !ips.contains( currentIP ) ) ips.add( currentIP );
+        plugin.ips.config.set( "ips", ips );
+        plugin.ips.save();
+
+        List<String> currentPlayers = plugin.ips.config.getStringList( "ip." + currentIP + ".currentPlayers" );
+        currentPlayers.add( uuid );
+        plugin.ips.config.set( "ip." + currentIP + ".currentPlayers", currentPlayers );
+        plugin.ips.save();
+
+        List<String> allPlayers = plugin.ips.config.getStringList( "ip." + currentIP + ".allPlayers" );
+        allPlayers.add( uuid );
+        plugin.ips.config.set( "ip." + currentIP + ".allPlayers", allPlayers );
+        plugin.ips.save();
     }
 }

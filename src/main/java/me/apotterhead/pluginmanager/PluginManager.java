@@ -1,5 +1,5 @@
 // APotterhead
-// 12062023-13072023
+// 12062023-16072023
 
 package me.apotterhead.pluginmanager;
 
@@ -9,21 +9,32 @@ import java.util.Map;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachment;
 import java.util.HashMap;
+import java.util.List;
 
 public final class PluginManager extends JavaPlugin {
 
     public DisabledPluginsFile disabledPlugins;
     public GroupsFile groups;
     public PlayersFile players;
+    public IPsFile ips;
     public Map<Player, PermissionAttachment> attachments;
     @Override
     public void onEnable() {
-        attachments = new HashMap<>();
-        for( Player player : getServer().getOnlinePlayers() ) attachments.put( player, player.addAttachment( this ) );
-
         disabledPlugins = new DisabledPluginsFile( this );
         groups = new GroupsFile( this );
         players = new PlayersFile( this );
+        ips = new IPsFile( this );
+
+        attachments = new HashMap<>();
+
+        for( Player player : getServer().getOnlinePlayers() ) {
+            attachments.put( player, player.addAttachment( this ) );
+
+            List<String> currentPlayers = ips.config.getStringList( "ip." + players.config.getString( player.getUniqueId() + ".lastIP" ) + ".currentPlayers" );
+            currentPlayers.add( player.getUniqueId().toString() );
+            ips.config.set( "ip." + players.config.getString( player.getUniqueId() + ".lastIP" ) + ".currentPlayers", currentPlayers );
+            ips.save();
+        }
 
         PluginCommand pluginCommand = new PluginCommand( this );
         Objects.requireNonNull( getCommand( "plugin" ) ).setExecutor( pluginCommand );
@@ -38,13 +49,16 @@ public final class PluginManager extends JavaPlugin {
         Objects.requireNonNull( getCommand( "player" ) ).setTabCompleter( playerCommand );
 
         getServer().getPluginManager().registerEvents( new DisablePluginsOnLoad( this ), this );
-        getServer().getPluginManager().registerEvents( new GetPlayerInfoOnLogin( this ), this );
-        getServer().getPluginManager().registerEvents( new RemoveAttachmentOnQuit( this ), this );
+        getServer().getPluginManager().registerEvents( new UpdatePlayerInfoOnLogin( this ), this );
+        getServer().getPluginManager().registerEvents( new UpdatePlayerInfoOnQuit( this ), this );
     }
 
     public void onDisable() {
         for( Player player : attachments.keySet() ) player.removeAttachment( attachments.get( player ) );
         attachments.clear();
+
+        for( String ip : ips.config.getStringList( "ips" ) ) ips.config.set( "ip." + ip + ".currentPlayers", null );
+        ips.save();
     }
 
 }
