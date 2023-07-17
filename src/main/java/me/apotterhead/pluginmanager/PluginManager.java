@@ -10,6 +10,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachment;
 import java.util.HashMap;
 import java.util.List;
+import me.apotterhead.pluginmanager.files.*;
+import me.apotterhead.pluginmanager.commands.*;
+import me.apotterhead.pluginmanager.events.*;
 
 public final class PluginManager extends JavaPlugin {
 
@@ -29,6 +32,7 @@ public final class PluginManager extends JavaPlugin {
 
         for( Player player : getServer().getOnlinePlayers() ) {
             attachments.put( player, player.addAttachment( this ) );
+
 
             List<String> currentPlayers = ips.config.getStringList( "ip." + players.config.getString( player.getUniqueId() + ".lastIP" ) + ".currentPlayers" );
             currentPlayers.add( player.getUniqueId().toString() );

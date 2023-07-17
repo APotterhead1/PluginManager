@@ -1,8 +1,9 @@
 // APotterhead
-// 13062023-23062023
+// 13062023-16072023
 
-package me.apotterhead.pluginmanager;
+package me.apotterhead.pluginmanager.commands;
 
+import me.apotterhead.pluginmanager.PluginManager;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.Command;
@@ -16,6 +17,7 @@ import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.util.StringUtil;
 import java.util.Collections;
+import me.apotterhead.pluginmanager.util.CommandErrorMessage;
 
 public class PluginCommand implements TabExecutor {
 

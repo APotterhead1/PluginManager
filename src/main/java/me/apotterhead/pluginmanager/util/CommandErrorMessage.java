@@ -1,7 +1,7 @@
 // APotterhead
-// 13062023-20062023
+// 13062023-16072023
 
-package me.apotterhead.pluginmanager;
+package me.apotterhead.pluginmanager.util;
 
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.Component;

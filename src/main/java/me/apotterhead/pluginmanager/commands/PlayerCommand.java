@@ -1,8 +1,9 @@
 // APotterhead
 // 13072023-16072023
 
-package me.apotterhead.pluginmanager;
+package me.apotterhead.pluginmanager.commands;
 
+import me.apotterhead.pluginmanager.PluginManager;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -15,6 +16,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import java.util.UUID;
 import java.time.Instant;
 import org.bukkit.entity.Player;
+import me.apotterhead.pluginmanager.util.CommandErrorMessage;
 
 public class PlayerCommand implements TabExecutor {
 

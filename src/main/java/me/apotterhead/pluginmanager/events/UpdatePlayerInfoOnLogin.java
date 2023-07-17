@@ -1,13 +1,15 @@
 // APotterhead
-// 12072023-14072023
+// 12072023-16072023
 
-package me.apotterhead.pluginmanager;
+package me.apotterhead.pluginmanager.events;
 
+import me.apotterhead.pluginmanager.PluginManager;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.entity.Player;
-import me.apotterhead.pluginmanager.ReloadPermissions.ReloadType;
+import me.apotterhead.pluginmanager.util.ReloadPermissions.ReloadType;
+import me.apotterhead.pluginmanager.util.ReloadPermissions;
 import java.util.Objects;
 import java.util.List;
 

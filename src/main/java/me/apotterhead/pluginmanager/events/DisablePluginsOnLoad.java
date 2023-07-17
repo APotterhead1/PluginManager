@@ -1,8 +1,9 @@
 // APotterhead
-// 22062023-22062023
+// 22062023-16072023
 
-package me.apotterhead.pluginmanager;
+package me.apotterhead.pluginmanager.events;
 
+import me.apotterhead.pluginmanager.PluginManager;
 import org.bukkit.event.Listener;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.server.ServerLoadEvent;

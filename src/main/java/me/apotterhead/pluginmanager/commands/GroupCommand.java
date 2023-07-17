@@ -1,8 +1,9 @@
 // APotterhead
-// 23062023-11072023
+// 23062023-16072023
 
-package me.apotterhead.pluginmanager;
+package me.apotterhead.pluginmanager.commands;
 
+import me.apotterhead.pluginmanager.PluginManager;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -16,11 +17,12 @@ import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.event.ClickEvent;
 import org.bukkit.OfflinePlayer;
 import java.util.UUID;
-import me.apotterhead.pluginmanager.ReloadPermissions.ReloadType;
+import me.apotterhead.pluginmanager.util.ReloadPermissions.ReloadType;
 import java.util.logging.Level;
 import java.util.Objects;
 import java.util.Collections;
 import org.bukkit.util.StringUtil;
+import me.apotterhead.pluginmanager.util.*;
 
 public class GroupCommand implements TabExecutor {
 

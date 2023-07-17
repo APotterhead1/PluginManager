@@ -1,8 +1,9 @@
 // APotterhead
-// 02072023-02072023
+// 02072023-16072023
 
-package me.apotterhead.pluginmanager;
+package me.apotterhead.pluginmanager.util;
 
+import me.apotterhead.pluginmanager.PluginManager;
 import org.jetbrains.annotations.Nullable;
 import net.kyori.adventure.text.Component;
 
