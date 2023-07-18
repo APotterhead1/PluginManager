@@ -67,14 +67,16 @@ public class UpdatePlayerInfoOnLogin implements Listener {
         plugin.ips.config.set( "ips", ips );
         plugin.ips.save();
 
-        List<String> currentPlayers = plugin.ips.config.getStringList( "ip." + currentIP + ".currentPlayers" );
+        String ipPath = currentIP.replace( '.', ',' );
+
+        List<String> currentPlayers = plugin.ips.config.getStringList( "ip." + ipPath + ".currentPlayers" );
         currentPlayers.add( uuid );
-        plugin.ips.config.set( "ip." + currentIP + ".currentPlayers", currentPlayers );
+        plugin.ips.config.set( "ip." + ipPath + ".currentPlayers", currentPlayers );
         plugin.ips.save();
 
-        List<String> allPlayers = plugin.ips.config.getStringList( "ip." + currentIP + ".allPlayers" );
+        List<String> allPlayers = plugin.ips.config.getStringList( "ip." + ipPath + ".allPlayers" );
         if( !allPlayers.contains( uuid ) ) allPlayers.add( uuid );
-        plugin.ips.config.set( "ip." + currentIP + ".allPlayers", allPlayers );
+        plugin.ips.config.set( "ip." + ipPath + ".allPlayers", allPlayers );
         plugin.ips.save();
     }
 }

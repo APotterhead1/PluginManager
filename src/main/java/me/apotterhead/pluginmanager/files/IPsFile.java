@@ -18,7 +18,7 @@ public class IPsFile {
     public IPsFile( PluginManager plugin ) {
         this.plugin = plugin;
         try {
-            file = new File( plugin.getDataFolder(), "IPs.yaml" );
+            file = new File( plugin.getDataFolder(), "IPs.yml" );
             config = YamlConfiguration.loadConfiguration( file );
         } catch( Exception e ) {
             plugin.getLogger().log( Level.SEVERE, "Could not load IPs.yml" );

@@ -152,47 +152,48 @@ public class PlayerCommand implements TabExecutor {
                 }
 
                 Instant now = Instant.now();
+                String ipPath = args[2].replace( '.', ',' );
 
-                if( plugin.ips.config.getBoolean( "ip." + args[2] + ".isBanned" ) ) {
-                    plugin.ips.config.set( "ip." + args[2] + ".totalBanTime", plugin.ips.config.getLong( "ip." + args[2]  + ".totalBanTime" ) + ( now.getEpochSecond() - plugin.ips.config.getLong( "ip." + args[2] + ".banStart" ) ) );
+                if( plugin.ips.config.getBoolean( "ip." + ipPath + ".isBanned" ) ) {
+                    plugin.ips.config.set( "ip." + ipPath + ".totalBanTime", plugin.ips.config.getLong( "ip." + ipPath  + ".totalBanTime" ) + ( now.getEpochSecond() - plugin.ips.config.getLong( "ip." + ipPath + ".banStart" ) ) );
                     plugin.ips.save();
                 }
 
-                plugin.ips.config.set( "ip." + args[2] + ".isBanned", true );
-                plugin.ips.config.set( "ip." + args[2] + ".banStart", now.getEpochSecond() );
+                plugin.ips.config.set( "ip." + ipPath + ".isBanned", true );
+                plugin.ips.config.set( "ip." + ipPath + ".banStart", now.getEpochSecond() );
                 plugin.ips.save();
 
                 if( args[3].equals( "infinite" ) ) {
-                    plugin.ips.config.set( "ip." + args[2] + ".banEnd", null );
+                    plugin.ips.config.set( "ip." + ipPath + ".banEnd", null );
                     plugin.ips.save();
 
-                    List<String> banSentenceLengths = plugin.ips.config.getStringList( "ip." + args[2] + ".banSentenceLengths" );
+                    List<String> banSentenceLengths = plugin.ips.config.getStringList( "ip." + ipPath + ".banSentenceLengths" );
                     banSentenceLengths.add( "infinite" );
-                    plugin.ips.config.set( "ip." + args[2] + ".banSentenceLengths", banSentenceLengths );
+                    plugin.ips.config.set( "ip." + ipPath + ".banSentenceLengths", banSentenceLengths );
                     plugin.ips.save();
                 } else {
-                    plugin.ips.config.set( "ip." + args[2] + ".banEnd", now.plus( Integer.parseInt( args[4] ), ChronoUnit.valueOf( args[3].toUpperCase() + "S" ) ).getEpochSecond() );
+                    plugin.ips.config.set( "ip." + ipPath + ".banEnd", now.plus( Integer.parseInt( args[4] ), ChronoUnit.valueOf( args[3].toUpperCase() + "S" ) ).getEpochSecond() );
                     plugin.ips.save();
 
-                    List<String> banSentenceLengths = plugin.ips.config.getStringList( "ip." + args[2] + ".banSentenceLengths" );
+                    List<String> banSentenceLengths = plugin.ips.config.getStringList( "ip." + ipPath + ".banSentenceLengths" );
                     banSentenceLengths.add( args[4] + args[3].charAt( 0 ) );
-                    plugin.ips.config.set( "ip." + args[2] + ".banSentenceLengths", banSentenceLengths );
+                    plugin.ips.config.set( "ip." + ipPath + ".banSentenceLengths", banSentenceLengths );
                     plugin.ips.save();
                 }
 
-                List<String> banSources = plugin.ips.config.getStringList( "ip." + args[2] + ".banSources" );
+                List<String> banSources = plugin.ips.config.getStringList( "ip." + ipPath + ".banSources" );
                 if( sender instanceof Player ) banSources.add( ( (Player) sender ).getUniqueId().toString() );
                 else banSources.add( "console" );
-                plugin.ips.config.set( "ip." + args[2] + ".banSources", banSources );
+                plugin.ips.config.set( "ip." + ipPath + ".banSources", banSources );
                 plugin.ips.save();
 
-                List<String> banReasons = plugin.ips.config.getStringList( "ip." + args[2] + ".banReasons" );
+                List<String> banReasons = plugin.ips.config.getStringList( "ip." + ipPath + ".banReasons" );
                 if( args.length > 5 || args[3].equals( "infinite" ) && args.length > 4 ) {
                     StringBuilder banReason = new StringBuilder( args[ args[3].equals( "infinite" ) ? 4: 5 ] );
                     for( int i = args[3].equals( "infinite" ) ? 5 : 6; i < args.length; i++ ) banReason.append( " " ).append( args[i] );
                     banReasons.add( banReason.toString() );
                 } else banReasons.add( null );
-                plugin.ips.config.set( "ip." + args[2] + ".banReasons", banReasons );
+                plugin.ips.config.set( "ip." + ipPath + ".banReasons", banReasons );
                 plugin.ips.save();
 
                 plugin.getServer().banIP( args[2] );
@@ -306,18 +307,20 @@ public class PlayerCommand implements TabExecutor {
                         return true;
                     }
 
-                    if( !plugin.ips.config.getBoolean( "ip." + args[2] + ".isBanned" ) ) {
-                        sender.sendMessage( Component.text( "The IP '" + args[2] + "' is not banned" ).color( NamedTextColor.RED ) );
+                    String ipPath = args[2].replace( '.', ',' );
+
+                    if( !plugin.ips.config.getBoolean( "ip." + ipPath + ".isBanned" ) ) {
+                        sender.sendMessage( Component.text( "The IP '" + ipPath + "' is not banned" ).color( NamedTextColor.RED ) );
                         return true;
                     }
 
                     Instant now = Instant.now();
-                    plugin.ips.config.set( "ip." + args[2] + ".totalBanTime", plugin.ips.config.getLong( "ip." + args[2] + ".totalBanTime" ) + ( now.getEpochSecond() - plugin.ips.config.getLong( "ip." + args[2] + ".banStart" ) ) );
+                    plugin.ips.config.set( "ip." + ipPath + ".totalBanTime", plugin.ips.config.getLong( "ip." + ipPath + ".totalBanTime" ) + ( now.getEpochSecond() - plugin.ips.config.getLong( "ip." + ipPath + ".banStart" ) ) );
                     plugin.ips.save();
 
-                    plugin.ips.config.set( "ip." + args[2] + ".isBanned", false );
-                    plugin.ips.config.set( "ip." + args[2] + ".banStart", null );
-                    plugin.ips.config.set( "ip." + args[2] + ".banEnd", null );
+                    plugin.ips.config.set( "ip." + ipPath + ".isBanned", false );
+                    plugin.ips.config.set( "ip." + ipPath + ".banStart", null );
+                    plugin.ips.config.set( "ip." + ipPath + ".banEnd", null );
                     plugin.ips.save();
 
                     plugin.getServer().unbanIP( args[2] );
