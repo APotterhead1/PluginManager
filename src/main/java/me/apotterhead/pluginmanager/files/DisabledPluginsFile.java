@@ -32,5 +32,6 @@ public class DisabledPluginsFile {
         } catch( Exception e ) {
             plugin.getLogger().log( Level.SEVERE, "Could not save disabledPlugins.yml" );
         }
+        config = YamlConfiguration.loadConfiguration( file );
     }
 }

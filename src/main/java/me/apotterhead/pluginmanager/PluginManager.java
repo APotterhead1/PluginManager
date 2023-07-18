@@ -36,9 +36,11 @@ public final class PluginManager extends JavaPlugin {
             attachments.put( player, player.addAttachment( this ) );
             ReloadPermissions.reload( ReloadType.PLAYER, player.getUniqueId().toString(), this );
 
-            List<String> currentPlayers = ips.config.getStringList( "ip." + players.config.getString( player.getUniqueId() + ".lastIP" ) + ".currentPlayers" );
+            String ipPath = players.config.getString( player.getUniqueId() + ".lastIP" ).replace( '.', ',' );
+
+            List<String> currentPlayers = ips.config.getStringList( "ip." + ipPath + ".currentPlayers" );
             currentPlayers.add( player.getUniqueId().toString() );
-            ips.config.set( "ip." + players.config.getString( player.getUniqueId() + ".lastIP" ) + ".currentPlayers", currentPlayers );
+            ips.config.set( "ip." + ipPath + ".currentPlayers", currentPlayers );
             ips.save();
         }
 
@@ -63,7 +65,7 @@ public final class PluginManager extends JavaPlugin {
         for( Player player : attachments.keySet() ) player.removeAttachment( attachments.get( player ) );
         attachments.clear();
 
-        for( String ip : ips.config.getStringList( "ips" ) ) ips.config.set( "ip." + ip + ".currentPlayers", null );
+        for( String ip : ips.config.getStringList( "ips" ) ) ips.config.set( "ip." + ip.replace( '.', ',' ) + ".currentPlayers", null );
         ips.save();
     }
 

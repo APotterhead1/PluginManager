@@ -31,5 +31,6 @@ public class GroupsFile {
         } catch( Exception e ) {
             plugin.getLogger().log( Level.SEVERE, "Could not save groups.yml" );
         }
+        config = YamlConfiguration.loadConfiguration( file );
     }
 }

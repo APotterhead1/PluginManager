@@ -8,6 +8,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerQuitEvent;
 import java.util.List;
+import java.util.Objects;
 
 public class UpdatePlayerInfoOnQuit implements Listener {
 
@@ -22,9 +23,10 @@ public class UpdatePlayerInfoOnQuit implements Listener {
         event.getPlayer().removeAttachment( plugin.attachments.get( event.getPlayer() ) );
         plugin.attachments.remove( event.getPlayer() );
 
-        List<String> currentPlayers = plugin.ips.config.getStringList( "ip." + plugin.players.config.getString( event.getPlayer().getUniqueId() + ".lastIP" ) + ".currentPlayers" );
+        String ipPath = Objects.requireNonNull( plugin.players.config.getString( event.getPlayer().getUniqueId() + ".lastIP" ) ).replace( '.', ',' );
+        List<String> currentPlayers = plugin.ips.config.getStringList( "ip." + ipPath + ".currentPlayers" );
         currentPlayers.remove( event.getPlayer().getUniqueId().toString() );
-        plugin.ips.config.set( "ip." + plugin.players.config.getString( event.getPlayer().getUniqueId() + ".lastIP" ) + ".currentPlayers", currentPlayers );
+        plugin.ips.config.set( "ip." + ipPath + ".currentPlayers", currentPlayers );
         plugin.ips.save();
     }
 }

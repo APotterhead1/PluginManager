@@ -31,5 +31,6 @@ public class IPsFile {
         } catch( Exception e ) {
             plugin.getLogger().log( Level.SEVERE, "Could not save IPs.yml" );
         }
+        config = YamlConfiguration.loadConfiguration( file );
     }
 }

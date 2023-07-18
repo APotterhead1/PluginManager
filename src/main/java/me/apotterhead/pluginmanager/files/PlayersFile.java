@@ -31,5 +31,6 @@ public class PlayersFile {
         } catch( Exception e ) {
             plugin.getLogger().log( Level.SEVERE, "Could not save players.yml" );
         }
+        config = YamlConfiguration.loadConfiguration( file );
     }
 }
