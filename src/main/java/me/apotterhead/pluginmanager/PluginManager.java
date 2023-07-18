@@ -36,7 +36,7 @@ public final class PluginManager extends JavaPlugin {
             attachments.put( player, player.addAttachment( this ) );
             ReloadPermissions.reload( ReloadType.PLAYER, player.getUniqueId().toString(), this );
 
-            String ipPath = players.config.getString( player.getUniqueId() + ".lastIP" ).replace( '.', ',' );
+            String ipPath = Objects.requireNonNull( players.config.getString( player.getUniqueId() + ".lastIP" ) ).replace( '.', ',' );
 
             List<String> currentPlayers = ips.config.getStringList( "ip." + ipPath + ".currentPlayers" );
             currentPlayers.add( player.getUniqueId().toString() );
