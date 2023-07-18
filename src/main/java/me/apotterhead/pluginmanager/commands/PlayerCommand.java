@@ -4,6 +4,7 @@
 package me.apotterhead.pluginmanager.commands;
 
 import me.apotterhead.pluginmanager.PluginManager;
+import org.bukkit.BanList;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -116,7 +117,7 @@ public class PlayerCommand implements TabExecutor {
                 return true;
             }
 
-            if( !( args[1].equals( "name" ) && sender.hasPermission( "appm.commands.player.ban.name" ) ) && !( args[0].equals( "uuid" ) && sender.hasPermission( "appm.commands.player.ban.uuid" ) ) && !( args[0].equals( "ip" ) && sender.hasPermission( "appm.commands.player.ban.ip" ) ) ) {
+            if( !( args[1].equals( "name" ) && sender.hasPermission( "appm.commands.player.ban.name" ) ) && !( args[1].equals( "uuid" ) && sender.hasPermission( "appm.commands.player.ban.uuid" ) ) && !( args[1].equals( "ip" ) && sender.hasPermission( "appm.commands.player.ban.ip" ) ) ) {
                 sender.sendMessage( CommandErrorMessage.INCORRECT.send( label, args, 1 ) );
                 return true;
             }
@@ -314,8 +315,7 @@ public class PlayerCommand implements TabExecutor {
                         return true;
                     }
 
-                    Instant now = Instant.now();
-                    plugin.ips.config.set( "ip." + ipPath + ".totalBanTime", plugin.ips.config.getLong( "ip." + ipPath + ".totalBanTime" ) + ( now.getEpochSecond() - plugin.ips.config.getLong( "ip." + ipPath + ".banStart" ) ) );
+                    plugin.ips.config.set( "ip." + ipPath + ".totalBanTime", plugin.ips.config.getLong( "ip." + ipPath + ".totalBanTime" ) + ( Instant.now().getEpochSecond() - plugin.ips.config.getLong( "ip." + ipPath + ".banStart" ) ) );
                     plugin.ips.save();
 
                     plugin.ips.config.set( "ip." + ipPath + ".isBanned", false );
@@ -356,7 +356,23 @@ public class PlayerCommand implements TabExecutor {
                     return true;
                 }
 
+                if( !plugin.players.config.getBoolean( uuid + ".isBanned" ) ) {
+                    sender.sendMessage( Component.text( plugin.getServer().getOfflinePlayer( UUID.fromString( uuid) ).getName() + "(" + uuid + ") is not banned" ).color( NamedTextColor.RED ) );
+                    return true;
+                }
 
+                plugin.players.config.set( uuid + ".totalBanTime", plugin.players.config.getLong( uuid + ".totalBanTime" ) + ( Instant.now().getEpochSecond() - plugin.players.config.getLong( uuid + ".banStart" ) ) );
+                plugin.players.save();
+
+                plugin.players.config.set( uuid + ".isBanned", false );
+                plugin.players.config.set( uuid + ".banStart", null );
+                plugin.players.config.set( uuid + ".banEnd", null );
+                plugin.players.save();
+
+                plugin.getServer().getBanList( BanList.Type.NAME ).pardon( uuid );
+
+                sender.sendMessage( Component.text( plugin.getServer().getOfflinePlayer( UUID.fromString( uuid) ).getName() + "(" + uuid + ") has been pardoned" ).color( NamedTextColor.GREEN ) );
+                return true;
             }
 
             sender.sendMessage( CommandErrorMessage.EXTRA_ARGUMENT.send( label, args, 3 ) );
