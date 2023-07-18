@@ -1,5 +1,5 @@
 // APotterhead
-// 13072023-17072023
+// 13072023-18072023
 
 package me.apotterhead.pluginmanager.commands;
 
@@ -328,6 +328,35 @@ public class PlayerCommand implements TabExecutor {
                     sender.sendMessage( Component.text( "The IP '" + args[2] + "' has been pardoned" ).color( NamedTextColor.GREEN ) );
                     return true;
                 }
+
+                String uuid = null;
+                OfflinePlayer[] players = plugin.getServer().getOfflinePlayers();
+
+                if( args[1].equals( "name" ) ) {
+                    for( OfflinePlayer player : players ) {
+                        assert player.getName() != null;
+                        if( player.getName().equals( args[2] ) ) {
+                            uuid = player.getUniqueId().toString();
+                            break;
+                        }
+                    }
+                }
+
+                if( args[1].equals( "uuid" ) ) {
+                    for( OfflinePlayer player : players ) {
+                        if( player.getUniqueId().toString().equalsIgnoreCase( args[2] ) ) {
+                            uuid = player.getUniqueId().toString();
+                            break;
+                        }
+                    }
+                }
+
+                if( uuid == null ) {
+                    sender.sendMessage( CommandErrorMessage.UNKNOWN.send( label, args, 2, "player" ) );
+                    return true;
+                }
+
+
             }
 
             sender.sendMessage( CommandErrorMessage.EXTRA_ARGUMENT.send( label, args, 3 ) );
