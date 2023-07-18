@@ -73,7 +73,7 @@ public class UpdatePlayerInfoOnLogin implements Listener {
         plugin.ips.save();
 
         List<String> allPlayers = plugin.ips.config.getStringList( "ip." + currentIP + ".allPlayers" );
-        allPlayers.add( uuid );
+        if( !allPlayers.contains( uuid ) ) allPlayers.add( uuid );
         plugin.ips.config.set( "ip." + currentIP + ".allPlayers", allPlayers );
         plugin.ips.save();
     }
