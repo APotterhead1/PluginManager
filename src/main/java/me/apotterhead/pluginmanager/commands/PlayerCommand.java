@@ -277,6 +277,60 @@ public class PlayerCommand implements TabExecutor {
             sender.sendMessage( Component.text( plugin.getServer().getOfflinePlayer( UUID.fromString( uuid ) ).getName() + "(" + uuid + ") has been banned" ).color( NamedTextColor.RED ) );
             return true;
         }
+
+        if( args[0].equals( "pardon" ) ) {
+            if( !sender.hasPermission( "appm.commands.player.pardon.name" ) && !sender.hasPermission( "appm.commands.player.pardon.uuid" ) && !sender.hasPermission( "appm.commands.player.pardon.ip" ) ) {
+                sender.sendMessage( CommandErrorMessage.INCORRECT.send( label, args, 0 ) );
+                return true;
+            }
+
+            if( args.length < 2 ) {
+                sender.sendMessage( CommandErrorMessage.INCOMPLETE.send( label, args ) );
+                return true;
+            }
+
+            if( !( args[1].equals( "name" ) && sender.hasPermission( "appm.commands.player.pardon.name" ) ) && !( args[1].equals( "uuid" ) && sender.hasPermission( "appm.commands.player.pardon.uuid" ) ) && !( args[1].equals( "ip" ) && sender.hasPermission( "appm.commands.player.pardon.ip" ) ) ) {
+                sender.sendMessage( CommandErrorMessage.INCORRECT.send( label, args, 1 ) );
+                return true;
+            }
+
+            if( args.length < 3 ) {
+                sender.sendMessage( CommandErrorMessage.INCOMPLETE.send( label, args ) );
+                return true;
+            }
+
+            if( args.length == 3 ) {
+                if( args[1].equals( "ip" ) ) {
+                    if( !plugin.ips.config.getStringList( "ips" ).contains( args[2] ) ) {
+                        sender.sendMessage( CommandErrorMessage.UNKNOWN.send( label, args, 2, "ip" ) );
+                        return true;
+                    }
+
+                    if( !plugin.ips.config.getBoolean( "ip." + args[2] + ".isBanned" ) ) {
+                        sender.sendMessage( Component.text( "The IP '" + args[2] + "' is not banned" ).color( NamedTextColor.RED ) );
+                        return true;
+                    }
+
+                    Instant now = Instant.now();
+                    plugin.ips.config.set( "ip." + args[2] + ".totalBanTime", plugin.ips.config.getLong( "ip." + args[2] + ".totalBanTime" ) + ( now.getEpochSecond() - plugin.ips.config.getLong( "ip." + args[2] + ".banStart" ) ) );
+                    plugin.ips.save();
+
+                    plugin.ips.config.set( "ip." + args[2] + ".isBanned", false );
+                    plugin.ips.config.set( "ip." + args[2] + ".banStart", null );
+                    plugin.ips.config.set( "ip." + args[2] + ".banEnd", null );
+                    plugin.ips.save();
+
+                    plugin.getServer().unbanIP( args[2] );
+
+                    sender.sendMessage( Component.text( "The IP '" + args[2] + "' has been pardoned" ).color( NamedTextColor.GREEN ) );
+                    return true;
+                }
+            }
+
+            sender.sendMessage( CommandErrorMessage.EXTRA_ARGUMENT.send( label, args, 3 ) );
+            return true;
+        }
+
         sender.sendMessage( CommandErrorMessage.INCORRECT.send( label, args, 0 ) );
         return true;
     }
