@@ -1,5 +1,5 @@
 // APotterhead
-// 13072023-16072023
+// 13072023-17072023
 
 package me.apotterhead.pluginmanager.commands;
 
@@ -17,6 +17,8 @@ import java.util.UUID;
 import java.time.Instant;
 import org.bukkit.entity.Player;
 import me.apotterhead.pluginmanager.util.CommandErrorMessage;
+import java.time.temporal.ChronoUnit;
+import java.lang.StringBuilder;
 
 public class PlayerCommand implements TabExecutor {
 
@@ -129,126 +131,151 @@ public class PlayerCommand implements TabExecutor {
                 return true;
             }
 
-            if( args.length == 4 ) {
-                if( !args[3].equals( "infinite" ) ) {
-                    sender.sendMessage( CommandErrorMessage.INCOMPLETE.send( label, args ) );
+            if( args.length == 4  && !args[3].equals( "infinite" ) ) {
+                sender.sendMessage( CommandErrorMessage.INCOMPLETE.send( label, args ) );
+                return true;
+            }
+
+            if( args.length > 4 && ( args[3].equals( "minute" ) || args[3].equals( "hour" ) || args[3].equals( "day" ) ) ) {
+                try {
+                    Integer.parseInt( args[4] );
+                } catch( Exception e ) {
+                    sender.sendMessage( Component.text( "'" + args[4] + "' is not a whole number, is too large, or is too small" ).color( NamedTextColor.RED ) );
+                    return true;
+                }
+            }
+
+            if( args[1].equals( "ip" ) ) {
+                if( !plugin.ips.config.getStringList( "ips" ).contains( args[2] ) ) {
+                    sender.sendMessage( CommandErrorMessage.UNKNOWN.send( label, args, 2, "ip" ) );
                     return true;
                 }
 
+                Instant now = Instant.now();
 
+                if( plugin.ips.config.getBoolean( "ip." + args[2] + ".isBanned" ) ) {
+                    plugin.ips.config.set( "ip." + args[2] + ".totalBanTime", plugin.ips.config.getLong( "ip." + args[2]  + ".totalBanTime" ) + ( now.getEpochSecond() - plugin.ips.config.getLong( "ip." + args[2] + ".banStart" ) ) );
+                    plugin.ips.save();
+                }
 
-                if( args[1].equals( "ip" ) ) {
-                    if( !plugin.ips.config.getStringList( "ips" ).contains( args[2] ) ) {
-                        sender.sendMessage( Component.text( "'" + args[2] + "' is not a valid ip address" ).color( NamedTextColor.RED ) );
-                        return true;
-                    }
+                plugin.ips.config.set( "ip." + args[2] + ".isBanned", true );
+                plugin.ips.config.set( "ip." + args[2] + ".banStart", now.getEpochSecond() );
+                plugin.ips.save();
 
-                    Instant now = Instant.now();
-
-                    if( plugin.ips.config.getBoolean( "ip." + args[2] + ".isBanned" ) ) {
-                        plugin.ips.config.set( "ip." + args[2] + ".totalBanTime", plugin.ips.config.getLong( "ip." + args[2] + ".totalBanTime" ) + ( now.getEpochSecond() - plugin.ips.config.getLong( "ip." + args[2] + ".banStart" ) ) );
-                        plugin.ips.config.set( "ip." + args[2] + ".banEnd", null );
-                        plugin.ips.save();
-                    }
-
-                    plugin.ips.config.set( "ip." + args[2] + ".isBanned", true );
-                    plugin.ips.config.set( "ip." + args[2] + ".banStart", now.getEpochSecond() );
+                if( args[3].equals( "infinite" ) ) {
+                    plugin.ips.config.set( "ip." + args[2] + ".banEnd", null );
                     plugin.ips.save();
 
                     List<String> banSentenceLengths = plugin.ips.config.getStringList( "ip." + args[2] + ".banSentenceLengths" );
                     banSentenceLengths.add( "infinite" );
                     plugin.ips.config.set( "ip." + args[2] + ".banSentenceLengths", banSentenceLengths );
                     plugin.ips.save();
-
-                    List<String> banSources = plugin.ips.config.getStringList( "ip." + args[2] + ".banSources" );
-                    if( sender instanceof Player ) banSources.add( ( (Player) sender ).getUniqueId().toString() );
-                    else banSources.add( "console" );
-                    plugin.ips.config.set( "ip." + args[2] + ".banSources", banSources );
+                } else {
+                    plugin.ips.config.set( "ip." + args[2] + ".banEnd", now.plus( Integer.parseInt( args[4] ), ChronoUnit.valueOf( args[3].toUpperCase() + "S" ) ).getEpochSecond() );
                     plugin.ips.save();
 
-                    List<String> banReasons = plugin.ips.config.getStringList( "ip." + args[2] + ".banReasons" );
-                    banReasons.add( null );
-                    plugin.ips.config.set( "ip." + args[2] + ".banReasons",  banReasons );
+                    List<String> banSentenceLengths = plugin.ips.config.getStringList( "ip." + args[2] + ".banSentenceLengths" );
+                    banSentenceLengths.add( args[4] + args[3].charAt( 0 ) );
+                    plugin.ips.config.set( "ip." + args[2] + ".banSentenceLengths", banSentenceLengths );
                     plugin.ips.save();
-
-                    plugin.getServer().banIP( args[2] );
-
-                    sender.sendMessage( Component.text( "The IP '" + args[2] + "' has been successfully banned").color( NamedTextColor.GREEN ) );
-                    return true;
                 }
 
-                String uuid = null;
-                OfflinePlayer[] players = plugin.getServer().getOfflinePlayers();
+                List<String> banSources = plugin.ips.config.getStringList( "ip." + args[2] + ".banSources" );
+                if( sender instanceof Player ) banSources.add( ( (Player) sender ).getUniqueId().toString() );
+                else banSources.add( "console" );
+                plugin.ips.config.set( "ip." + args[2] + ".banSources", banSources );
+                plugin.ips.save();
 
-                if( args[1].equals( "name" ) ) {
-                    for( OfflinePlayer player : players ) {
-                        assert player.getName() != null;
-                        if( player.getName().equals( args[2] ) ) {
-                            uuid = player.getUniqueId().toString();
-                            break;
-                        }
+                List<String> banReasons = plugin.ips.config.getStringList( "ip." + args[2] + ".banReasons" );
+                if( args.length > 5 || args[3].equals( "infinite" ) && args.length > 4 ) {
+                    StringBuilder banReason = new StringBuilder( args[ args[3].equals( "infinite" ) ? 4: 5 ] );
+                    for( int i = args[3].equals( "infinite" ) ? 5 : 6; i < args.length; i++ ) banReason.append( " " ).append( args[i] );
+                    banReasons.add( banReason.toString() );
+                } else banReasons.add( null );
+                plugin.ips.config.set( "ip." + args[2] + ".banReasons", banReasons );
+                plugin.ips.save();
+
+                plugin.getServer().banIP( args[2] );
+
+                sender.sendMessage( Component.text( "The IP '" + args[2] + "' has been banned" ).color( NamedTextColor.GREEN ) );
+                return true;
+            }
+
+            String uuid = null;
+            OfflinePlayer[] players = plugin.getServer().getOfflinePlayers();
+
+            if( args[1].equals( "name" ) ) {
+                for( OfflinePlayer player : players) {
+                    assert player.getName() != null;
+                    if( player.getName().equals( args[2] ) ) {
+                        uuid = player.getUniqueId().toString();
+                        break;
                     }
                 }
+            }
 
-                if( args[1].equals( "uuid" ) ) {
-                    for( OfflinePlayer player : players ) {
-                        if( player.getUniqueId().toString().equalsIgnoreCase( args[2] ) ) {
-                            uuid = player.getUniqueId().toString();
-                            break;
-                        }
+            if( args[1].equals( "uuid" ) ) {
+                for( OfflinePlayer player : players ) {
+                    if( player.getUniqueId().toString().equalsIgnoreCase( args[2] ) ) {
+                        uuid = player.getUniqueId().toString();
+                        break;
                     }
                 }
+            }
 
-                if( uuid == null ) {
-                    sender.sendMessage( CommandErrorMessage.UNKNOWN.send( label, args, 2, "player" ) );
-                    return true;
-                }
+            if( uuid == null ) {
+                sender.sendMessage( CommandErrorMessage.UNKNOWN.send( label, args, 2, "player" ) );
+                return true;
+            }
 
-                Instant now = Instant.now();
+            Instant now = Instant.now();
 
-                if( plugin.players.config.getBoolean( uuid + ".isBanned" ) ) {
-                    plugin.players.config.set( uuid + ".totalBanTime", plugin.players.config.getLong( uuid + ".totalBanTime" ) + ( now.getEpochSecond() - plugin.players.config.getLong( uuid + ".banStart" ) ) );
-                    plugin.players.config.set( uuid + ".banEnd", null );
-                    plugin.players.save();
-                }
+            if( plugin.players.config.getBoolean( uuid + ".isBanned" ) ) {
+                plugin.players.config.set( uuid + ".totalBanTime", plugin.players.config.getLong( uuid + ".totalBanTime" ) + ( now.getEpochSecond() - plugin.players.config.getLong( uuid + ".banStart" ) ) );
+                plugin.players.save();
+            }
 
-                plugin.players.config.set( uuid + ".isBanned", true );
-                plugin.players.config.set( uuid + ".banStart", now.getEpochSecond() );
+            plugin.players.config.set( uuid + ".isBanned", true );
+            plugin.players.config.set( uuid + ".banStart", now.getEpochSecond() );
+            plugin.players.save();
+
+            if( args[3].equals( "infinite" ) ) {
+                plugin.players.config.set( uuid + ".banEnd", null );
                 plugin.players.save();
 
                 List<String> banSentenceLengths = plugin.players.config.getStringList( uuid + ".banSentenceLengths" );
                 banSentenceLengths.add( "infinite" );
                 plugin.players.config.set( uuid + ".banSentenceLengths", banSentenceLengths );
                 plugin.players.save();
-
-                List<String> banSources = plugin.players.config.getStringList( uuid + ".banSources" );
-                if( sender instanceof Player ) banSources.add( ( (Player) sender ).getUniqueId().toString() );
-                else banSources.add( "console" );
-                plugin.players.config.set( uuid + ".banSources", banSources );
+            } else {
+                plugin.players.config.set( uuid + ".banEnd", now.plus( Integer.parseInt( args[4] ), ChronoUnit.valueOf( args[3].toUpperCase() + "S" ) ).getEpochSecond() );
                 plugin.players.save();
 
-                List<String> banReasons = plugin.players.config.getStringList( uuid + ".banReasons" );
-                banReasons.add( null );
-                plugin.players.config.set( uuid + ".banReasons",  banReasons );
+                List<String> banSentenceLengths = plugin.players.config.getStringList( uuid + ".banSentenceLengths" );
+                banSentenceLengths.add( args[4] + args[3].charAt( 0 ) );
+                plugin.players.config.set( uuid + ".banSentenceLengths", banSentenceLengths );
                 plugin.players.save();
-
-                plugin.getServer().getOfflinePlayer( UUID.fromString( uuid ) ).banPlayer( null, null, sender instanceof Player ? ( (Player) sender ).getUniqueId().toString() : "console", true );
-
-                sender.sendMessage( Component.text( "The player " + plugin.getServer().getOfflinePlayer( UUID.fromString( uuid ) ).getName() + "(" + uuid + ") has been successfully banned" ).color( NamedTextColor.GREEN ) );
-                return true;
             }
 
+            List<String> banSources = plugin.players.config.getStringList( uuid + ".banSources" );
+            if( sender instanceof Player ) banSources.add( ( (Player) sender ).getUniqueId().toString() );
+            else banSources.add( "console" );
+            plugin.players.config.set( uuid + ".banSources", banSources );
+            plugin.players.save();
 
-            /*PLAYER.YML BAN HIERARCHY
-            * uuid/ip
-            *   totalBanTime: long( seconds )
-            *   isBanned: boolean
-            *   banStart: long
-            *   banEnd: long
-            *   banSentenceLengths: StringList
-            *   banSources: StringList(UUID/console)
-            *   banReasons: StringList
-            * */
+            List<String> banReasons = plugin.players.config.getStringList( uuid + ".banReasons" );
+            if( args.length > 5 || args[3].equals( "infinite" ) && args.length > 4 ) {
+                StringBuilder banReason = new StringBuilder( args[ args[3].equals( "infinite" ) ? 4 : 5 ] );
+                for( int i = args[3].equals( "infinite" ) ? 5 : 6; i < args.length; i++ ) banReason.append( " " ).append( args[i] );
+                banReasons.add( banReason.toString() );
+            } else banReasons.add( null );
+            plugin.players.config.set( uuid + ".banReasons", banReasons );
+            plugin.players.save();
+
+            plugin.getServer().getOfflinePlayer( UUID.fromString( uuid ) ).banPlayer( banReasons.get( banReasons.size() - 1 ), null, banSources.get( banSources.size() - 1 ), true );
+
+            sender.sendMessage( Component.text( plugin.getServer().getOfflinePlayer( UUID.fromString( uuid ) ).getName() + "(" + uuid + ") has been banned" ).color( NamedTextColor.RED ) );
+            return true;
         }
         sender.sendMessage( CommandErrorMessage.INCORRECT.send( label, args, 0 ) );
         return true;
