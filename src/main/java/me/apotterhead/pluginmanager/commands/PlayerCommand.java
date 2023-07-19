@@ -379,6 +379,71 @@ public class PlayerCommand implements TabExecutor {
             return true;
         }
 
+        if( args[0].equals( "get" ) ) {
+            if( !sender.hasPermission( "appm.commands.player.get.name" ) && !sender.hasPermission( "appm.commands.player.get.uuid" ) && !sender.hasPermission( "appm.commands.player.get.ip" ) ) {
+                sender.sendMessage( CommandErrorMessage.INCORRECT.send( label, args, 0 ) );
+                return true;
+            }
+
+            if( args.length < 2 ) {
+                sender.sendMessage( CommandErrorMessage.INCOMPLETE.send( label, args ) );
+                return true;
+            }
+
+            if( !( args[1].equals( "name" ) && sender.hasPermission( "appm.commands.player.get.name" ) ) && !( args[1].equals( "uuid" ) && sender.hasPermission( "appm.commands.player.get.uuid" ) ) && !( args[1].equals( "ip" ) && sender.hasPermission( "appm.commands.player.get.ip" ) ) ) {
+                sender.sendMessage( CommandErrorMessage.INCORRECT.send( label, args, 1 ) );
+                return true;
+            }
+
+            if( args.length < 3 ) {
+                sender.sendMessage( CommandErrorMessage.INCOMPLETE.send( label, args ) );
+                return true;
+            }
+
+            if( args.length == 3 ) {
+                if( args[1].equals( "ip" ) ) {
+                    if( !plugin.ips.config.getStringList( "ips" ).contains( args[2] ) ) {
+                        sender.sendMessage( CommandErrorMessage.UNKNOWN.send( label, args, 2, "ip" ) );
+                        return true;
+                    }
+
+                    String ipPath = args[2].replace( '.', ',' );
+                    Component message = Component.text( "" ).append( Component.text( args[2]  + ":" ).color( NamedTextColor.GOLD ) );
+                    if( plugin.ips.config.getBoolean( "ip." + ipPath + ".isBanned" ) ) message = message.appendNewline().append( Component.text( "BANNED" ).color( NamedTextColor.RED ) );
+                    if( plugin.ips.config.getStringList( "ip." + ipPath + ".currentPlayers" ).size() != 0 ) message = message.appendNewline().append( Component.text( "ONLINE" ).color( NamedTextColor.GREEN ) );
+                    if( sender.hasPermission( "appm.commands.player.get.uuid" ) );
+                }
+            }
+
+            sender.sendMessage( CommandErrorMessage.EXTRA_ARGUMENT.send( label, args, 3 ) );
+            return true;
+            /*Name(UUID)
+            * BANNED
+            * ONLINE
+            * IP Address: 1.1.1.1[underlined with permission]
+            * Total Ban Time: 23123d 23h 59m
+            * View Ban History[underlined]
+            * Current Ban Sentence: 123m
+            * Current Ban Source: uuid[underlined]/console[plain]
+            * Current Ban Reason: djflasjdkl dsklfjklas fjad laksdfl af las;l
+            * Hierarchy Value: 10
+            * # Group(s): asdfasdf,asdfasdfas,asdfasdf[underlined with permission]
+            * Past Name(s): dfsakjhf,sdhfhak
+            * Past IP(s): 1.2.3.4, 1.2.3.4[underlined with permission]
+            *
+            * IP
+            * BANNED
+            * ONLINE
+            * # Online Player(s): kdjfakl, sadfjakls, afskldfa[underlined with permission]
+            * # All Player(s): jsjfklas, skdfjakls, asdkfaksldf[underlined with permission]
+            * Total Ban Time: 3123d 23h 59m
+            * View Ban History[underlined]
+            * Current Ban Sentence: dfashdjah kasjf adjf
+            * Current Ban Source: uuid[underlined with permission]/console[plain]
+            * Current Ban Reason: akdjfkal alkdf akljdf akldf
+            * */
+        }
+
         sender.sendMessage( CommandErrorMessage.INCORRECT.send( label, args, 0 ) );
         return true;
     }
