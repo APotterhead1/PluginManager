@@ -161,17 +161,50 @@ permissions:
       appm.commands.player.get.uuid: true
       appm.commands.player.get.ip: true
   appm.commands.player.get.name:
+    description: Allows access to all appm player get name subcommands
+    default: op
+    children:
+      appm.commands.player.get.name.this: true
+      appm.commands.player.get.name.banHistory: true
+  appm.commands.player.get.name.this:
     description: Allows access to the appm player get name subcommand
     default: op
     children:
       appm.help-tab-complete.player: true
+  appm.commands.player.get.name.banHistory:
+    description: Allows access to the appm player get name banHistory subcommand
+    default: op
+    children:
+      appm.help-tab-complete.player: true
   appm.commands.player.get.uuid:
+    description: Allows access to all appm player get uuid subcommands
+    default: op
+    children:
+      appm.commands.player.get.uuid.this: true
+      appm.commands.player.get.uuid.banHistory: true
+  appm.commands.player.get.uuid.this:
     description: Allows access to the appm player get uuid subcommand
     default: op
     children:
       appm.help-tab-complete.player: true
+  appm.commands.player.get.uuid.banHistory:
+    description: Allows access to the appm player get uuid banHistory subcommand
+    default: op
+    children:
+      appm.help-tab-complete.player: true
   appm.commands.player.get.ip:
+    description: Allows access to all appm player get ip subcommands
+    default: op
+    children:
+      appm.commands.player.get.ip.this: true
+      appm.commands.player.get.ip.banHistory: true
+  appm.commands.player.get.ip.this:
     description: Allows access to the appm player get ip subcommand
+    default: op
+    children:
+      appm.help-tab-complete.player: true
+  appm.commands.player.get.ip.banHistory:
+    description: Allows access to the appm player get ip banHistory subcommand
     default: op
     children:
       appm.help-tab-complete.player: true
