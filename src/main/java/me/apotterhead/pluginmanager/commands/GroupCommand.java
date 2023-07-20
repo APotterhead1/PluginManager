@@ -127,23 +127,23 @@ public class GroupCommand implements TabExecutor {
                 return true;
             }
             if( args.length == 1 ) {
-                Component component = Component.text( "Groups: " ).color( NamedTextColor.GOLD );
+                Component component = Component.text( "" ).append( Component.text( "Groups: " ).color( NamedTextColor.GOLD ) );
                 List<String> groups = plugin.groups.config.getStringList( "groups" );
                 if( groups.size() == 0 ) {
                     sender.sendMessage( component );
                     return true;
                 }
                 if( sender.hasPermission( "appm.commands.group.get" ) ) {
-                    component = component.appendNewline().append( Component.text( "[" + groups.get( 0 ) + "]" ).color( NamedTextColor.AQUA ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/group get " + groups.get( 0 ) ) ) );
+                    component = component.appendNewline().append( Component.text( "[" + groups.get( 0 ) + "]" ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/group get " + groups.get( 0 ) ) ) );
                     for( int i = 1; i < groups.size(); i++ ) {
-                        component = component.append( Component.text( "," ).color( NamedTextColor.WHITE ) );
-                        component = component.append( Component.text( "[" + groups.get( i ) + "]" ).color( NamedTextColor.AQUA ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/group get " + groups.get( i ) ) ) );
+                        component = component.append( Component.text( "," ) );
+                        component = component.append( Component.text( "[" + groups.get( i ) + "]" ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/group get " + groups.get( i ) ) ) );
                     }
                 } else {
-                    component = component.appendNewline().append( Component.text( "[" + groups.get( 0 ) + "]" ).color( NamedTextColor.AQUA ) );
+                    component = component.appendNewline().append( Component.text( "[" + groups.get( 0 ) + "]" ) );
                     for( int i = 1; i < groups.size(); i++ ) {
-                        component = component.append( Component.text( "," ).color( NamedTextColor.WHITE ) );
-                        component = component.append( Component.text( "[" + groups.get( i ) + "]" ).color( NamedTextColor.AQUA ) );
+                        component = component.append( Component.text( "," ) );
+                        component = component.append( Component.text( "[" + groups.get( i ) + "]" ) );
                     }
                 }
                 sender.sendMessage( component );
@@ -585,28 +585,29 @@ public class GroupCommand implements TabExecutor {
                     return true;
                 }
 
-                Component component = Component.text( args[1] + ":" ).color( NamedTextColor.GOLD ).appendNewline();
+                Component component = Component.text( "" ).append( Component.text( args[1] + ":" ).color( NamedTextColor.GOLD ) ).appendNewline();
                 if( plugin.groups.config.contains( "defaultGroup" ) && Objects.requireNonNull( plugin.groups.config.getString( "defaultGroup" ) ).equals( args[1] ) )
                     component = component.append( Component.text( "Default Group" ).color( NamedTextColor.GREEN ) ).appendNewline();
                 component = component.append( Component.text( "Hierarchy Value:" ).color( NamedTextColor.AQUA ) ).appendSpace();
-                component = component.append( Component.text( Integer.toString( plugin.groups.config.getInt( "group." + args[1] + ".hierarchyValue" ) ) ).color( NamedTextColor.WHITE ) );
+                component = component.append( Component.text( Integer.toString( plugin.groups.config.getInt( "group." + args[1] + ".hierarchyValue" ) ) ) );
                 List<String> players = plugin.groups.config.getStringList( "group." + args[1] + ".players" );
 
                 if( players.size() > 0 ) {
                     if( players.size() == 1 ) component = component.appendNewline().append( Component.text( "1 Player:" ).color( NamedTextColor.AQUA ) ).appendSpace();
                     else component = component.appendNewline().append( Component.text( players.size() + " Players:" ).color( NamedTextColor.AQUA ) ).appendSpace();
                     if( sender.hasPermission( "appm.commands.player.get.uuid" ) ) {
-                        component = component.append( Component.text( plugin.getServer().getOfflinePlayer( UUID.fromString( players.get( 0 ) ) ).getName() + "(" + players.get( 0 ) + ")" ).color( NamedTextColor.WHITE ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get uuid " + players.get( 0 ) ) ) );
+                        component = component.append( Component.text( plugin.getServer().getOfflinePlayer( UUID.fromString( players.get( 0 ) ) ).getName() + "(" + players.get( 0 ) + ")" )
+                                .decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get uuid " + players.get( 0 ) ) ) );
                         for (int i = 1; i < players.size(); i++)
-                            component = component.append( Component.text( ", " ).color( NamedTextColor.WHITE ) ).append( Component.text( plugin.getServer().getOfflinePlayer( UUID.fromString( players.get( i ) ) ).getName() + "(" + players.get( i ) + ")" ).color( NamedTextColor.WHITE ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get uuid " + players.get( i ) ) ) );
+                            component = component.append( Component.text( ", " ) ).append( Component.text( plugin.getServer().getOfflinePlayer( UUID.fromString( players.get( i ) ) ).getName() + "(" + players.get( i ) + ")" ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get uuid " + players.get( i ) ) ) );
                     } else if( sender.hasPermission( "appm.commands.player.get.name" ) ) {
-                        component = component.append( Component.text( plugin.getServer().getOfflinePlayer( UUID.fromString( players.get( 0 ) ) ).getName() + "(" + players.get( 0 ) + ")" ).color( NamedTextColor.WHITE ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get name " + plugin.getServer().getOfflinePlayer( UUID.fromString( players.get( 0 ) ) ).getName() ) ) );
+                        component = component.append( Component.text( plugin.getServer().getOfflinePlayer( UUID.fromString( players.get( 0 ) ) ).getName() + "(" + players.get( 0 ) + ")" ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get name " + plugin.getServer().getOfflinePlayer( UUID.fromString( players.get( 0 ) ) ).getName() ) ) );
                         for (int i = 1; i < players.size(); i++)
-                            component = component.append( Component.text( ", " ).color( NamedTextColor.WHITE ) ).append( Component.text( plugin.getServer().getOfflinePlayer( UUID.fromString( players.get( i ) ) ).getName() + "(" + players.get( i ) + ")" ).color( NamedTextColor.WHITE ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get name " + plugin.getServer().getOfflinePlayer( UUID.fromString( players.get( i ) ) ).getName() ) ) );
+                            component = component.append( Component.text( ", " ) ).append( Component.text( plugin.getServer().getOfflinePlayer( UUID.fromString( players.get( i ) ) ).getName() + "(" + players.get( i ) + ")" ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get name " + plugin.getServer().getOfflinePlayer( UUID.fromString( players.get( i ) ) ).getName() ) ) );
                     } else {
-                        component = component.append( Component.text( plugin.getServer().getOfflinePlayer( UUID.fromString( players.get( 0 ) ) ).getName() + "(" + players.get( 0 ) + ")" ).color( NamedTextColor.WHITE ) );
+                        component = component.append( Component.text( plugin.getServer().getOfflinePlayer( UUID.fromString( players.get( 0 ) ) ).getName() + "(" + players.get( 0 ) + ")" ) );
                         for (int i = 1; i < players.size(); i++)
-                            component = component.append( Component.text( ", " + plugin.getServer().getOfflinePlayer( UUID.fromString( players.get( i ) ) ).getName() + "(" + players.get( i ) + ")" ).color( NamedTextColor.WHITE ) );
+                            component = component.append( Component.text( ", " + plugin.getServer().getOfflinePlayer( UUID.fromString( players.get( i ) ) ).getName() + "(" + players.get( i ) + ")" ) );
                     }
                 }
 

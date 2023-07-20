@@ -1,5 +1,5 @@
 // APotterhead
-// 13062023-16072023
+// 13062023-19072023
 
 package me.apotterhead.pluginmanager.commands;
 
@@ -41,7 +41,7 @@ public class PluginCommand implements TabExecutor {
                 return true;
             }
             if( args.length == 1 ) {
-                Component component = Component.text( "Plugins:" ).color( NamedTextColor.GOLD ).appendNewline();
+                Component component = Component.text( "" ).append( Component.text( "Plugins:" ).color( NamedTextColor.GOLD ) ).appendNewline();
 
                 Plugin[] plugins = plugin.getServer().getPluginManager().getPlugins();
 
@@ -50,7 +50,7 @@ public class PluginCommand implements TabExecutor {
                     else component = component.append( Component.text( "[" + plugins[0].getName() + "]" ).color( NamedTextColor.RED ) );
 
                     for( int i = 1; i < plugins.length; i++ ) {
-                        component = component.append( Component.text( "," ).color( NamedTextColor.WHITE ) );
+                        component = component.append( Component.text( "," ) );
                         if( plugins[i].isEnabled() ) component = component.append( Component.text( "[" + plugins[i].getName() + "]" ).color( NamedTextColor.GREEN ) );
                         else component = component.append( Component.text( "[" + plugins[i].getName() + "]" ).color( NamedTextColor.RED ) );
                     }
@@ -59,7 +59,7 @@ public class PluginCommand implements TabExecutor {
                     else component = component.append( Component.text( "[" + plugins[0].getName() + "]" ).color( NamedTextColor.RED ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/plugin get " + plugins[0].getName() ) ) );
 
                     for( int i = 1; i < plugins.length; i++ ) {
-                        component = component.append( Component.text( "," ).color( NamedTextColor.WHITE ) );
+                        component = component.append( Component.text( "," ) );
                         if( plugins[i].isEnabled() ) component = component.append( Component.text( "[" + plugins[i].getName() + "]" ).color( NamedTextColor.GREEN ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/plugin get " + plugins[i].getName() ) ) );
                         else component = component.append( Component.text( "[" + plugins[i].getName() + "]" ).color( NamedTextColor.RED ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/plugin get " + plugins[i].getName() ) ) );
                     }
@@ -173,10 +173,10 @@ public class PluginCommand implements TabExecutor {
                 Plugin serverPlugin = plugin.getServer().getPluginManager().getPlugin( args[1] );
                 assert serverPlugin != null;
 
-                Component component = Component.text( serverPlugin.getName() ).color( NamedTextColor.GOLD );
+                Component component = Component.text( "" ).append( Component.text( serverPlugin.getName() ).color( NamedTextColor.GOLD ) );
                 if( serverPlugin.getPluginMeta().getLoggerPrefix() != null )
-                    component = component.append( Component.text( "(" + serverPlugin.getPluginMeta().getLoggerPrefix() + ")" ) );
-                component = component.append( Component.text( ":" ) ).appendNewline();
+                    component = component.append( Component.text( "(" + serverPlugin.getPluginMeta().getLoggerPrefix() + ")" ).color( NamedTextColor.GOLD ) );
+                component = component.append( Component.text( ":" ).color( NamedTextColor.GOLD ) ).appendNewline();
                 component = component.append( Component.text( "Status:").color( NamedTextColor.AQUA ) ).appendSpace();
                 if( serverPlugin.isEnabled() ) {
                     if( sender.hasPermission( "appm.commands.plugin.disable" ) ) component = component.append( Component.text( "Enabled" ).color( NamedTextColor.GREEN ).decorate( TextDecoration.BOLD ).clickEvent( ClickEvent.runCommand( "/plugin disable " + serverPlugin.getName() ) ) );
@@ -187,24 +187,24 @@ public class PluginCommand implements TabExecutor {
                     else component = component.append( Component.text( "Disabled" ).color( NamedTextColor.RED ) );
                 }
                 component = component.appendNewline().append( Component.text( "Version:" ).color( NamedTextColor.AQUA ) ).appendSpace();
-                component = component.append( Component.text( serverPlugin.getPluginMeta().getVersion() ).color( NamedTextColor.WHITE ) );
+                component = component.append( Component.text( serverPlugin.getPluginMeta().getVersion() ) );
                 if( serverPlugin.getPluginMeta().getDescription() != null ) {
                     component = component.appendNewline().append( Component.text( "Description:" ).color( NamedTextColor.AQUA ) ).appendSpace();
-                    component = component.append( Component.text( serverPlugin.getPluginMeta().getDescription() ).color( NamedTextColor.WHITE ) );
+                    component = component.append( Component.text( serverPlugin.getPluginMeta().getDescription() ) );
                 }
                 List<String> authors = serverPlugin.getPluginMeta().getAuthors();
                 if( authors.size() == 1 ) {
                     component = component.appendNewline().append( Component.text( "Author:" ).color( NamedTextColor.AQUA ) ).appendSpace();
-                    component = component.append( Component.text( authors.get( 0 ) ).color( NamedTextColor.WHITE ) );
+                    component = component.append( Component.text( authors.get( 0 ) ) );
                 } else if( authors.size() > 1 ) {
                     component = component.appendNewline().append( Component.text( "Authors:" ).color( NamedTextColor.AQUA ) ).appendSpace();
                     StringBuilder authorString = new StringBuilder( authors.get( 0 ) );
                     for( int i = 1; i < authors.size(); i++ ) authorString.append( ", " ).append( authors.get( i ) );
-                    component = component.append( Component.text( authorString.toString() ).color( NamedTextColor.WHITE ) );
+                    component = component.append( Component.text( authorString.toString() ) );
                 }
                 if( serverPlugin.getPluginMeta().getWebsite() != null ) {
                     component = component.appendNewline().append( Component.text( "Website:" ).color( NamedTextColor.AQUA ) ).appendSpace();
-                    component = component.append( Component.text( serverPlugin.getPluginMeta().getWebsite() ).color( NamedTextColor.WHITE ).decoration( TextDecoration.UNDERLINED, true ).clickEvent( ClickEvent.openUrl( serverPlugin.getPluginMeta().getWebsite() ) ) );
+                    component = component.append( Component.text( serverPlugin.getPluginMeta().getWebsite() ).decoration( TextDecoration.UNDERLINED, true ).clickEvent( ClickEvent.openUrl( serverPlugin.getPluginMeta().getWebsite() ) ) );
                 }
 
                 sender.sendMessage( component );
