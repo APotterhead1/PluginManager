@@ -4,6 +4,7 @@
 package me.apotterhead.pluginmanager.events;
 
 import me.apotterhead.pluginmanager.PluginManager;
+import org.bukkit.BanList;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -12,6 +13,7 @@ import me.apotterhead.pluginmanager.util.ReloadPermissions.ReloadType;
 import me.apotterhead.pluginmanager.util.ReloadPermissions;
 import java.util.Objects;
 import java.util.List;
+import java.time.Instant;
 
 public class UpdatePlayerInfoOnLogin implements Listener {
 
@@ -25,6 +27,35 @@ public class UpdatePlayerInfoOnLogin implements Listener {
     public void onJoin( PlayerLoginEvent event ) {
         Player player = event.getPlayer();
         String uuid = player.getUniqueId().toString();
+        String currentIP = event.getRealAddress().getAddress()[0] + "." + event.getRealAddress().getAddress()[1] + "." + event.getRealAddress().getAddress()[2] + "." + event.getRealAddress().getAddress()[3];
+        String ipPath = currentIP.replace( '.', ',' );
+        Instant now = Instant.now();
+
+        if( plugin.players.config.contains( uuid + ".banEnd" ) && plugin.players.config.getLong( uuid + ".banEnd" ) <= now.getEpochSecond() ) {
+            plugin.players.config.set( uuid + ".totalBanTime", plugin.players.config.getLong( uuid + ".totalBanTime" ) + ( now.getEpochSecond() - plugin.players.config.getLong( uuid + ".banStart" ) ) );
+            plugin.players.save();
+
+            plugin.players.config.set( uuid + ".isBanned", false );
+            plugin.players.config.set( uuid + ".banStart", null );
+            plugin.players.config.set( uuid + ".banEnd", null );
+            plugin.players.save();
+
+            plugin.getServer().getBanList( BanList.Type.NAME ).pardon( uuid );
+            event.allow();
+        }
+
+        if( plugin.ips.config.contains( "ip." + ipPath + ".banEnd" ) && plugin.ips.config.getLong( "ip." + ipPath + ".banEnd" ) <= now.getEpochSecond() ) {
+            plugin.ips.config.set( "ip." + ipPath + ".totalBanTime", plugin.ips.config.getLong( "ip." + ipPath + ".totalBanTime" ) + ( now.getEpochSecond() - plugin.ips.config.getLong( "ip." + ipPath + ".banStart" ) ) );
+            plugin.ips.save();
+
+            plugin.ips.config.set( "ip." + ipPath + ".isBanned", false );
+            plugin.ips.config.set( "ip." + ipPath + ".banStart", null );
+            plugin.ips.config.set( "ip." + ipPath + ".banEnd", null );
+            plugin.ips.save();
+
+            plugin.getServer().unbanIP( currentIP );
+            event.allow();
+        }
 
         if( !plugin.players.config.contains( uuid ) && plugin.groups.config.contains( "defaultGroup" ) ) {
             String group = plugin.groups.config.getString( "defaultGroup" );
@@ -52,7 +83,6 @@ public class UpdatePlayerInfoOnLogin implements Listener {
         plugin.players.config.set( uuid + ".lastName", player.getName() );
         plugin.players.save();
 
-        String currentIP = event.getRealAddress().getAddress()[0] + "." + event.getRealAddress().getAddress()[1] + "." + event.getRealAddress().getAddress()[2] + "." + event.getRealAddress().getAddress()[3];
         if( plugin.players.config.contains( uuid + ".lastIP" ) && !Objects.requireNonNull( plugin.players.config.getString( uuid + ".lastIP" ) ).equals( currentIP ) ) {
             List<String> ips = plugin.players.config.getStringList( uuid + ".pastIPs" );
             ips.add( plugin.players.config.getString( uuid + ".lastIP" ) );
@@ -66,8 +96,6 @@ public class UpdatePlayerInfoOnLogin implements Listener {
         if( !ips.contains( currentIP ) ) ips.add( currentIP );
         plugin.ips.config.set( "ips", ips );
         plugin.ips.save();
-
-        String ipPath = currentIP.replace( '.', ',' );
 
         List<String> currentPlayers = plugin.ips.config.getStringList( "ip." + ipPath + ".currentPlayers" );
         currentPlayers.add( uuid );
