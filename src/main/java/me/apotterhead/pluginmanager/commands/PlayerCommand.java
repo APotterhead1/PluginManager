@@ -639,34 +639,102 @@ public class PlayerCommand implements TabExecutor {
                 return true;
             }
 
+            if( args.length == 4 ) {
+                if( !sender.hasPermission( "appm.commands.player.get.name.banHistory" ) && !sender.hasPermission( "appm.commands.player.get.uuid.banHistory" ) && !sender.hasPermission( "appm.commands.player.ip.banHistory" ) ) {
+                    sender.sendMessage( CommandErrorMessage.EXTRA_ARGUMENT.send( label, args, 3 ) );
+                    return true;
+                }
+
+                if( !args[3].equals( "banHistory" ) ) {
+                    sender.sendMessage( CommandErrorMessage.INCORRECT.send( label, args, 3 ) );
+                    return true;
+                }
+
+                if( args[1].equals( "ip" ) ) {
+                    if( !plugin.ips.config.contains( "ips" ) ) {
+                        sender.sendMessage( CommandErrorMessage.UNKNOWN.send( label, args, 2, "IP" ) );
+                        return true;
+                    }
+
+                    String ipPath = args[2].replace( '.', ',' );
+
+                    Component message = Component.text( "" ).append( Component.text( args[2] + " Ban History:" ).color( NamedTextColor.GOLD ).decorate( TextDecoration.BOLD ) );
+                    List<String> banSentenceLengths = plugin.ips.config.getStringList( "ip." + ipPath + ".banSentenceLengths" );
+                    List<String> banSources = plugin.ips.config.getStringList( "ip." + ipPath + ".banSources" );
+                    List<String> banReasons = plugin.ips.config.getStringList( "ip." + ipPath + ".banReasons" );
+
+                    for( int i = 0; i < banReasons.size(); i++ ) {
+                        message = message.appendNewline().append( Component.text( "Ban #" + ( i + 1 ) + ":" ).color( NamedTextColor.GOLD ) );
+
+                        message = message.appendNewline().append( Component.text( "Sentence Length:" ).color( NamedTextColor.AQUA ) ).appendSpace();
+                        message = message.append( Component.text( banSentenceLengths.get( i ) ) );
+
+                        message = message.appendNewline().append( Component.text( "Source:" ).color( NamedTextColor.AQUA ) ).appendSpace();
+                        if( sender.hasPermission( "appm.commands.player.get.uuid.this" ) && !banSources.get( i ).equals( "console" ) ) message = message.append( Component.text( banSources.get( i ) ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get uuid " + banSources.get( i ) ) ) );
+                        else if( sender.hasPermission( "appm.commands.player.get.name.this" ) && !banSources.get(i).equals( "console" ) ) message = message.append( Component.text( banSources.get( i ) ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get name " + plugin.getServer().getOfflinePlayer( UUID.fromString( banSources.get( i ) ) ) ) ) );
+                        else message = message.append( Component.text( banSources.get( i ) ) );
+
+                        message = message.appendNewline().append( Component.text( "Reason:" ).color( NamedTextColor.AQUA ) ).appendSpace();
+                        message = message.append( Component.text( banReasons.get( i ) ) );
+                    }
+
+                    sender.sendMessage( message );
+                    return true;
+                }
+
+                String uuid = null;
+                OfflinePlayer[] players = plugin.getServer().getOfflinePlayers();
+
+                if( args[1].equals( "name" ) ) {
+                    for( OfflinePlayer player : players ) {
+                        assert player.getName() != null;
+                        if( player.getName().equals( args[2] ) ) {
+                            uuid = player.getUniqueId().toString();
+                            break;
+                        }
+                    }
+                }
+
+                if( args[1].equals( "uuid" ) ) {
+                    for( OfflinePlayer player : players ) {
+                        if( player.getUniqueId().toString().equalsIgnoreCase( args[2] ) ) {
+                            uuid = player.getUniqueId().toString();
+                            break;
+                        }
+                    }
+                }
+
+                if( uuid == null ) {
+                    sender.sendMessage( CommandErrorMessage.UNKNOWN.send( label, args, 2, "player" ) );
+                    return true;
+                }
+
+                Component message = Component.text( "" ).append( Component.text( plugin.getServer().getOfflinePlayer( UUID.fromString( uuid ) ).getName() + "(" + uuid + ") Ban History:" ).color( NamedTextColor.GOLD ).decorate( TextDecoration.BOLD ) );
+                List<String> banSentenceLengths = plugin.players.config.getStringList( uuid + ".banSentenceLengths" );
+                List<String> banSources = plugin.players.config.getStringList( uuid + ".banSources" );
+                List<String> banReasons = plugin.players.config.getStringList( uuid + ".banReasons" );
+
+                for( int i = 0; i < banReasons.size(); i++ ) {
+                    message = message.appendNewline().append( Component.text( "Ban #" + ( i + 1 ) + ":" ).color( NamedTextColor.GOLD ) );
+
+                    message = message.appendNewline().append( Component.text( "Sentence Length:" ).color( NamedTextColor.AQUA ) ).appendSpace();
+                    message = message.append( Component.text( banSentenceLengths.get( i ) ) );
+
+                    message = message.appendNewline().append( Component.text( "Source:" ).color( NamedTextColor.AQUA ) ).appendSpace();
+                    if( sender.hasPermission( "appm.commands.player.get.uuid.this" ) && !banSources.get( i ).equals( "console" ) ) message = message.append( Component.text( banSources.get( i ) ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get uuid " + banSources.get( i ) ) ) );
+                    else if( sender.hasPermission( "appm.commands.player.get.name.this" ) && !banSources.get( i ).equals( "console" ) ) message = message.append( Component.text( banSources.get( i ) ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get name " + plugin.getServer().getOfflinePlayer( UUID.fromString( banSources.get( i ) ) ) ) ) );
+                    else message = message.append( Component.text( banSources.get( i ) ) );
+
+                    message = message.appendNewline().append( Component.text( "Reason:" ).color( NamedTextColor.AQUA ) ).appendSpace();
+                    message = message.append( Component.text( banReasons.get( i ) ) );
+                }
+
+                sender.sendMessage( message );
+                return true;
+            }
+
             sender.sendMessage( CommandErrorMessage.EXTRA_ARGUMENT.send( label, args, 3 ) );
             return true;
-            /*Name(UUID)
-            * BANNED
-            * ONLINE
-            * IP Address: 1.1.1.1[underlined with permission]
-            * Total Ban Time: 23123d 23h 59m
-            * View Ban History[underlined]
-            * Current Ban Sentence: 123m
-            * Current Ban Source: uuid[underlined]/console[plain]
-            * Current Ban Reason: a ban reason
-            * Hierarchy Value: 10
-            * # Group(s): aGroup,anotherGroup,yetAnotherGroup[underlined with permission]
-            * Past Name(s): anOldName,anotherOldName
-            * Last IP: 12.4.6.8[underlined with permission]
-            * Past IP(s): 1.2.3.4, 1.2.3.4[underlined with permission]
-            *
-            * ~IP
-            * ~BANNED
-            * ~ONLINE
-            * ~# Online Player(s): anOnlinePlayer, anotherOnlinePlayer, yetAnotherOnlinePlayer[underlined with permission]
-            * ~# All Player(s): aPastPlayer, anotherPastPlayer, yetAnotherPastPlayer[underlined with permission]
-            * Total Ban Time: 3123d 23h 59m
-            * View Ban History[underlined]
-            * Current Ban Sentence: 14m
-            * Current Ban Source: uuid[underlined with permission]/console[plain]
-            * Current Ban Reason: a ban reason
-            * */
         }
 
         sender.sendMessage( CommandErrorMessage.INCORRECT.send( label, args, 0 ) );
