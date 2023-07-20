@@ -1,5 +1,5 @@
 // APotterhead
-// 13062023-16072023
+// 13062023-19072023
 
 package me.apotterhead.pluginmanager.util;
 
@@ -13,7 +13,8 @@ public enum CommandErrorMessage {
     INCOMPLETE,
     INCORRECT,
     UNKNOWN,
-    EXTRA_ARGUMENT;
+    EXTRA_ARGUMENT,
+    HIERARCHY_VALUE;
 
     public TextComponent send() {
         return send( "", new String[0] );
@@ -28,6 +29,7 @@ public enum CommandErrorMessage {
 
         if( this == PERMISSION ) return Component.text( "Unknown command. Type \"/help\" for help." ).color( NamedTextColor.WHITE );
         if( this == UNKNOWN ) return Component.text( "Unknown " + unknownVariable + " '" + args[ errorArgument ] + "'").color( NamedTextColor.RED );
+        if( this == HIERARCHY_VALUE ) return Component.text( "You do not have the required hierarchy value to make this modification" ).color( NamedTextColor.RED );
         TextComponent component = Component.text("");
         if( this == INCOMPLETE ) component = Component.text( "Unknown or incomplete command, see below for error" ).color( NamedTextColor.RED );
         else if( this == INCORRECT ) component = Component.text( "Incorrect argument for command" ).color( NamedTextColor.RED );

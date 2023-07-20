@@ -1,5 +1,5 @@
 // APotterhead
-// 23062023-18072023
+// 23062023-19072023
 
 package me.apotterhead.pluginmanager.commands;
 
@@ -9,6 +9,8 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import java.util.List;
 import java.util.ArrayList;
+
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -91,6 +93,20 @@ public class GroupCommand implements TabExecutor {
                     return true;
                 }
 
+                if( sender instanceof Player) {
+                    int senderHV = 0;
+                    if( plugin.players.config.contains( ( (Player) sender ).getUniqueId() + ".hierarchyValue" ) ) senderHV = plugin.players.config.getInt( ( (Player) sender ).getUniqueId() + ".hierarchyValue" );
+                    else if( plugin.players.config.getStringList( ( (Player) sender ).getUniqueId() + ".groups" ).size() > 0 ) {
+                        senderHV = plugin.groups.config.getInt( "group." + plugin.players.config.getStringList( ( (Player) sender ).getUniqueId() + ".groups" ).get( 0 ) + ".hierarchyValue" );
+                        for( String group : plugin.players.config.getStringList( ( (Player) sender ).getUniqueId() + ".groups" ) ) if( senderHV < plugin.groups.config.getInt( "group." + group + ".hierarchyValue" ) ) senderHV = plugin.groups.config.getInt( "group." + group + ".hierarchyValue" );
+                    }
+
+                    if( !( senderHV > plugin.groups.config.getInt( "group." + args[1] + ".hierarchyValue" ) ) ) {
+                        sender.sendMessage( CommandErrorMessage.HIERARCHY_VALUE.send() );
+                        return true;
+                    }
+                }
+
                 if( plugin.groups.config.contains( "defaultGroup" ) && Objects.requireNonNull( plugin.groups.config.getString( "defaultGroup" ) ).equals( args[1] ) )
                     plugin.groups.config.set( "defaultGroup", null );
                 groups.remove( args[1] );
@@ -155,11 +171,39 @@ public class GroupCommand implements TabExecutor {
                     return true;
                 }
 
+                if( sender instanceof Player ) {
+                    int senderHV = 0;
+                    if( plugin.players.config.contains( ( (Player) sender ).getUniqueId() + ".hierarchyValue" ) ) senderHV = plugin.players.config.getInt( ( (Player) sender ).getUniqueId() + ".hierarchyValue" );
+                    else if( plugin.players.config.getStringList( ( (Player) sender ).getUniqueId() + ".groups" ).size() > 0 ) {
+                        senderHV = plugin.groups.config.getInt( "group." + plugin.players.config.getStringList( ( (Player) sender ).getUniqueId() + ".groups" ).get( 0 ) + ".hierarchyValue" );
+                        for( String group : plugin.players.config.getStringList( ( (Player) sender ).getUniqueId() + ".groups" ) ) if( senderHV < plugin.groups.config.getInt( "group." + group + ".hierarchyValue" ) ) senderHV = plugin.groups.config.getInt( "group." + group + ".hierarchyValue" );
+                    }
+
+                    if( !( senderHV > plugin.groups.config.getInt( "group." + args[1] + ".hierarchyValue" ) ) ) {
+                        sender.sendMessage( CommandErrorMessage.HIERARCHY_VALUE.send() );
+                        return true;
+                    }
+                }
+
                 try{
                     Integer.parseInt( args[2] );
                 } catch( Exception e ) {
                     sender.sendMessage( Component.text( "'" + args[2] + "' is not a whole number, is too large, or is too small" ).color( NamedTextColor.RED ) );
                     return true;
+                }
+
+                if( sender instanceof Player ) {
+                    int senderHV = 0;
+                    if( plugin.players.config.contains( ( (Player) sender ).getUniqueId() + ".hierarchyValue" ) ) senderHV = plugin.players.config.getInt( ( (Player) sender ).getUniqueId() + ".hierarchyValue" );
+                    else if( plugin.players.config.getStringList( ( (Player) sender ).getUniqueId() + ".groups" ).size() > 0 ) {
+                        senderHV = plugin.groups.config.getInt( "group." + plugin.players.config.getStringList( ( (Player) sender ).getUniqueId() + ".groups" ).get( 0 ) + ".hierarchyValue" );
+                        for( String group : plugin.players.config.getStringList( ( (Player) sender ).getUniqueId() + ".groups" ) ) if( senderHV < plugin.groups.config.getInt( "group." + group + ".hierarchyValue" ) ) senderHV = plugin.groups.config.getInt( "group." + group + ".hierarchyValue" );
+                    }
+
+                    if( !( senderHV > Integer.parseInt( args[2] ) ) ) {
+                        sender.sendMessage( CommandErrorMessage.HIERARCHY_VALUE.send() );
+                        return true;
+                    }
                 }
 
                 int oldHierarchyValue = plugin.groups.config.getInt( "group" + args[1] + ".hierarchyValue" );
@@ -214,6 +258,20 @@ public class GroupCommand implements TabExecutor {
                     return true;
                 }
 
+                if( sender instanceof Player ) {
+                    int senderHV = 0;
+                    if( plugin.players.config.contains( ( (Player) sender ).getUniqueId() + ".hierarchyValue" ) ) senderHV = plugin.players.config.getInt( ( (Player) sender ).getUniqueId() + ".hierarchyValue" );
+                    else if( plugin.players.config.getStringList( ( (Player) sender ).getUniqueId() + ".groups" ).size() > 0 ) {
+                        senderHV = plugin.groups.config.getInt( "group." + plugin.players.config.getStringList( ( (Player) sender ).getUniqueId() + ".groups" ).get( 0 ) + ".hierarchyValue" );
+                        for( String group : plugin.players.config.getStringList( ( (Player) sender ).getUniqueId() + ".groups" ) ) if( senderHV < plugin.groups.config.getInt( "group." + group + ".hierarchyValue" ) ) senderHV = plugin.groups.config.getInt( "group." + group + ".hierarchyValue" );
+                    }
+
+                    if( !( senderHV > plugin.groups.config.getInt( "group." + args[1] + ".hierarchyValue" ) ) ) {
+                        sender.sendMessage( CommandErrorMessage.HIERARCHY_VALUE.send() );
+                        return true;
+                    }
+                }
+
                 String uuid = null;
                 OfflinePlayer[] players = plugin.getServer().getOfflinePlayers();
 
@@ -238,6 +296,27 @@ public class GroupCommand implements TabExecutor {
                 if( uuid == null ) {
                     sender.sendMessage( CommandErrorMessage.UNKNOWN.send( label, args, 3, "player" ) );
                     return true;
+                }
+
+                if( sender instanceof Player ) {
+                    int senderHV = 0;
+                    if( plugin.players.config.contains( ( (Player) sender ).getUniqueId() + ".hierarchyValue" ) ) senderHV = plugin.players.config.getInt( ( (Player) sender ).getUniqueId() + ".hierarchyValue" );
+                    else if( plugin.players.config.getStringList( ( (Player) sender ).getUniqueId() + ".groups" ).size() > 0 ) {
+                        senderHV = plugin.groups.config.getInt( "group." + plugin.players.config.getStringList( ( (Player) sender ).getUniqueId() + ".groups" ).get( 0 ) + ".hierarchyValue" );
+                        for( String group : plugin.players.config.getStringList( ( (Player) sender ).getUniqueId() + ".groups" ) ) if( senderHV < plugin.groups.config.getInt( "group." + group + ".hierarchyValue" ) ) senderHV = plugin.groups.config.getInt( "group." + group + ".hierarchyValue" );
+                    }
+
+                    int targetHV = 0;
+                    if( plugin.players.config.contains( uuid + ".hierarchyValue" ) ) targetHV = plugin.players.config.getInt( uuid + ".hierarchyValue" );
+                    else if( plugin.players.config.getStringList( uuid + ".groups" ).size() > 0 ) {
+                        targetHV = plugin.groups.config.getInt( "group." + plugin.players.config.getStringList( uuid + ".groups" ).get( 0 ) + ".hierarchyValue" );
+                        for( String group : plugin.players.config.getStringList( uuid + ".groups" ) ) if( targetHV < plugin.groups.config.getInt( "group." + group + ".hierarchyValue" ) ) targetHV = plugin.groups.config.getInt( "group." + group + ".hierarchyValue" );
+                    }
+
+                    if( !( senderHV > targetHV ) ) {
+                        sender.sendMessage( CommandErrorMessage.HIERARCHY_VALUE.send() );
+                        return true;
+                    }
                 }
 
                 List<String> groupPlayers = plugin.groups.config.getStringList( "group." + args[1] + ".players" );
@@ -308,6 +387,20 @@ public class GroupCommand implements TabExecutor {
                     return true;
                 }
 
+                if( sender instanceof Player ) {
+                    int senderHV = 0;
+                    if( plugin.players.config.contains( ( (Player) sender ).getUniqueId() + ".hierarchyValue" ) ) senderHV = plugin.players.config.getInt( ( (Player) sender ).getUniqueId() + ".hierarchyValue" );
+                    else if( plugin.players.config.getStringList( ( (Player) sender ).getUniqueId() + ".groups" ).size() > 0 ) {
+                        senderHV = plugin.groups.config.getInt( "group." + plugin.players.config.getStringList( ( (Player) sender ).getUniqueId() + ".groups" ).get( 0 ) + ".hierarchyValue" );
+                        for( String group : plugin.players.config.getStringList( ( (Player) sender ).getUniqueId() + ".groups" ) ) if( senderHV < plugin.groups.config.getInt( "group." + group + ".hierarchyValue" ) ) senderHV = plugin.groups.config.getInt( "group." + group + ".hierarchyValue" );
+                    }
+
+                    if( !( senderHV > plugin.groups.config.getInt( "group." + args[1] + ".hierarchyValue" ) ) ) {
+                        sender.sendMessage( CommandErrorMessage.HIERARCHY_VALUE.send() );
+                        return true;
+                    }
+                }
+
                 String uuid = null;
                 OfflinePlayer[] players = plugin.getServer().getOfflinePlayers();
 
@@ -333,6 +426,27 @@ public class GroupCommand implements TabExecutor {
                 if( uuid == null ) {
                     sender.sendMessage( CommandErrorMessage.UNKNOWN.send( label, args, 3, "player" ) );
                     return true;
+                }
+
+                if( sender instanceof Player ) {
+                    int senderHV = 0;
+                    if( plugin.players.config.contains( ( (Player) sender ).getUniqueId() + ".hierarchyValue" ) ) senderHV = plugin.players.config.getInt( ( (Player) sender ).getUniqueId() + ".hierarchyValue" );
+                    else if( plugin.players.config.getStringList( ( (Player) sender ).getUniqueId() + ".groups" ).size() > 0 ) {
+                        senderHV = plugin.groups.config.getInt( "group." + plugin.players.config.getStringList( ( (Player) sender ).getUniqueId() + ".groups" ).get( 0 ) + ".hierarchyValue" );
+                        for( String group : plugin.players.config.getStringList( ( (Player) sender ).getUniqueId() + ".groups" ) ) if( senderHV < plugin.groups.config.getInt( "group." + group + ".hierarchyValue" ) ) senderHV = plugin.groups.config.getInt( "group." + group + ".hierarchyValue" );
+                    }
+
+                    int targetHV = 0;
+                    if( plugin.players.config.contains( uuid + ".hierarchyValue" ) ) targetHV = plugin.players.config.getInt( uuid + ".hierarchyValue" );
+                    else if( plugin.players.config.getStringList( uuid + ".groups" ).size() > 0 ) {
+                        targetHV = plugin.groups.config.getInt( "group." + plugin.players.config.getStringList( uuid + ".groups" ).get( 0 ) + ".hierarchyValue" );
+                        for( String group : plugin.players.config.getStringList( uuid + ".groups" ) ) if( targetHV < plugin.groups.config.getInt( "group." + group + ".hierarchyValue" ) ) targetHV = plugin.groups.config.getInt( "group." + group + ".hierarchyValue" );
+                    }
+
+                    if( !( senderHV > targetHV ) ) {
+                        sender.sendMessage( CommandErrorMessage.HIERARCHY_VALUE.send() );
+                        return true;
+                    }
                 }
 
                 List<String> groupPlayers = plugin.groups.config.getStringList( "group." + args[1] + ".players" );
@@ -392,6 +506,29 @@ public class GroupCommand implements TabExecutor {
                 if( !plugin.groups.config.getStringList( "groups" ).contains( args[1] ) ) {
                     sender.sendMessage( CommandErrorMessage.UNKNOWN.send( label, args, 1, "group" ) );
                     return true;
+                }
+
+                if( sender instanceof Player ) {
+                    int senderHV = 0;
+                    if( plugin.players.config.contains( ( (Player) sender ).getUniqueId() + ".hierarchyValue" ) ) senderHV = plugin.players.config.getInt( ( (Player) sender ).getUniqueId() + ".hierarchyValue" );
+                    else if( plugin.players.config.getStringList( ( (Player) sender ).getUniqueId() + ".groups" ).size() > 0 ) {
+                        senderHV = plugin.groups.config.getInt( "group." + plugin.players.config.getStringList( ( (Player) sender ).getUniqueId() + ".groups" ).get( 0 ) + ".hierarchyValue" );
+                        for( String group : plugin.players.config.getStringList( ( (Player) sender ).getUniqueId() + ".groups" ) ) if( senderHV < plugin.groups.config.getInt( "group." + group + ".hierarchyValue" ) ) senderHV = plugin.groups.config.getInt( "group." + group + ".hierarchyValue" );
+                    }
+
+                    int targetHV = plugin.groups.config.getInt( "group." + args[1] + ".hierarchyValue" );
+                    for( String uuid : plugin.groups.config.getStringList( "group." + args[1] + ".players" ) ) {
+                        if( plugin.players.config.contains( uuid + ".hierarchyValue" ) ) {
+                            if( targetHV < plugin.players.config.getInt( uuid + ".hierarchyValue" ) ) targetHV = plugin.players.config.getInt( uuid + ".hierarchyValue" );
+                        } else if( plugin.players.config.getStringList( uuid + ".groups" ).size() > 0 ) {
+                            for( String group : plugin.players.config.getStringList( uuid + ".groups" ) ) if( targetHV < plugin.groups.config.getInt( "group." + group + ".hierarchyValue" ) ) targetHV = plugin.groups.config.getInt( "group." + group + ".hierarchyValue" );
+                        }
+                    }
+
+                    if( !( senderHV > targetHV ) ) {
+                        sender.sendMessage( CommandErrorMessage.HIERARCHY_VALUE.send() );
+                        return true;
+                    }
                 }
 
                 List<String> players = plugin.groups.config.getStringList( "group." + args[1] + ".players" );
@@ -496,6 +633,20 @@ public class GroupCommand implements TabExecutor {
                 if( !plugin.groups.config.getStringList( "groups" ).contains( args[1] ) ) {
                     sender.sendMessage( CommandErrorMessage.UNKNOWN.send( label, args, 1, "group" ) );
                     return true;
+                }
+
+                if( sender instanceof Player ) {
+                    int senderHV = 0;
+                    if( plugin.players.config.contains( ( (Player) sender ).getUniqueId() + ".hierarchyValue" ) ) senderHV = plugin.players.config.getInt( ( (Player) sender ).getUniqueId() + ".hierarchyValue" );
+                    else if( plugin.players.config.getStringList( ( (Player) sender ).getUniqueId() + ".groups" ).size() > 0 ) {
+                        senderHV = plugin.groups.config.getInt( "group." + plugin.players.config.getStringList( ( (Player) sender ).getUniqueId() + ".groups" ).get( 0 ) + ".hierarchyValue" );
+                        for( String group : plugin.players.config.getStringList( ( (Player) sender ).getUniqueId() + ".groups" ) ) if( senderHV < plugin.groups.config.getInt( "group." + group + ".hierarchyValue" ) ) senderHV = plugin.groups.config.getInt( "group." + group + ".hierarchyValue" );
+                    }
+
+                    if( !( senderHV > plugin.groups.config.getInt( "group." + args[1] + ".hierarchyValue" ) ) ) {
+                        sender.sendMessage( CommandErrorMessage.HIERARCHY_VALUE.send() );
+                        return true;
+                    }
                 }
 
                 plugin.groups.config.set( "defaultGroup", args[1] );
