@@ -29,10 +29,9 @@ public class UpdatePlayerInfoOnLogin implements Listener {
         String uuid = player.getUniqueId().toString();
         String currentIP = event.getRealAddress().getAddress()[0] + "." + event.getRealAddress().getAddress()[1] + "." + event.getRealAddress().getAddress()[2] + "." + event.getRealAddress().getAddress()[3];
         String ipPath = currentIP.replace( '.', ',' );
-        Instant now = Instant.now();
 
-        if( plugin.players.config.contains( uuid + ".banEnd" ) && plugin.players.config.getLong( uuid + ".banEnd" ) <= now.getEpochSecond() ) {
-            plugin.players.config.set( uuid + ".totalBanTime", plugin.players.config.getLong( uuid + ".totalBanTime" ) + ( now.getEpochSecond() - plugin.players.config.getLong( uuid + ".banStart" ) ) );
+        if( plugin.players.config.contains( uuid + ".banEnd" ) && plugin.players.config.getLong( uuid + ".banEnd" ) <= Instant.now().getEpochSecond() ) {
+            plugin.players.config.set( uuid + ".totalBanTime", plugin.players.config.getLong( uuid + ".totalBanTime" ) + ( plugin.players.config.getLong( uuid + ".banEnd" ) - plugin.players.config.getLong( uuid + ".banStart" ) ) );
             plugin.players.save();
 
             plugin.players.config.set( uuid + ".isBanned", false );
@@ -44,8 +43,8 @@ public class UpdatePlayerInfoOnLogin implements Listener {
             event.allow();
         }
 
-        if( plugin.ips.config.contains( "ip." + ipPath + ".banEnd" ) && plugin.ips.config.getLong( "ip." + ipPath + ".banEnd" ) <= now.getEpochSecond() ) {
-            plugin.ips.config.set( "ip." + ipPath + ".totalBanTime", plugin.ips.config.getLong( "ip." + ipPath + ".totalBanTime" ) + ( now.getEpochSecond() - plugin.ips.config.getLong( "ip." + ipPath + ".banStart" ) ) );
+        if( plugin.ips.config.contains( "ip." + ipPath + ".banEnd" ) && plugin.ips.config.getLong( "ip." + ipPath + ".banEnd" ) <= Instant.now().getEpochSecond() ) {
+            plugin.ips.config.set( "ip." + ipPath + ".totalBanTime", plugin.ips.config.getLong( "ip." + ipPath + ".totalBanTime" ) + ( plugin.ips.config.getLong( "ip." + ipPath + ".banEnd" ) - plugin.ips.config.getLong( "ip." + ipPath + ".banStart" ) ) );
             plugin.ips.save();
 
             plugin.ips.config.set( "ip." + ipPath + ".isBanned", false );

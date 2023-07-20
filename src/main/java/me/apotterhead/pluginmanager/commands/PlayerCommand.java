@@ -581,6 +581,19 @@ public class PlayerCommand implements TabExecutor {
 
                     String ipPath = args[2].replace( '.', ',' );
                     Component message = Component.text( "" ).append( Component.text( args[2]  + ":" ).color( NamedTextColor.GOLD ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.copyToClipboard( args[2] ) ) );
+
+                    if( plugin.ips.config.contains( "ip." + ipPath + ".banEnd" ) && plugin.ips.config.getLong( "ip." + ipPath + ".banEnd" ) <= Instant.now().getEpochSecond() ) {
+                        plugin.ips.config.set( "ip." + ipPath + ".totalBanTime", plugin.ips.config.getLong( "ip." + ipPath + ".totalBanTime" ) + ( plugin.ips.config.getLong( "ip." + ipPath + ".banEnd" ) - plugin.ips.config.getLong( "ip." + ipPath + ".banStart" ) ) );
+                        plugin.ips.save();
+
+                        plugin.ips.config.set( "ip." + ipPath + ".isBanned", false );
+                        plugin.ips.config.set( "ip." + ipPath + ".banStart", null );
+                        plugin.ips.config.set( "ip." + ipPath + ".banEnd", null );
+                        plugin.ips.save();
+
+                        plugin.getServer().unbanIP( args[2] );
+                    }
+
                     if( plugin.ips.config.getBoolean( "ip." + ipPath + ".isBanned" ) ) message = message.appendNewline().append( Component.text( "BANNED" ).color( NamedTextColor.RED ) );
                     if( plugin.ips.config.getStringList( "ip." + ipPath + ".currentPlayers" ).size() != 0 ) message = message.appendNewline().append( Component.text( "ONLINE" ).color( NamedTextColor.GREEN ) );
 
@@ -710,6 +723,19 @@ public class PlayerCommand implements TabExecutor {
 
 
                 Component message = Component.text( "" ).append( Component.text().append( Component.text( Objects.requireNonNull( plugin.getServer().getOfflinePlayer( UUID.fromString( uuid ) ).getName() ) ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.copyToClipboard( Objects.requireNonNull( plugin.getServer().getOfflinePlayer( UUID.fromString( uuid ) ).getName() ) ) ) ).append( Component.text( "(" ) ).append( Component.text( uuid ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.copyToClipboard( uuid ) ) ).append( Component.text( "):" ) ).color( NamedTextColor.GOLD ) );
+
+                if( plugin.players.config.contains( uuid + ".banEnd" ) && plugin.players.config.getLong( uuid + ".banEnd" ) <= Instant.now().getEpochSecond() ) {
+                    plugin.players.config.set( uuid + ".totalBanTime", plugin.players.config.getLong( uuid + ".totalBanTime" ) + ( plugin.players.config.getLong( uuid + ".banEnd" ) - plugin.players.config.getLong( uuid + ".banStart" ) ) );
+                    plugin.players.save();
+
+                    plugin.players.config.set( uuid + ".isBanned", false );
+                    plugin.players.config.set( uuid + ".banStart", null );
+                    plugin.players.config.set( uuid + ".banEnd", null );
+                    plugin.players.save();
+
+                    plugin.getServer().getBanList( BanList.Type.NAME ).pardon( uuid );
+                }
+
                 if( plugin.players.config.getBoolean( uuid + ".isBanned" ) ) message = message.appendNewline().append( Component.text( "BANNED" ).color( NamedTextColor.RED ) );
                 if( plugin.getServer().getOfflinePlayer( UUID.fromString( uuid ) ).isOnline() ) {
                     message = message.appendNewline().append( Component.text( "ONLINE" ).color( NamedTextColor.GREEN ) );
