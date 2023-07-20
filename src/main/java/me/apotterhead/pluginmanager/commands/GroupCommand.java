@@ -209,8 +209,6 @@ public class GroupCommand implements TabExecutor {
             }
 
             if( args.length == 4 ) {
-
-
                 if( !plugin.groups.config.getStringList( "groups" ).contains( args[1] ) ) {
                     sender.sendMessage( CommandErrorMessage.UNKNOWN.send( label, args, 1, "group" ) );
                     return true;
@@ -463,11 +461,11 @@ public class GroupCommand implements TabExecutor {
                     if( sender.hasPermission( "appm.commands.player.get.uuid" ) ) {
                         component = component.append( Component.text( plugin.getServer().getOfflinePlayer( UUID.fromString( players.get( 0 ) ) ).getName() + "(" + players.get( 0 ) + ")" ).color( NamedTextColor.WHITE ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get uuid " + players.get( 0 ) ) ) );
                         for (int i = 1; i < players.size(); i++)
-                            component = component.append( Component.text( ", " ).color( NamedTextColor.WHITE ) ).append( Component.text( plugin.getServer().getOfflinePlayer( UUID.fromString( players.get( i ) ) ).getName() + "(" + players.get( i ) + ")" ).color( NamedTextColor.WHITE ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get uuid " + players.get( 0 ) ) ) );
+                            component = component.append( Component.text( ", " ).color( NamedTextColor.WHITE ) ).append( Component.text( plugin.getServer().getOfflinePlayer( UUID.fromString( players.get( i ) ) ).getName() + "(" + players.get( i ) + ")" ).color( NamedTextColor.WHITE ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get uuid " + players.get( i ) ) ) );
                     } else if( sender.hasPermission( "appm.commands.player.get.name" ) ) {
                         component = component.append( Component.text( plugin.getServer().getOfflinePlayer( UUID.fromString( players.get( 0 ) ) ).getName() + "(" + players.get( 0 ) + ")" ).color( NamedTextColor.WHITE ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get name " + plugin.getServer().getOfflinePlayer( UUID.fromString( players.get( 0 ) ) ).getName() ) ) );
                         for (int i = 1; i < players.size(); i++)
-                            component = component.append( Component.text( ", " ).color( NamedTextColor.WHITE ) ).append( Component.text( plugin.getServer().getOfflinePlayer( UUID.fromString( players.get( i ) ) ).getName() + "(" + players.get( i ) + ")" ).color( NamedTextColor.WHITE ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get name " + plugin.getServer().getOfflinePlayer( UUID.fromString( players.get( 0 ) ) ).getName() ) ) );
+                            component = component.append( Component.text( ", " ).color( NamedTextColor.WHITE ) ).append( Component.text( plugin.getServer().getOfflinePlayer( UUID.fromString( players.get( i ) ) ).getName() + "(" + players.get( i ) + ")" ).color( NamedTextColor.WHITE ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get name " + plugin.getServer().getOfflinePlayer( UUID.fromString( players.get( i ) ) ).getName() ) ) );
                     } else {
                         component = component.append( Component.text( plugin.getServer().getOfflinePlayer( UUID.fromString( players.get( 0 ) ) ).getName() + "(" + players.get( 0 ) + ")" ).color( NamedTextColor.WHITE ) );
                         for (int i = 1; i < players.size(); i++)

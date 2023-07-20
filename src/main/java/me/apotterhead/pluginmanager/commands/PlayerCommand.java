@@ -20,6 +20,9 @@ import org.bukkit.entity.Player;
 import me.apotterhead.pluginmanager.util.CommandErrorMessage;
 import java.time.temporal.ChronoUnit;
 import java.lang.StringBuilder;
+import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.event.ClickEvent;
+import java.util.Objects;
 
 public class PlayerCommand implements TabExecutor {
 
@@ -90,10 +93,10 @@ public class PlayerCommand implements TabExecutor {
                     plugin.players.save();
                 } else {
                     try {
-                        plugin.players.config.set(uuid + ".hierarchyValue", Integer.parseInt(args[3]));
+                        plugin.players.config.set( uuid + ".hierarchyValue", Integer.parseInt( args[3] ) );
                         plugin.players.save();
-                    } catch (Exception e) {
-                        sender.sendMessage(Component.text("'" + args[3] + "' is not a whole number, is too large, or is too small").color(NamedTextColor.RED));
+                    } catch ( Exception e ) {
+                        sender.sendMessage( Component.text( "'" + args[3] + "' is not a whole number, is too large, or is too small" ).color( NamedTextColor.RED ) );
                         return true;
                     }
                 }
@@ -276,7 +279,7 @@ public class PlayerCommand implements TabExecutor {
 
             plugin.getServer().getOfflinePlayer( UUID.fromString( uuid ) ).banPlayer( banReasons.get( banReasons.size() - 1 ), null, banSources.get( banSources.size() - 1 ), true );
 
-            sender.sendMessage( Component.text( plugin.getServer().getOfflinePlayer( UUID.fromString( uuid ) ).getName() + "(" + uuid + ") has been banned" ).color( NamedTextColor.RED ) );
+            sender.sendMessage( Component.text( plugin.getServer().getOfflinePlayer( UUID.fromString( uuid ) ).getName() + "(" + uuid + ") has been banned" ).color( NamedTextColor.GREEN ) );
             return true;
         }
 
@@ -380,7 +383,7 @@ public class PlayerCommand implements TabExecutor {
         }
 
         if( args[0].equals( "get" ) ) {
-            if( !sender.hasPermission( "appm.commands.player.get.name" ) && !sender.hasPermission( "appm.commands.player.get.uuid" ) && !sender.hasPermission( "appm.commands.player.get.ip" ) ) {
+            if( !sender.hasPermission( "appm.commands.player.get.name.this" ) && !sender.hasPermission( "appm.commands.player.get.name.banHistory" ) && !sender.hasPermission( "appm.commands.player.get.uuid.this" ) && !sender.hasPermission( "appm.commands.player.get.uuid.banHistory" ) && !sender.hasPermission( "appm.commands.player.get.ip.this" ) && !sender.hasPermission( "appm.commands.player.get.ip.banHistory" ) ) {
                 sender.sendMessage( CommandErrorMessage.INCORRECT.send( label, args, 0 ) );
                 return true;
             }
@@ -390,7 +393,7 @@ public class PlayerCommand implements TabExecutor {
                 return true;
             }
 
-            if( !( args[1].equals( "name" ) && sender.hasPermission( "appm.commands.player.get.name" ) ) && !( args[1].equals( "uuid" ) && sender.hasPermission( "appm.commands.player.get.uuid" ) ) && !( args[1].equals( "ip" ) && sender.hasPermission( "appm.commands.player.get.ip" ) ) ) {
+            if( !( args[1].equals( "name" ) && ( sender.hasPermission( "appm.commands.player.get.name.this" ) || sender.hasPermission( "appm.commands.player.get.name.banHistory" ) ) ) && !( args[1].equals( "uuid" ) && ( sender.hasPermission( "appm.commands.player.get.uuid.this" ) || sender.hasPermission( "appm.commands.player.get.uuid.banHistory" ) ) ) && !( args[1].equals( "ip" ) && ( sender.hasPermission( "appm.commands.player.get.ip.this" ) || sender.hasPermission( "appm.commands.player.get.ip.banHistory" ) ) ) ) {
                 sender.sendMessage( CommandErrorMessage.INCORRECT.send( label, args, 1 ) );
                 return true;
             }
@@ -401,18 +404,239 @@ public class PlayerCommand implements TabExecutor {
             }
 
             if( args.length == 3 ) {
+                if( !sender.hasPermission( "appm.commands.player.get.name.this" ) && !sender.hasPermission( "appm.commands.player.get.uuid.this" ) && !sender.hasPermission( "appm.commands.player.get.ip.this" ) ) {
+                    sender.sendMessage( CommandErrorMessage.INCOMPLETE.send( label, args ) );
+                    return true;
+                }
+
                 if( args[1].equals( "ip" ) ) {
                     if( !plugin.ips.config.getStringList( "ips" ).contains( args[2] ) ) {
-                        sender.sendMessage( CommandErrorMessage.UNKNOWN.send( label, args, 2, "ip" ) );
+                        sender.sendMessage( CommandErrorMessage.UNKNOWN.send( label, args, 2, "IP" ) );
                         return true;
                     }
 
                     String ipPath = args[2].replace( '.', ',' );
-                    Component message = Component.text( "" ).append( Component.text( args[2]  + ":" ).color( NamedTextColor.GOLD ) );
+                    Component message = Component.text( "" ).append( Component.text( args[2]  + ":" ).color( NamedTextColor.GOLD ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.copyToClipboard( args[2] ) ) );
                     if( plugin.ips.config.getBoolean( "ip." + ipPath + ".isBanned" ) ) message = message.appendNewline().append( Component.text( "BANNED" ).color( NamedTextColor.RED ) );
                     if( plugin.ips.config.getStringList( "ip." + ipPath + ".currentPlayers" ).size() != 0 ) message = message.appendNewline().append( Component.text( "ONLINE" ).color( NamedTextColor.GREEN ) );
-                    if( sender.hasPermission( "appm.commands.player.get.uuid" ) );
+
+                    List<String> currentPlayers = plugin.ips.config.getStringList( "ip." + ipPath + ".currentPlayers" );
+                    List<String> allPlayers = plugin.ips.config.getStringList( "ip." + ipPath + ".allPlayers" );
+                    if( sender.hasPermission( "appm.commands.player.get.uuid.this" ) ) {
+                        if( currentPlayers.size() == 1 ) {
+                            message = message.appendNewline().append( Component.text( "1 Current Player:" ).color( NamedTextColor.AQUA ) ).appendSpace();
+                            message = message.append( Component.text( plugin.getServer().getOfflinePlayer( UUID.fromString( currentPlayers.get( 0 ) ) ).getName() + "(" + currentPlayers.get( 0 ) + ")" ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get uuid " + currentPlayers.get( 0 ) ) ) );
+                        }
+                        if( currentPlayers.size() > 1 ) {
+                            message = message.appendNewline().append( Component.text( currentPlayers.size() + " Current Players:" ).color( NamedTextColor.AQUA ) ).appendSpace();
+                            message = message.append( Component.text( plugin.getServer().getOfflinePlayer( UUID.fromString( currentPlayers.get( 0 ) ) ).getName() + "(" + currentPlayers.get( 0 ) + ")" ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get uuid " + currentPlayers.get( 0 ) ) ) );
+                            for( int i = 1; i < currentPlayers.size(); i++ ) message = message.append( Component.text(", " + plugin.getServer().getOfflinePlayer( UUID.fromString( currentPlayers.get( i ) ) ).getName() + "(" + currentPlayers.get( i ) ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get uuid " + currentPlayers.get( i ) ) ) );
+                        }
+
+                        if( allPlayers.size() == 1 ) {
+                            message = message.appendNewline().append( Component.text( "1 Total Player:" ).color( NamedTextColor.AQUA ) ).appendSpace();
+                            message = message.append( Component.text( plugin.getServer().getOfflinePlayer( UUID.fromString( allPlayers.get( 0 ) ) ).getName() + "(" + allPlayers.get( 0 ) + ")" ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get uuid " + allPlayers.get( 0 ) ) ) );
+                        }
+                        if( allPlayers.size() > 1 ) {
+                            message = message.appendNewline().append( Component.text( allPlayers.size() + " Total Players:" ).color( NamedTextColor.AQUA ) ).appendSpace();
+                            message = message.append( Component.text( plugin.getServer().getOfflinePlayer( UUID.fromString( allPlayers.get( 0 ) ) ).getName() + "(" + allPlayers.get( 0 ) + ")" ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get uuid " + allPlayers.get( 0 ) ) ) );
+                            for( int i = 1; i < allPlayers.size(); i++ ) message = message.append( Component.text(", " + plugin.getServer().getOfflinePlayer( UUID.fromString( allPlayers.get( i ) ) ).getName() + "(" + allPlayers.get( i ) ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get uuid " + allPlayers.get( i ) ) ) );
+                        }
+                    } else if( sender.hasPermission( "appm.commands.player.get.name.this" ) ) {
+                        if( currentPlayers.size() == 1 ) {
+                            message = message.appendNewline().append( Component.text( "1 Current Player:" ).color( NamedTextColor.AQUA ) ).appendSpace();
+                            message = message.append( Component.text( plugin.getServer().getOfflinePlayer( UUID.fromString( currentPlayers.get( 0 ) ) ).getName() + "(" + currentPlayers.get( 0 ) + ")" ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get name " + plugin.getServer().getOfflinePlayer( UUID.fromString( currentPlayers.get( 0 ) ) ).getName() ) ) );
+                        }
+                        if( currentPlayers.size() > 1 ) {
+                            message = message.appendNewline().append( Component.text( currentPlayers.size() + " Current Players:" ).color( NamedTextColor.AQUA ) ).appendSpace();
+                            message = message.append( Component.text( plugin.getServer().getOfflinePlayer( UUID.fromString( currentPlayers.get( 0 ) ) ).getName() + "(" + currentPlayers.get( 0 ) + ")" ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get name " + plugin.getServer().getOfflinePlayer( UUID.fromString( currentPlayers.get( 0 )  ) ).getName() ) ) );
+                            for( int i = 1; i < currentPlayers.size(); i++ ) message = message.append( Component.text(", " + plugin.getServer().getOfflinePlayer( UUID.fromString( currentPlayers.get( i ) ) ).getName() + "(" + currentPlayers.get( i ) ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get name " + plugin.getServer().getOfflinePlayer( UUID.fromString( currentPlayers.get( i ) ) ).getName() ) ) );
+                        }
+
+                        if( allPlayers.size() == 1 ) {
+                            message = message.appendNewline().append( Component.text( "1 Total Player:" ).color( NamedTextColor.AQUA ) ).appendSpace();
+                            message = message.append( Component.text( plugin.getServer().getOfflinePlayer( UUID.fromString( allPlayers.get( 0 ) ) ).getName() + "(" + allPlayers.get( 0 ) + ")" ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get name " + plugin.getServer().getOfflinePlayer( UUID.fromString( allPlayers.get( 0 ) ) ).getName() ) ) );
+                        }
+                        if( allPlayers.size() > 1 ) {
+                            message = message.appendNewline().append( Component.text( allPlayers.size() + " Total Players:" ).color( NamedTextColor.AQUA ) ).appendSpace();
+                            message = message.append( Component.text( plugin.getServer().getOfflinePlayer( UUID.fromString( allPlayers.get( 0 ) ) ).getName() + "(" + allPlayers.get( 0 ) + ")" ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get name " + plugin.getServer().getOfflinePlayer( UUID.fromString( allPlayers.get( 0 ) ) ).getName() ) ) );
+                            for( int i = 1; i < allPlayers.size(); i++ ) message = message.append( Component.text(", " + plugin.getServer().getOfflinePlayer( UUID.fromString( allPlayers.get( i ) ) ).getName() + "(" + allPlayers.get( i ) ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get name " + plugin.getServer().getOfflinePlayer( UUID.fromString( allPlayers.get( i ) ) ).getName() ) ) );
+                        }
+                    } else {
+                        if( currentPlayers.size() == 1 ) {
+                            message = message.appendNewline().append( Component.text( "1 Current Player:" ).color( NamedTextColor.AQUA ) ).appendSpace();
+                            message = message.append( Component.text( plugin.getServer().getOfflinePlayer( UUID.fromString( currentPlayers.get( 0 ) ) ).getName() + "(" + currentPlayers.get( 0 ) + ")" ) );
+                        }
+                        if( currentPlayers.size() > 1 ) {
+                            message = message.appendNewline().append( Component.text( currentPlayers.size() + " Current Players:" ).color( NamedTextColor.AQUA ) ).appendSpace();
+                            message = message.append( Component.text( plugin.getServer().getOfflinePlayer( UUID.fromString( currentPlayers.get( 0 ) ) ).getName() + "(" + currentPlayers.get( 0 ) + ")" ) );
+                            for( int i = 1; i < currentPlayers.size(); i++ ) message = message.append( Component.text(", " + plugin.getServer().getOfflinePlayer( UUID.fromString( currentPlayers.get( i ) ) ).getName() + "(" + currentPlayers.get( i ) ) );
+                        }
+
+                        if( allPlayers.size() == 1 ) {
+                            message = message.appendNewline().append( Component.text( "1 Total Player:" ).color( NamedTextColor.AQUA ) ).appendSpace();
+                            message = message.append( Component.text( plugin.getServer().getOfflinePlayer( UUID.fromString( allPlayers.get( 0 ) ) ).getName() + "(" + allPlayers.get( 0 ) + ")" ) );
+                        }
+                        if( allPlayers.size() > 1 ) {
+                            message = message.appendNewline().append( Component.text( allPlayers.size() + " Total Players:" ).color( NamedTextColor.AQUA ) ).appendSpace();
+                            message = message.append( Component.text( plugin.getServer().getOfflinePlayer( UUID.fromString( allPlayers.get( 0 ) ) ).getName() + "(" + allPlayers.get( 0 ) + ")" ) );
+                            for( int i = 1; i < allPlayers.size(); i++ ) message = message.append( Component.text(", " + plugin.getServer().getOfflinePlayer( UUID.fromString( allPlayers.get( i ) ) ).getName() + "(" + allPlayers.get( i ) ) );
+                        }
+                    }
+
+                    if( plugin.ips.config.contains( "ip." + ipPath + ".totalBanTime" ) || plugin.ips.config.getBoolean( "ip." + ipPath + ".isBanned" ) ) {
+                        message = message.appendNewline().append( Component.text( "Total Ban Time:" ).color( NamedTextColor.AQUA ) ).appendSpace();
+                        long seconds = plugin.ips.config.getLong( "ip." + ipPath + ".totalBanTime" );
+                        if( plugin.ips.config.getBoolean( "ip." + ipPath + ".isBanned" ) ) seconds += Instant.now().getEpochSecond() - plugin.ips.config.getLong( "ip." + ipPath + ".banStart" );
+                        long days = seconds / 60 / 60 / 24;
+                        long hours = seconds / 60 / 60 - days * 24;
+                        long minutes = seconds / 60 - hours * 60 - days * 24 * 60;
+                        if( seconds - minutes * 60 - hours * 60 * 60 - days * 24 * 60 * 60 >= 30 ) minutes++;
+                        if( days > 0 ) message = message.append( Component.text( days + "d " ) );
+                        if( hours > 0 ) message = message.append( Component.text( hours + "h " ) );
+                        if( minutes > 0 ) message = message.append( Component.text( minutes + "m" ) );
+
+                        if( sender.hasPermission( "appm.commands.player.get.ip.banHistory" ) ) message = message.appendNewline().append( Component.text( "View Ban History" ).color( NamedTextColor.AQUA ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get ip " + args[2] + " banHistory" ) ) );
+                    }
+
+                    if( plugin.ips.config.getBoolean( "ip." + ipPath + ".isBanned" ) ) {
+                        message = message.appendNewline().append( Component.text( "Current Ban Sentence:" ).color( NamedTextColor.AQUA ) ).appendSpace();
+                        message = message.append( Component.text( plugin.ips.config.getStringList( "ip." + ipPath + ".banSentenceLengths" ).get( plugin.ips.config.getStringList( "ip." + ipPath + ".banSentenceLengths" ).size() - 1 ) ) );
+
+                        message = message.appendNewline().append( Component.text( "Current Ban Source:" ).color( NamedTextColor.AQUA ) ).appendSpace();
+                        String source = plugin.ips.config.getStringList( "ip." + ipPath + ".banSources" ).get( plugin.ips.config.getStringList( "ip." + ipPath + ".banSources" ).size() - 1 );
+                        if( sender.hasPermission( "appm.commands.player.get.uuid.this" ) && !source.equals( "console" ) ) message = message.append( Component.text( source ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get uuid " + source ) ) );
+                        else if( sender.hasPermission( "appm.commands.player.get.name.this" ) && !source.equals( "console" ) ) message = message.append( Component.text( source ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get name " + plugin.getServer().getOfflinePlayer( UUID.fromString( source ) ) ) ) );
+                        else message = message.append( Component.text( source ) );
+
+                        message = message.appendNewline().append( Component.text( "Current Ban Reason:" ).color( NamedTextColor.AQUA ) ).appendSpace();
+                        message = message.append( Component.text( plugin.ips.config.getStringList( "ip." + ipPath + ".banReasons" ).get( plugin.ips.config.getStringList( "ip." + ipPath + ".banReasons" ).size() - 1 ) ) );
+                    }
+
+                    sender.sendMessage( message );
+                    return true;
                 }
+
+                String uuid = null;
+                OfflinePlayer[] players = plugin.getServer().getOfflinePlayers();
+
+                if( args[1].equals( "name" ) ) {
+                    for( OfflinePlayer player : players ) {
+                        assert player.getName() != null;
+                        if( player.getName().equals( args[2] ) ) {
+                            uuid = player.getUniqueId().toString();
+                            break;
+                        }
+                    }
+                }
+
+                if( args[1].equals( "uuid" ) ) {
+                    for( OfflinePlayer player : players ) {
+                        if( player.getUniqueId().toString().equalsIgnoreCase( args[2] ) ) {
+                            uuid = player.getUniqueId().toString();
+                            break;
+                        }
+                    }
+                }
+
+                if( uuid == null ) {
+                    sender.sendMessage( CommandErrorMessage.UNKNOWN.send( label, args, 2, "player" ) );
+                    return true;
+                }
+
+
+                Component message = Component.text( "" ).append( Component.text().append( Component.text( Objects.requireNonNull( plugin.getServer().getOfflinePlayer( UUID.fromString( uuid ) ).getName() ) ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.copyToClipboard( Objects.requireNonNull( plugin.getServer().getOfflinePlayer( UUID.fromString( uuid ) ).getName() ) ) ) ).append( Component.text( "(" ) ).append( Component.text( uuid ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.copyToClipboard( uuid ) ) ).append( Component.text( "):" ) ).color( NamedTextColor.GOLD ) );
+                if( plugin.players.config.getBoolean( uuid + ".isBanned" ) ) message = message.appendNewline().append( Component.text( "BANNED" ).color( NamedTextColor.RED ) );
+                if( plugin.getServer().getOfflinePlayer( UUID.fromString( uuid ) ).isOnline() ) {
+                    message = message.appendNewline().append( Component.text( "ONLINE" ).color( NamedTextColor.GREEN ) );
+                    message = message.appendNewline().append( Component.text( "IP Address:" ).color( NamedTextColor.AQUA ) ).appendSpace();
+                    if( sender.hasPermission( "appm.commands.player.get.ip.this" ) ) message = message.append( Component.text( Objects.requireNonNull( plugin.players.config.getString( uuid + ".lastIP" ) ) ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get ip " + plugin.players.config.getString( uuid + ".lastIP" ) ) ) );
+                    else message = message.append( Component.text( Objects.requireNonNull( plugin.players.config.getString( uuid + ".lastIP" ) ) ) );
+                }
+
+                if( plugin.players.config.contains( uuid + ".totalBanTime" )  || plugin.players.config.getBoolean( uuid + ".isBanned" ) ) {
+                    long seconds = plugin.players.config.getLong( uuid + ".totalBanTime" );
+                    if( plugin.players.config.getBoolean( uuid + ".isBanned" ) ) seconds += Instant.now().getEpochSecond() - plugin.players.config.getLong( uuid + ".banStart" );
+                    long days = seconds / 60 / 60 / 24;
+                    long hours = seconds / 60 / 60 - days * 24;
+                    long minutes = seconds / 60 - hours * 60 - days * 24 * 60;
+                    if( seconds - minutes * 60 - hours * 60 * 60 - days * 24 * 60 * 60 >= 30 ) minutes++;
+                    message = message.appendNewline().append( Component.text( "Total Ban Time:" ).color( NamedTextColor.AQUA ) ).appendSpace();
+                    if( days > 0 ) message = message.append( Component.text( days + "d " ) );
+                    if( hours > 0 ) message = message.append( Component.text( hours + "h " ) );
+                    if( minutes > 0 ) message = message.append( Component.text( minutes + "m" ) );
+
+                    if( sender.hasPermission( "appm.commands.player.get.uuid.banHistory" ) ) message = message.appendNewline().append( Component.text( "View Ban History" ).color( NamedTextColor.AQUA ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get uuid " + uuid + " banHistory" ) ) );
+                    else if( sender.hasPermission( "appm.commands.player.get.name.banHistory" ) ) message = message.appendNewline().append( Component.text( "View Ban History" ).color( NamedTextColor.AQUA ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get name " + plugin.getServer().getOfflinePlayer( UUID.fromString( uuid ) ).getName() + " banHistory" ) ) );
+                }
+
+                if( plugin.players.config.getBoolean( uuid + ".isBanned" ) ) {
+                    message = message.appendNewline().append( Component.text( "Current Ban Sentence:" ).color( NamedTextColor.AQUA ) ).appendSpace();
+                    message = message.append( Component.text( plugin.players.config.getStringList( uuid + ".banSentenceLengths" ).get( plugin.players.config.getStringList( uuid + ".banSentenceLengths" ).size() - 1 ) ) );
+
+                    message = message.appendNewline().append( Component.text( "Current Ban Source:" ).color( NamedTextColor.AQUA ) ).appendSpace();
+                    String source = plugin.players.config.getStringList( uuid + ".banSources" ).get( plugin.players.config.getStringList( uuid + ".banSources" ).size() - 1 );
+                    if( sender.hasPermission( "appm.commands.player.get.uuid.this" ) && !source.equals( "console" ) ) message = message.append( Component.text( source ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get uuid " + source )  ) );
+                    else if( sender.hasPermission( "appm.commands.player.get.name.this" ) && !source.equals( "console" ) ) message = message.append( Component.text( source ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get name " + plugin.getServer().getOfflinePlayer( UUID.fromString( source ) ).getName() ) ) );
+                    else message = message.append( Component.text( source ) );
+
+                    message = message.appendNewline().append( Component.text( "Current Ban Reason:" ).color( NamedTextColor.AQUA ) ).appendSpace();
+                    message = message.append( Component.text( plugin.players.config.getStringList( uuid + ".banReasons" ).get( plugin.players.config.getStringList( uuid + ".banReasons" ).size() - 1 ) ) );
+                }
+
+                message = message.appendNewline().append( Component.text( "Hierarchy Value:" ).color( NamedTextColor.AQUA ) ).appendSpace();
+                if( plugin.players.config.contains( uuid + ".hierarchyValue" ) ) message = message.append( Component.text( plugin.players.config.getInt( uuid + ".hierarchyValue" ) ) );
+                else message = message.append( Component.text( "default" ) );
+
+                if( plugin.players.config.getStringList( uuid + ".groups" ).size() != 0 ) {
+                    if( plugin.players.config.getStringList( uuid + ".groups" ).size() == 1 ) message = message.appendNewline().append( Component.text( "1 Group:" ).color( NamedTextColor.AQUA ) ).appendSpace();
+                    else message = message.appendNewline().append( Component.text( plugin.players.config.getStringList( uuid + ".groups" ).size() + " Groups:" ).color( NamedTextColor.AQUA ) ).appendSpace();
+                    if( sender.hasPermission( "appm.commands.group.get" ) ) {
+                        message = message.append( Component.text( plugin.players.config.getStringList( uuid + ".groups" ).get( 0 ) ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/group get " + plugin.players.config.getStringList( uuid + ".groups" ).get( 0 ) ) ) );
+                        for( int i = 1; i < plugin.players.config.getStringList( uuid + ".groups" ).size(); i++ ) message = message.append( Component.text( ", " ) ).append( Component.text( plugin.players.config.getStringList( uuid + ".groups" ).get( i ) ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/group get " + plugin.players.config.getStringList( uuid + ".groups" ).get( i ) ) ) );
+                    } else {
+                        message = message.append( Component.text( plugin.players.config.getStringList( uuid + ".groups" ).get( 0 ) ) );
+                        for( int i = 1; i < plugin.players.config.getStringList( uuid + ".groups" ).size(); i++ ) message = message.append( Component.text( ", " + plugin.players.config.getStringList( uuid + ".groups" ).get( i ) ) );
+                    }
+                }
+
+                if( plugin.players.config.getStringList( uuid + ".pastNames" ).size() != 0 ) {
+                    if( plugin.players.config.getStringList( uuid + ".pastNames" ).size() == 1 ) message = message.appendNewline().append( Component.text( "1 Past Name:" ).color( NamedTextColor.AQUA ) ).appendSpace();
+                    else message = message.appendNewline().append( Component.text( plugin.players.config.getStringList( uuid + ".pastNames" ).size() + " Past Names:" ).color( NamedTextColor.AQUA ) ).appendSpace();
+                    message = message.append( Component.text( plugin.players.config.getStringList( uuid + ".pastNames" ).get( 0 ) ) );
+                    for( int i = 1; i < plugin.players.config.getStringList( uuid + ".pastNames" ).size(); i++ ) message = message.append( Component.text( ", " + plugin.players.config.getStringList( uuid + ".pastNames" ).get( i ) ) );
+                }
+
+                if( sender.hasPermission( "appm.commands.player.get.ip.this" ) ) {
+                    if( !plugin.getServer().getOfflinePlayer( UUID.fromString( uuid ) ).isOnline() ) {
+                        message = message.appendNewline().append( Component.text( "Last IP:" ).color( NamedTextColor.AQUA ) ).appendSpace();
+                        message = message.append( Component.text( Objects.requireNonNull( plugin.players.config.getString( uuid + ".lastIP" ) ) ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get ip " + plugin.players.config.getString( uuid + ".lastIP" ) ) ) );
+                    }
+
+                    if( plugin.players.config.getStringList( uuid + ".pastIPs" ).size() != 0 ) {
+                        if( plugin.players.config.getStringList( uuid + ".pastIPs" ).size() == 1 ) message = message.appendNewline().append( Component.text( "1 Past IP:" ).color( NamedTextColor.AQUA ) ).appendSpace();
+                        else message = message.appendNewline().append( Component.text( plugin.players.config.getStringList( uuid + ".pastIPs" ).size() + " Past IPs:" ).color( NamedTextColor.AQUA ) ).appendSpace();
+
+                        message = message.append( Component.text( plugin.players.config.getStringList( uuid + ".pastIPs" ).get( 0 ) ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get ip " + plugin.players.config.getStringList( uuid + ".pastIPs" ).get( 0 ) ) ) );
+                        for( int i = 1; i < plugin.players.config.getStringList( uuid + ".pastIPs" ).size(); i++ ) message = message.append( Component.text( ", " ) ).append( Component.text( plugin.players.config.getStringList( uuid + ".pastIPs" ).get( i ) ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get ip " + plugin.players.config.getStringList( uuid + ".pastIPs" ).get( i ) ) ) );
+                    }
+                } else {
+                    if( !plugin.getServer().getOfflinePlayer( UUID.fromString( uuid ) ).isOnline() ) {
+                        message = message.appendNewline().append( Component.text( "Last IP:" ).color( NamedTextColor.AQUA ) ).appendSpace();
+                        message = message.append( Component.text( Objects.requireNonNull( plugin.players.config.getString( uuid + ".lastIP" ) ) ) );
+                    }
+
+                    if( plugin.players.config.getStringList( uuid + ".pastIPs" ).size() != 0 ) {
+                        if( plugin.players.config.getStringList( uuid + ".pastIPs" ).size() == 1 ) message = message.appendNewline().append( Component.text( "1 Past IP:" ).color( NamedTextColor.AQUA ) ).appendSpace();
+                        else message = message.appendNewline().append( Component.text( plugin.players.config.getStringList( uuid + ".pastIPs" ).size() + " Past IPs:" ).color( NamedTextColor.AQUA ) ).appendSpace();
+
+                        message = message.append( Component.text( plugin.players.config.getStringList( uuid + ".pastIPs" ).get( 0 ) ) );
+                        for( int i = 1; i < plugin.players.config.getStringList( uuid + ".pastIPs" ).size(); i++ ) message = message.append( Component.text( ", " + plugin.players.config.getStringList( uuid + ".pastIPs" ).get( i ) ) );
+                    }
+                }
+
+                sender.sendMessage( message );
+                return true;
             }
 
             sender.sendMessage( CommandErrorMessage.EXTRA_ARGUMENT.send( label, args, 3 ) );
@@ -425,22 +649,23 @@ public class PlayerCommand implements TabExecutor {
             * View Ban History[underlined]
             * Current Ban Sentence: 123m
             * Current Ban Source: uuid[underlined]/console[plain]
-            * Current Ban Reason: djflasjdkl dsklfjklas fjad laksdfl af las;l
+            * Current Ban Reason: a ban reason
             * Hierarchy Value: 10
-            * # Group(s): asdfasdf,asdfasdfas,asdfasdf[underlined with permission]
-            * Past Name(s): dfsakjhf,sdhfhak
+            * # Group(s): aGroup,anotherGroup,yetAnotherGroup[underlined with permission]
+            * Past Name(s): anOldName,anotherOldName
+            * Last IP: 12.4.6.8[underlined with permission]
             * Past IP(s): 1.2.3.4, 1.2.3.4[underlined with permission]
             *
-            * IP
-            * BANNED
-            * ONLINE
-            * # Online Player(s): kdjfakl, sadfjakls, afskldfa[underlined with permission]
-            * # All Player(s): jsjfklas, skdfjakls, asdkfaksldf[underlined with permission]
+            * ~IP
+            * ~BANNED
+            * ~ONLINE
+            * ~# Online Player(s): anOnlinePlayer, anotherOnlinePlayer, yetAnotherOnlinePlayer[underlined with permission]
+            * ~# All Player(s): aPastPlayer, anotherPastPlayer, yetAnotherPastPlayer[underlined with permission]
             * Total Ban Time: 3123d 23h 59m
             * View Ban History[underlined]
-            * Current Ban Sentence: dfashdjah kasjf adjf
+            * Current Ban Sentence: 14m
             * Current Ban Source: uuid[underlined with permission]/console[plain]
-            * Current Ban Reason: akdjfkal alkdf akljdf akldf
+            * Current Ban Reason: a ban reason
             * */
         }
 
