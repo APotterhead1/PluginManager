@@ -1477,7 +1477,7 @@ public class PlayerCommand implements TabExecutor {
                     }
 
                     if( ( senderHV > targetHV ) ) commands.add( "default" );
-                }
+                } else if( valid ) commands.add( "default" );
             }
 
             StringUtil.copyPartialMatches( args[3], commands, completions );
