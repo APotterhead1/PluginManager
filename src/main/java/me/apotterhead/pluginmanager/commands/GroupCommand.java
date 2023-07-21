@@ -683,13 +683,116 @@ public class GroupCommand implements TabExecutor {
         }
 
         if( args.length == 2 ) {
-            if( args[0].equals( "delete" ) && sender.hasPermission( "appm.commands.group.delete" ) ) for( String group : plugin.groups.config.getStringList( "groups" ) ) if( plugin.groups.config.getStringList( "group." + group + ".players" ).size() == 0 ) commands.add( group );
-            if( args[0].equals( "setHierarchy" ) && sender.hasPermission( "appm.commands.group.setHierarchy" ) ) commands.addAll( plugin.groups.config.getStringList( "groups" ) );
-            if( args[0].equals( "join" ) && ( sender.hasPermission( "appm.commands.group.join.name" ) || sender.hasPermission( "appm.commands.group.join.uuid" ) ) ) for( String group : plugin.groups.config.getStringList( "groups" ) ) if( plugin.groups.config.getStringList( "group." + group + ".players").size() != plugin.getServer().getOfflinePlayers().length ) commands.add( group );
-            if( args[0].equals( "leave" ) && ( sender.hasPermission( "appm.commands.group.leave.name" ) || sender.hasPermission( "appm.commands.group.leave" ) ) ) for( String group : plugin.groups.config.getStringList( "groups" ) ) if( plugin.groups.config.getStringList( "group." + group + ".players" ).size() != 0 ) commands.add( group );
-            if( args[0].equals( "empty" ) && sender.hasPermission( "appm.commands.group.empty" ) ) for( String group : plugin.groups.config.getStringList( "groups" ) ) if( plugin.groups.config.getStringList( "group." + group + ".players" ).size() != 0 ) commands.add( group );
+            if( args[0].equals( "delete" ) && sender.hasPermission( "appm.commands.group.delete" ) ) {
+                for( String group : plugin.groups.config.getStringList( "groups" ) ) {
+                    if( plugin.groups.config.getStringList( "group." + group + ".players" ).size() == 0 ) {
+                        if( sender instanceof Player ) {
+                            int senderHV = 0;
+                            if( plugin.players.config.contains( ( (Player) sender ).getUniqueId() + ".hierarchyValue" ) ) senderHV = plugin.players.config.getInt( ( (Player) sender ).getUniqueId() + ".hierarchyValue" );
+                            else if( plugin.players.config.getStringList( ( (Player) sender ).getUniqueId() + ".groups" ).size() > 0 ) {
+                                senderHV = plugin.groups.config.getInt( "group." + plugin.players.config.getStringList( ( (Player) sender ).getUniqueId() + ".groups" ).get( 0 ) + ".hierarchyValue" );
+                                for( String groupHV : plugin.players.config.getStringList( ( (Player) sender ).getUniqueId() + ".groups" ) ) if( senderHV < plugin.groups.config.getInt( "group." + groupHV + ".hierarchyValue" ) ) senderHV = plugin.groups.config.getInt( "group." + groupHV + ".hierarchyValue" );
+                            }
+
+                            if( !( senderHV > plugin.groups.config.getInt( "group." + group + ".hierarchyValue" ) ) ) continue;
+                        }
+                        commands.add( group );
+                    }
+                }
+            }
+            if( args[0].equals( "setHierarchy" ) && sender.hasPermission( "appm.commands.group.setHierarchy" ) ) {
+                for( String group : plugin.groups.config.getStringList( "groups" ) ) {
+                    if( sender instanceof Player ) {
+                        int senderHV = 0;
+                        if( plugin.players.config.contains( ( (Player) sender ).getUniqueId() + ".hierarchyValue" ) ) senderHV = plugin.players.config.getInt( ( (Player) sender ).getUniqueId() + ".hierarchyValue" );
+                        else if( plugin.players.config.getStringList( ( (Player) sender ).getUniqueId() + ".groups" ).size() > 0 ) {
+                            senderHV = plugin.groups.config.getInt( "group." + plugin.players.config.getStringList( ( (Player) sender ).getUniqueId() + ".groups" ).get( 0 ) + ".hierarchyValue" );
+                            for( String groupHV : plugin.players.config.getStringList( ( (Player) sender ).getUniqueId() + ".groups" ) ) if( senderHV < plugin.groups.config.getInt( "group." + groupHV + ".hierarchyValue" ) ) senderHV = plugin.groups.config.getInt( "group." + groupHV + ".hierarchyValue" );
+                        }
+
+                        if( !( senderHV > plugin.groups.config.getInt( "group." + group + ".hierarchyValue" ) ) ) continue;
+                    }
+                    commands.add( group );
+                }
+            }
+            if( args[0].equals( "join" ) && ( sender.hasPermission( "appm.commands.group.join.name" ) || sender.hasPermission( "appm.commands.group.join.uuid" ) ) ) {
+                for( String group : plugin.groups.config.getStringList( "groups" ) ) {
+                    if( plugin.groups.config.getStringList( "group." + group + ".players" ).size() != plugin.getServer().getOfflinePlayers().length ) {
+                        if( sender instanceof Player ) {
+                            int senderHV = 0;
+                            if( plugin.players.config.contains( ( (Player) sender ).getUniqueId() + ".hierarchyValue" ) ) senderHV = plugin.players.config.getInt( ( (Player) sender ).getUniqueId() + ".hierarchyValue" );
+                            else if( plugin.players.config.getStringList( ( (Player) sender ).getUniqueId() + ".groups" ).size() > 0 ) {
+                                senderHV = plugin.groups.config.getInt( "group." + plugin.players.config.getStringList( ( (Player) sender ).getUniqueId() + ".groups" ).get( 0 ) + ".hierarchyValue" );
+                                for( String groupHV : plugin.players.config.getStringList( ( (Player) sender ).getUniqueId() + ".groups" ) ) if( senderHV < plugin.groups.config.getInt( "group." + groupHV + ".hierarchyValue" ) ) senderHV = plugin.groups.config.getInt( "group." + groupHV + ".hierarchyValue" );
+                            }
+
+                            if( !( senderHV > plugin.groups.config.getInt( "group." + group + ".hierarchyValue" ) ) ) continue;
+                        }
+                        commands.add( group );
+                    }
+                }
+            }
+            if( args[0].equals( "leave" ) && ( sender.hasPermission( "appm.commands.group.leave.name" ) || sender.hasPermission( "appm.commands.group.leave" ) ) ) {
+                for( String group : plugin.groups.config.getStringList( "groups" ) ) {
+                    if( plugin.groups.config.getStringList( "group." + group + ".players" ).size() != 0 ) {
+                        if( sender instanceof Player ) {
+                            int senderHV = 0;
+                            if( plugin.players.config.contains( ( (Player) sender ).getUniqueId() + ".hierarchyValue" ) ) senderHV = plugin.players.config.getInt( ( (Player) sender ).getUniqueId() + ".hierarchyValue" );
+                            else if( plugin.players.config.getStringList( ( (Player) sender ).getUniqueId() + ".groups" ).size() > 0 ) {
+                                senderHV = plugin.groups.config.getInt( "group." + plugin.players.config.getStringList( ( (Player) sender ).getUniqueId() + ".groups" ).get( 0 ) + ".hierarchyValue" );
+                                for( String groupHV : plugin.players.config.getStringList( ( (Player) sender ).getUniqueId() + ".groups" ) ) if( senderHV < plugin.groups.config.getInt( "group." + groupHV + ".hierarchyValue" ) ) senderHV = plugin.groups.config.getInt( "group." + groupHV + ".hierarchyValue" );
+                            }
+
+                            if( !( senderHV > plugin.groups.config.getInt( "group." + group + ".hierarchyValue" ) ) ) continue;
+                        }
+                        commands.add( group );
+                    }
+                }
+            }
+            if( args[0].equals( "empty" ) && sender.hasPermission( "appm.commands.group.empty" ) ) {
+                for( String group : plugin.groups.config.getStringList( "groups" ) ) {
+                    if( plugin.groups.config.getStringList( "group." + group + ".players" ).size() != 0 ) {
+                        if( sender instanceof Player ) {
+                            int senderHV = 0;
+                            if( plugin.players.config.contains( ( (Player) sender ).getUniqueId() + ".hierarchyValue" ) ) senderHV = plugin.players.config.getInt( ( (Player) sender ).getUniqueId() + ".hierarchyValue" );
+                            else if( plugin.players.config.getStringList( ( (Player) sender ).getUniqueId() + ".groups" ).size() > 0 ) {
+                                senderHV = plugin.groups.config.getInt( "group." + plugin.players.config.getStringList( ( (Player) sender ).getUniqueId() + ".groups" ).get( 0 ) + ".hierarchyValue" );
+                                for( String groupHV : plugin.players.config.getStringList( ( (Player) sender ).getUniqueId() + ".groups" ) ) if( senderHV < plugin.groups.config.getInt( "group." + groupHV + ".hierarchyValue" ) ) senderHV = plugin.groups.config.getInt( "group." + groupHV + ".hierarchyValue" );
+                            }
+
+                            int targetHV = plugin.groups.config.getInt( "group." + group + ".hierarchyValue" );
+                            for( String uuid : plugin.groups.config.getStringList( "group." + group + ".players" ) ) {
+                                if( plugin.players.config.contains( uuid + ".hierarchyValue" ) ) {
+                                    if( targetHV < plugin.players.config.getInt( uuid + ".hierarchyValue" ) ) targetHV = plugin.players.config.getInt( uuid + ".hierarchyValue" );
+                                } else if( plugin.players.config.getStringList( uuid + ".groups" ).size() > 0 ) {
+                                    for( String groupHV : plugin.players.config.getStringList( uuid + ".groups" ) ) if( targetHV < plugin.groups.config.getInt( "group." + groupHV + ".hierarchyValue" ) ) targetHV = plugin.groups.config.getInt( "group." + groupHV + ".hierarchyValue" );
+                                }
+                            }
+
+                            if( !( senderHV > targetHV ) ) continue;
+                        }
+                        commands.add( group );
+                    }
+                }
+            }
             if( args[0].equals( "get" ) && sender.hasPermission( "appm.commands.group.get" ) ) commands.addAll( plugin.groups.config.getStringList( "groups" ) );
-            if( args[0].equals( "setDefaultGroup" ) && sender.hasPermission( "appm.commands.group.setDefaultGroup" ) ) for( String group : plugin.groups.config.getStringList( "groups" ) ) if( !plugin.groups.config.contains( "defaultGroup" ) || !Objects.requireNonNull( plugin.groups.config.getString( "defaultGroup" ) ).equals( group ) ) commands.add( group );
+            if( args[0].equals( "setDefaultGroup" ) && sender.hasPermission( "appm.commands.group.setDefaultGroup" ) ) {
+                for( String group : plugin.groups.config.getStringList( "groups" ) ) {
+                    if( !plugin.groups.config.contains( "defaultGroup" ) || !Objects.requireNonNull( plugin.groups.config.getString( "defaultGroup" ) ).equals( group ) ) {
+                        if( sender instanceof Player ) {
+                            int senderHV = 0;
+                            if( plugin.players.config.contains( ( (Player) sender ).getUniqueId() + ".hierarchyValue" ) ) senderHV = plugin.players.config.getInt( ( (Player) sender ).getUniqueId() + ".hierarchyValue" );
+                            else if( plugin.players.config.getStringList( ( (Player) sender ).getUniqueId() + ".groups" ).size() > 0 ) {
+                                senderHV = plugin.groups.config.getInt( "group." + plugin.players.config.getStringList( ( (Player) sender ).getUniqueId() + ".groups" ).get( 0 ) + ".hierarchyValue" );
+                                for( String groupHV : plugin.players.config.getStringList( ( (Player) sender ).getUniqueId() + ".groups" ) ) if( senderHV < plugin.groups.config.getInt( "group." + groupHV + ".hierarchyValue" ) ) senderHV = plugin.groups.config.getInt( "group." + groupHV + ".hierarchyValue" );
+                            }
+
+                            if( !( senderHV > plugin.groups.config.getInt( "group." + group + ".hierarchyValue" ) ) ) continue;
+                        }
+                        commands.add( group );
+                    }
+                }
+            }
             StringUtil.copyPartialMatches( args[1], commands, completions );
         }
 
@@ -702,10 +805,98 @@ public class GroupCommand implements TabExecutor {
         }
 
         if( args.length == 4 ) {
-            if( args[0].equals( "join" ) && args[2].equals( "name" ) && sender.hasPermission( "appm.commands.group.join.name" ) ) for( OfflinePlayer player : plugin.getServer().getOfflinePlayers() ) if( !plugin.groups.config.getStringList( "group." + args[1] + ".players" ).contains( player.getUniqueId().toString() ) ) commands.add( player.getName() );
-            if( args[0].equals( "join" ) && args[2].equals( "uuid" ) && sender.hasPermission( "appm.commands.group.join.uuid" ) ) for( OfflinePlayer player : plugin.getServer().getOfflinePlayers() ) if( !plugin.groups.config.getStringList( "group." + args[1] + ".players" ).contains( player.getUniqueId().toString() ) ) commands.add( player.getUniqueId().toString() );
-            if( args[0].equals( "leave" ) && args[2].equals( "name" ) && sender.hasPermission( "appm.commands.group.leave.name" ) ) for( String player : plugin.groups.config.getStringList( "group." + args[1] + ".players" ) ) commands.add( plugin.getServer().getOfflinePlayer( UUID.fromString( player ) ).getName() );
-            if( args[0].equals( "leave" ) && args[2].equals( "uuid" ) && sender.hasPermission( "appm.commands.group.leave.uuid" ) ) commands.addAll( plugin.groups.config.getStringList( "group." + args[1] + ".players" ) );
+            if( args[0].equals( "join" ) && args[2].equals( "name" ) && sender.hasPermission( "appm.commands.group.join.name" ) ) {
+                for( OfflinePlayer player : plugin.getServer().getOfflinePlayers() ) {
+                    if( !plugin.groups.config.getStringList( "group." + args[1] + ".players" ).contains( player.getUniqueId().toString() ) ) {
+                        if( sender instanceof Player ) {
+                            int senderHV = 0;
+                            if( plugin.players.config.contains( ( (Player) sender ).getUniqueId() + ".hierarchyValue" ) ) senderHV = plugin.players.config.getInt( ( (Player) sender ).getUniqueId() + ".hierarchyValue" );
+                            else if( plugin.players.config.getStringList( ( (Player) sender ).getUniqueId() + ".groups" ).size() > 0 ) {
+                                senderHV = plugin.groups.config.getInt( "group." + plugin.players.config.getStringList( ( (Player) sender ).getUniqueId() + ".groups" ).get( 0 ) + ".hierarchyValue" );
+                                for( String group : plugin.players.config.getStringList( ( (Player) sender ).getUniqueId() + ".groups" ) ) if( senderHV < plugin.groups.config.getInt( "group." + group + ".hierarchyValue" ) ) senderHV = plugin.groups.config.getInt( "group." + group + ".hierarchyValue" );
+                            }
+
+                            int targetHV = 0;
+                            if( plugin.players.config.contains( player.getUniqueId() + ".hierarchyValue" ) ) targetHV = plugin.players.config.getInt( player.getUniqueId() + ".hierarchyValue" );
+                            else if( plugin.players.config.getStringList( player.getUniqueId() + ".groups" ).size() > 0 ) {
+                                targetHV = plugin.groups.config.getInt( "group." + plugin.players.config.getStringList( player.getUniqueId() + ".groups" ).get( 0 ) + ".hierarchyValue" );
+                                for( String group : plugin.players.config.getStringList( player.getUniqueId() + ".groups" ) ) if( targetHV < plugin.groups.config.getInt( "group." + group + ".hierarchyValue" ) ) targetHV = plugin.groups.config.getInt( "group." + group + ".hierarchyValue" );
+                            }
+
+                            if( !( senderHV > targetHV ) ) continue;
+                        }
+                        commands.add( player.getName() );
+                    }
+                }
+            }
+            if( args[0].equals( "join" ) && args[2].equals( "uuid" ) && sender.hasPermission( "appm.commands.group.join.uuid" ) ) {
+                for( OfflinePlayer player : plugin.getServer().getOfflinePlayers() ) {
+                    if( !plugin.groups.config.getStringList( "group." + args[1] + ".players" ).contains( player.getUniqueId().toString() ) ) {
+                        if( sender instanceof Player ) {
+                            int senderHV = 0;
+                            if( plugin.players.config.contains( ( (Player) sender ).getUniqueId() + ".hierarchyValue" ) ) senderHV = plugin.players.config.getInt( ( (Player) sender ).getUniqueId() + ".hierarchyValue" );
+                            else if( plugin.players.config.getStringList( ( (Player) sender ).getUniqueId() + ".groups" ).size() > 0 ) {
+                                senderHV = plugin.groups.config.getInt( "group." + plugin.players.config.getStringList( ( (Player) sender ).getUniqueId() + ".groups" ).get( 0 ) + ".hierarchyValue" );
+                                for( String group : plugin.players.config.getStringList( ( (Player) sender ).getUniqueId() + ".groups" ) ) if( senderHV < plugin.groups.config.getInt( "group." + group + ".hierarchyValue" ) ) senderHV = plugin.groups.config.getInt( "group." + group + ".hierarchyValue" );
+                            }
+
+                            int targetHV = 0;
+                            if( plugin.players.config.contains( player.getUniqueId() + ".hierarchyValue" ) ) targetHV = plugin.players.config.getInt( player.getUniqueId() + ".hierarchyValue" );
+                            else if( plugin.players.config.getStringList( player.getUniqueId() + ".groups" ).size() > 0 ) {
+                                targetHV = plugin.groups.config.getInt( "group." + plugin.players.config.getStringList( player.getUniqueId() + ".groups" ).get( 0 ) + ".hierarchyValue" );
+                                for( String group : plugin.players.config.getStringList( player.getUniqueId() + ".groups" ) ) if( targetHV < plugin.groups.config.getInt( "group." + group + ".hierarchyValue" ) ) targetHV = plugin.groups.config.getInt( "group." + group + ".hierarchyValue" );
+                            }
+
+                            if( !( senderHV > targetHV ) ) continue;
+                        }
+                        commands.add( player.getUniqueId().toString() );
+                    }
+                }
+            }
+            if( args[0].equals( "leave" ) && args[2].equals( "name" ) && sender.hasPermission( "appm.commands.group.leave.name" ) ) {
+                for( String player : plugin.groups.config.getStringList( "group." + args[1] + ".players" ) ) {
+                    if( sender instanceof Player ) {
+                        int senderHV = 0;
+                        if( plugin.players.config.contains( ( (Player) sender ).getUniqueId() + ".hierarchyValue" ) ) senderHV = plugin.players.config.getInt( ( (Player) sender ).getUniqueId() + ".hierarchyValue" );
+                        else if( plugin.players.config.getStringList( ( (Player) sender ).getUniqueId() + ".groups" ).size() > 0 ) {
+                            senderHV = plugin.groups.config.getInt( "group." + plugin.players.config.getStringList( ( (Player) sender ).getUniqueId() + ".groups" ).get( 0 ) + ".hierarchyValue" );
+                            for( String group : plugin.players.config.getStringList( ( (Player) sender ).getUniqueId() + ".groups" ) ) if( senderHV < plugin.groups.config.getInt( "group." + group + ".hierarchyValue" ) ) senderHV = plugin.groups.config.getInt( "group." + group + ".hierarchyValue" );
+                        }
+
+                        int targetHV = 0;
+                        if( plugin.players.config.contains( player + ".hierarchyValue" ) ) targetHV = plugin.players.config.getInt( player + ".hierarchyValue" );
+                        else if( plugin.players.config.getStringList( player + ".groups" ).size() > 0 ) {
+                            targetHV = plugin.groups.config.getInt( "group." + plugin.players.config.getStringList( player + ".groups" ).get( 0 ) + ".hierarchyValue" );
+                            for( String group : plugin.players.config.getStringList( player + ".groups" ) ) if( targetHV < plugin.groups.config.getInt( "group." + group + ".hierarchyValue" ) ) targetHV = plugin.groups.config.getInt( "group." + group + ".hierarchyValue" );
+                        }
+
+                        if( !( senderHV > targetHV ) ) continue;
+                    }
+                    commands.add( plugin.getServer().getOfflinePlayer( UUID.fromString( player ) ).getName() );
+                }
+            }
+            if( args[0].equals( "leave" ) && args[2].equals( "uuid" ) && sender.hasPermission( "appm.commands.group.leave.uuid" ) ) {
+                for( String player : plugin.groups.config.getStringList( "group." + args[1] + ".players" ) ) {
+                    if( sender instanceof Player ) {
+                        int senderHV = 0;
+                        if( plugin.players.config.contains( ( (Player) sender ).getUniqueId() + ".hierarchyValue" ) ) senderHV = plugin.players.config.getInt( ( (Player) sender ).getUniqueId() + ".hierarchyValue" );
+                        else if( plugin.players.config.getStringList( ( (Player) sender ).getUniqueId() + ".groups" ).size() > 0 ) {
+                            senderHV = plugin.groups.config.getInt( "group." + plugin.players.config.getStringList( ( (Player) sender ).getUniqueId() + ".groups" ).get( 0 ) + ".hierarchyValue" );
+                            for( String group : plugin.players.config.getStringList( ( (Player) sender ).getUniqueId() + ".groups" ) ) if( senderHV < plugin.groups.config.getInt( "group." + group + ".hierarchyValue" ) ) senderHV = plugin.groups.config.getInt( "group." + group + ".hierarchyValue" );
+                        }
+
+                        int targetHV = 0;
+                        if( plugin.players.config.contains( player + ".hierarchyValue" ) ) targetHV = plugin.players.config.getInt( player + ".hierarchyValue" );
+                        else if( plugin.players.config.getStringList( player + ".groups" ).size() > 0 ) {
+                            targetHV = plugin.groups.config.getInt( "group." + plugin.players.config.getStringList( player + ".groups" ).get( 0 ) + ".hierarchyValue" );
+                            for( String group : plugin.players.config.getStringList( player + ".groups" ) ) if( targetHV < plugin.groups.config.getInt( "group." + group + ".hierarchyValue" ) ) targetHV = plugin.groups.config.getInt( "group." + group + ".hierarchyValue" );
+                        }
+
+                        if( !( senderHV > targetHV ) ) continue;
+                    }
+                    commands.add( player );
+                }
+            }
             StringUtil.copyPartialMatches( args[3], commands, completions );
         }
 
