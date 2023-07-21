@@ -927,6 +927,189 @@ public class PlayerCommand implements TabExecutor {
             return true;
         }
 
+        if( args[0].equals( "list" ) ) {
+            if( !sender.hasPermission( "appm.commands.player.list.all" ) && !sender.hasPermission( "appm.commands.player.list.online" ) && !sender.hasPermission( "appm.commands.player.list.offline" ) ) {
+                sender.sendMessage( CommandErrorMessage.INCORRECT.send( label, args, 0 ) );
+                return true;
+            }
+
+            if( args.length < 2 ) {
+                sender.sendMessage( CommandErrorMessage.INCOMPLETE.send( label, args ) );
+                return true;
+            }
+
+            if( !( args[1].equals( "all" ) && sender.hasPermission( "appm.commands.player.list.all" ) ) && !( args[1].equals( "online" ) && sender.hasPermission( "appm.commands.player.list.online" ) ) && !( args[1].equals( "offline" ) && sender.hasPermission( "appm.commands.player.list.offline" ) ) ) {
+                sender.sendMessage( CommandErrorMessage.INCORRECT.send( label, args, 1 ) );
+                return true;
+            }
+
+            if( args.length == 2 ) {
+                Component message = Component.text( "" );
+                OfflinePlayer[] players = plugin.getServer().getOfflinePlayers();
+
+                if( sender.hasPermission( "appm.commands.player.get.uuid" ) ) {
+                    if( args[1].equals( "all" ) ) {
+                        if( players.length == 1 ) message = message.append( Component.text( "1 Total Player:" ).color( NamedTextColor.GOLD ) ).appendNewline();
+                        else message = message.append( Component.text( players.length + " Total Players:" ).color( NamedTextColor.GOLD ) ).appendNewline();
+
+                        boolean first = true;
+                        for( OfflinePlayer player : players ) {
+                            if( first ) {
+                                message = message.append( Component.text( player.getName() + "(" + player.getUniqueId() + ")" ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get uuid " + player.getUniqueId() ) ) );
+                                first = false;
+                            } else message = message.append( Component.text( ", " ) ).append( Component.text( player.getName() + "(" + player.getUniqueId() + ")" ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get uuid " + player.getUniqueId() ) ) );
+                        }
+                    }
+
+                    if( args[1].equals( "online" ) ) {
+                        Component temp = Component.text( "" );
+                        int count = 0;
+                        boolean first = true;
+                        for( OfflinePlayer player : players ) {
+                            if( player.isOnline() ) {
+                                if( first ) {
+                                    temp = temp.append( Component.text( player.getName() + "(" + player.getUniqueId() + ")" ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get uuid " + player.getUniqueId() ) ) );
+                                    first = false;
+                                } else temp = temp.append( Component.text( ", " ) ).append( Component.text( player.getName() + "(" + player.getUniqueId() + ")" ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get uuid " + player.getUniqueId() ) ) );
+                                count++;
+                            }
+                        }
+
+                        if( players.length == 1 ) message = message.append( Component.text( "1 Online Player:").color( NamedTextColor.GOLD ) ).appendNewline();
+                        else message = message.append( Component.text( count + " Online Players:" ).color( NamedTextColor.GOLD ) ).appendNewline();
+                        message = message.append( temp );
+                    }
+
+                    if( args[1].equals( "offline" ) ) {
+                        Component temp = Component.text( "" );
+                        int count = 0;
+                        boolean first = true;
+                        for( OfflinePlayer player : players ) {
+                            if( !player.isOnline() ) {
+                                if( first ) {
+                                    temp = temp.append( Component.text( player.getName() + "(" + player.getUniqueId() + ")" ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get uuid " + player.getUniqueId() ) ) );
+                                    first = false;
+                                } else temp = temp.append( Component.text( ", " ) ).append( Component.text( player.getName() + "(" + player.getUniqueId() + ")" ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get uuid " + player.getUniqueId() ) ) );
+                                count++;
+                            }
+                        }
+
+                        if( players.length == 1 ) message = message.append( Component.text( "1 Offline Player:").color( NamedTextColor.GOLD ) ).appendNewline();
+                        else message = message.append( Component.text( count + " Offline Players:" ).color( NamedTextColor.GOLD ) ).appendNewline();
+                        message = message.append( temp );
+                    }
+                } else if( sender.hasPermission( "appm.commands.player.get.name" ) ) {
+                    if( args[1].equals( "all" ) ) {
+                        if( players.length == 1 ) message = message.append( Component.text( "1 Total Player:").color( NamedTextColor.GOLD ) ).appendNewline();
+                        else message = message.append( Component.text( players.length + " Total Players:" ).color( NamedTextColor.GOLD ) ).appendNewline();
+
+                        boolean first = true;
+                        for( OfflinePlayer player : players ) {
+                            if( first ) {
+                                message = message.append( Component.text( player.getName() + "(" + player.getUniqueId() + ")" ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get name " + player.getName() ) ) );
+                                first = false;
+                            } else message = message.append( Component.text( ", " ) ).append( Component.text( player.getName() + "(" + player.getUniqueId() + ")" ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get name " + player.getName() ) ) );
+                        }
+                    }
+
+                    if( args[1].equals( "online" ) ) {
+                        Component temp = Component.text( "" );
+                        int count = 0;
+                        boolean first = true;
+                        for( OfflinePlayer player : players ) {
+                            if( player.isOnline() ) {
+                                if( first ) {
+                                    temp = temp.append( Component.text( player.getName() + "(" + player.getUniqueId() + ")" ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get name " + player.getName() ) ) );
+                                    first = false;
+                                } else temp = temp.append( Component.text( ", " ) ).append( Component.text( player.getName() + "(" + player.getUniqueId() + ")" ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get name " + player.getName() ) ) );
+                                count++;
+                            }
+                        }
+
+                        if( players.length == 1 ) message = message.append( Component.text( "1 Online Player:").color( NamedTextColor.GOLD ) ).appendNewline();
+                        else message = message.append( Component.text( count + " Online Players:" ).color( NamedTextColor.GOLD ) ).appendNewline();
+                        message = message.append( temp );
+                    }
+
+                    if( args[1].equals( "offline" ) ) {
+                        Component temp = Component.text( "" );
+                        int count = 0;
+                        boolean first = true;
+                        for( OfflinePlayer player : players ) {
+                            if( !player.isOnline() ) {
+                                if( first ) {
+                                    temp = temp.append( Component.text( player.getName() + "(" + player.getUniqueId() + ")" ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get name " + player.getName() ) ) );
+                                    first = false;
+                                } else temp = temp.append( Component.text( ", " ) ).append( Component.text( player.getName() + "(" + player.getUniqueId() + ")" ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get name " + player.getName() ) ) );
+                                count++;
+                            }
+                        }
+
+                        if( players.length == 1 ) message = message.append( Component.text( "1 Offline Player:").color( NamedTextColor.GOLD ) ).appendNewline();
+                        else message = message.append( Component.text( count + " Offline Players:" ).color( NamedTextColor.GOLD ) ).appendNewline();
+                        message = message.append( temp );
+                    }
+                } else {
+                    if( args[1].equals( "all" ) ) {
+                        if( players.length == 1 ) message = message.append( Component.text( "1 Total Player:").color( NamedTextColor.GOLD ) ).appendNewline();
+                        else message = message.append( Component.text( players.length + " Total Players:" ).color( NamedTextColor.GOLD ) ).appendNewline();
+
+                        boolean first = true;
+                        for( OfflinePlayer player : players ) {
+                            if( first ) {
+                                message = message.append( Component.text( player.getName() + "(" + player.getUniqueId() + ")" ) );
+                                first = false;
+                            } else message = message.append( Component.text( ", " ) ).append( Component.text( player.getName() + "(" + player.getUniqueId() + ")" ) );
+                        }
+                    }
+
+                    if( args[1].equals( "online" ) ) {
+                        Component temp = Component.text( "" );
+                        int count = 0;
+                        boolean first = true;
+                        for( OfflinePlayer player : players ) {
+                            if( player.isOnline() ) {
+                                if( first ) {
+                                    temp = temp.append( Component.text( player.getName() + "(" + player.getUniqueId() + ")" ) );
+                                    first = false;
+                                } else temp = temp.append( Component.text( ", " ) ).append( Component.text( player.getName() + "(" + player.getUniqueId() + ")" ) );
+                                count++;
+                            }
+                        }
+
+                        if( players.length == 1 ) message = message.append( Component.text( "1 Online Player:").color( NamedTextColor.GOLD ) ).appendNewline();
+                        else message = message.append( Component.text( count + " Online Players:" ).color( NamedTextColor.GOLD ) ).appendNewline();
+                        message = message.append( temp );
+                    }
+
+                    if( args[1].equals( "offline" ) ) {
+                        Component temp = Component.text( "" );
+                        int count = 0;
+                        boolean first = true;
+                        for( OfflinePlayer player : players ) {
+                            if( !player.isOnline() ) {
+                                if( first ) {
+                                    temp = temp.append( Component.text( player.getName() + "(" + player.getUniqueId() + ")" ) );
+                                    first = false;
+                                } else temp = temp.append( Component.text( ", " ) ).append( Component.text( player.getName() + "(" + player.getUniqueId() + ")" ) );
+                                count++;
+                            }
+                        }
+
+                        if( players.length == 1 ) message = message.append( Component.text( "1 Offline Player:").color( NamedTextColor.GOLD ) ).appendNewline();
+                        else message = message.append( Component.text( count + " Offline Players:" ).color( NamedTextColor.GOLD ) ).appendNewline();
+                        message = message.append( temp );
+                    }
+                }
+
+                sender.sendMessage( message );
+                return true;
+            }
+
+            sender.sendMessage( CommandErrorMessage.EXTRA_ARGUMENT.send( label, args, 2 ) );
+            return true;
+        }
+
         sender.sendMessage( CommandErrorMessage.INCORRECT.send( label, args, 0 ) );
         return true;
     }

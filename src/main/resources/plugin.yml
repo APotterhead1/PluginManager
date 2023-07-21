@@ -153,6 +153,7 @@ permissions:
       appm.commands.player.ban: true
       appm.commands.player.pardon: true
       appm.commands.player.setHierarchy: true
+      appm.commands.player.list: true
   appm.commands.player.get:
     description: Allows access to all appm player get subcommands
     default: op
@@ -268,6 +269,28 @@ permissions:
     default: op
     children:
       appm.help-tab-complete.player: true
+  appm.commands.player.list:
+    description: Allows access to all appm player list subcommands
+    default: true
+    children:
+      appm.commands.player.list.all: true
+      appm.commands.player.list.online: true
+      appm.commands.player.list.offline: true
+  appm.commands.player.list.all:
+    description: Allows access to the appm player list all subcommand
+    default: true
+    children:
+      appm.help-tab-complete.player: true
+  appm.commands.player.list.online:
+    description: Allows access to the appm player list online subcommand
+    default: true
+    children:
+      appm.help-tab-complete.player: true
+  appm.commands.player.list.offline:
+    description: Allows access to the appm player list offline subcommand
+    default: true
+    children:
+      appm.help-tab-complete: true
   appm.help-tab-complete:
     description: Puts all appm commands on the help page and tab complete
     default: op
