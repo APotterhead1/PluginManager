@@ -1,5 +1,5 @@
 // APotterhead
-// 13062023-19072023
+// 13062023-21072023
 
 package me.apotterhead.pluginmanager.commands;
 
@@ -55,13 +55,13 @@ public class PluginCommand implements TabExecutor {
                         else component = component.append( Component.text( "[" + plugins[i].getName() + "]" ).color( NamedTextColor.RED ) );
                     }
                 } else {
-                    if( plugins[0].isEnabled() ) component = component.append( Component.text( "[" + plugins[0].getName() + "]" ).color( NamedTextColor.GREEN ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/plugin get " + plugins[0].getName() ) ) );
-                    else component = component.append( Component.text( "[" + plugins[0].getName() + "]" ).color( NamedTextColor.RED ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/plugin get " + plugins[0].getName() ) ) );
+                    if( plugins[0].isEnabled() ) component = component.append( Component.text( "[" + plugins[0].getName() + "]" ).color( NamedTextColor.GREEN ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/pluginmanager:plugin get " + plugins[0].getName() ) ) );
+                    else component = component.append( Component.text( "[" + plugins[0].getName() + "]" ).color( NamedTextColor.RED ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/pluginmanager:plugin get " + plugins[0].getName() ) ) );
 
                     for( int i = 1; i < plugins.length; i++ ) {
                         component = component.append( Component.text( "," ) );
-                        if( plugins[i].isEnabled() ) component = component.append( Component.text( "[" + plugins[i].getName() + "]" ).color( NamedTextColor.GREEN ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/plugin get " + plugins[i].getName() ) ) );
-                        else component = component.append( Component.text( "[" + plugins[i].getName() + "]" ).color( NamedTextColor.RED ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/plugin get " + plugins[i].getName() ) ) );
+                        if( plugins[i].isEnabled() ) component = component.append( Component.text( "[" + plugins[i].getName() + "]" ).color( NamedTextColor.GREEN ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/pluginmanager:plugin get " + plugins[i].getName() ) ) );
+                        else component = component.append( Component.text( "[" + plugins[i].getName() + "]" ).color( NamedTextColor.RED ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/pluginmanager:plugin get " + plugins[i].getName() ) ) );
                     }
                 }
 
@@ -179,11 +179,11 @@ public class PluginCommand implements TabExecutor {
                 component = component.append( Component.text( ":" ).color( NamedTextColor.GOLD ) ).appendNewline();
                 component = component.append( Component.text( "Status:").color( NamedTextColor.AQUA ) ).appendSpace();
                 if( serverPlugin.isEnabled() ) {
-                    if( sender.hasPermission( "appm.commands.plugin.disable" ) ) component = component.append( Component.text( "Enabled" ).color( NamedTextColor.GREEN ).decorate( TextDecoration.BOLD ).clickEvent( ClickEvent.runCommand( "/plugin disable " + serverPlugin.getName() ) ) );
+                    if( sender.hasPermission( "appm.commands.plugin.disable" ) ) component = component.append( Component.text( "Enabled" ).color( NamedTextColor.GREEN ).decorate( TextDecoration.BOLD ).clickEvent( ClickEvent.runCommand( "/pluginmanager:plugin disable " + serverPlugin.getName() ) ) );
                     else component = component.append( Component.text( "Enabled" ).color( NamedTextColor.GREEN ) );
                 }
                 else {
-                    if( sender.hasPermission( "appm.commands.plugin.enable" ) ) component = component.append( Component.text( "Disabled" ).color( NamedTextColor.RED ).decorate( TextDecoration.BOLD ).clickEvent( ClickEvent.runCommand( "/plugin enable " + serverPlugin.getName() ) ) );
+                    if( sender.hasPermission( "appm.commands.plugin.enable" ) ) component = component.append( Component.text( "Disabled" ).color( NamedTextColor.RED ).decorate( TextDecoration.BOLD ).clickEvent( ClickEvent.runCommand( "/pluginmanager:plugin enable " + serverPlugin.getName() ) ) );
                     else component = component.append( Component.text( "Disabled" ).color( NamedTextColor.RED ) );
                 }
                 component = component.appendNewline().append( Component.text( "Version:" ).color( NamedTextColor.AQUA ) ).appendSpace();

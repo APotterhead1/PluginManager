@@ -134,10 +134,10 @@ public class GroupCommand implements TabExecutor {
                     return true;
                 }
                 if( sender.hasPermission( "appm.commands.group.get" ) ) {
-                    component = component.appendNewline().append( Component.text( "[" + groups.get( 0 ) + "]" ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/group get " + groups.get( 0 ) ) ) );
+                    component = component.appendNewline().append( Component.text( "[" + groups.get( 0 ) + "]" ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/pluginmanager:group get " + groups.get( 0 ) ) ) );
                     for( int i = 1; i < groups.size(); i++ ) {
                         component = component.append( Component.text( "," ) );
-                        component = component.append( Component.text( "[" + groups.get( i ) + "]" ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/group get " + groups.get( i ) ) ) );
+                        component = component.append( Component.text( "[" + groups.get( i ) + "]" ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/pluginmanager:group get " + groups.get( i ) ) ) );
                     }
                 } else {
                     component = component.appendNewline().append( Component.text( "[" + groups.get( 0 ) + "]" ) );
@@ -597,13 +597,13 @@ public class GroupCommand implements TabExecutor {
                     else component = component.appendNewline().append( Component.text( players.size() + " Players:" ).color( NamedTextColor.AQUA ) ).appendSpace();
                     if( sender.hasPermission( "appm.commands.player.get.uuid" ) ) {
                         component = component.append( Component.text( plugin.getServer().getOfflinePlayer( UUID.fromString( players.get( 0 ) ) ).getName() + "(" + players.get( 0 ) + ")" )
-                                .decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get uuid " + players.get( 0 ) ) ) );
+                                .decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/pluginmanager:player get uuid " + players.get( 0 ) ) ) );
                         for (int i = 1; i < players.size(); i++)
-                            component = component.append( Component.text( ", " ) ).append( Component.text( plugin.getServer().getOfflinePlayer( UUID.fromString( players.get( i ) ) ).getName() + "(" + players.get( i ) + ")" ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get uuid " + players.get( i ) ) ) );
+                            component = component.append( Component.text( ", " ) ).append( Component.text( plugin.getServer().getOfflinePlayer( UUID.fromString( players.get( i ) ) ).getName() + "(" + players.get( i ) + ")" ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/pluginmanager:player get uuid " + players.get( i ) ) ) );
                     } else if( sender.hasPermission( "appm.commands.player.get.name" ) ) {
-                        component = component.append( Component.text( plugin.getServer().getOfflinePlayer( UUID.fromString( players.get( 0 ) ) ).getName() + "(" + players.get( 0 ) + ")" ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get name " + plugin.getServer().getOfflinePlayer( UUID.fromString( players.get( 0 ) ) ).getName() ) ) );
+                        component = component.append( Component.text( plugin.getServer().getOfflinePlayer( UUID.fromString( players.get( 0 ) ) ).getName() + "(" + players.get( 0 ) + ")" ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/pluginmanager:player get name " + plugin.getServer().getOfflinePlayer( UUID.fromString( players.get( 0 ) ) ).getName() ) ) );
                         for (int i = 1; i < players.size(); i++)
-                            component = component.append( Component.text( ", " ) ).append( Component.text( plugin.getServer().getOfflinePlayer( UUID.fromString( players.get( i ) ) ).getName() + "(" + players.get( i ) + ")" ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get name " + plugin.getServer().getOfflinePlayer( UUID.fromString( players.get( i ) ) ).getName() ) ) );
+                            component = component.append( Component.text( ", " ) ).append( Component.text( plugin.getServer().getOfflinePlayer( UUID.fromString( players.get( i ) ) ).getName() + "(" + players.get( i ) + ")" ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/pluginmanager:player get name " + plugin.getServer().getOfflinePlayer( UUID.fromString( players.get( i ) ) ).getName() ) ) );
                     } else {
                         component = component.append( Component.text( plugin.getServer().getOfflinePlayer( UUID.fromString( players.get( 0 ) ) ).getName() + "(" + players.get( 0 ) + ")" ) );
                         for (int i = 1; i < players.size(); i++)

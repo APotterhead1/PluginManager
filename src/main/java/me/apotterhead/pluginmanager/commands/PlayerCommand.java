@@ -622,42 +622,42 @@ public class PlayerCommand implements TabExecutor {
                     if( sender.hasPermission( "appm.commands.player.get.uuid.this" ) ) {
                         if( currentPlayers.size() == 1 ) {
                             message = message.appendNewline().append( Component.text( "1 Current Player:" ).color( NamedTextColor.AQUA ) ).appendSpace();
-                            message = message.append( Component.text( plugin.getServer().getOfflinePlayer( UUID.fromString( currentPlayers.get( 0 ) ) ).getName() + "(" + currentPlayers.get( 0 ) + ")" ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get uuid " + currentPlayers.get( 0 ) ) ) );
+                            message = message.append( Component.text( plugin.getServer().getOfflinePlayer( UUID.fromString( currentPlayers.get( 0 ) ) ).getName() + "(" + currentPlayers.get( 0 ) + ")" ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/pluginmanager:player get uuid " + currentPlayers.get( 0 ) ) ) );
                         }
                         if( currentPlayers.size() > 1 ) {
                             message = message.appendNewline().append( Component.text( currentPlayers.size() + " Current Players:" ).color( NamedTextColor.AQUA ) ).appendSpace();
-                            message = message.append( Component.text( plugin.getServer().getOfflinePlayer( UUID.fromString( currentPlayers.get( 0 ) ) ).getName() + "(" + currentPlayers.get( 0 ) + ")" ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get uuid " + currentPlayers.get( 0 ) ) ) );
-                            for( int i = 1; i < currentPlayers.size(); i++ ) message = message.append( Component.text(", " + plugin.getServer().getOfflinePlayer( UUID.fromString( currentPlayers.get( i ) ) ).getName() + "(" + currentPlayers.get( i ) ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get uuid " + currentPlayers.get( i ) ) ) );
+                            message = message.append( Component.text( plugin.getServer().getOfflinePlayer( UUID.fromString( currentPlayers.get( 0 ) ) ).getName() + "(" + currentPlayers.get( 0 ) + ")" ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/pluginmanager:player get uuid " + currentPlayers.get( 0 ) ) ) );
+                            for( int i = 1; i < currentPlayers.size(); i++ ) message = message.append( Component.text(", " + plugin.getServer().getOfflinePlayer( UUID.fromString( currentPlayers.get( i ) ) ).getName() + "(" + currentPlayers.get( i ) ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/pluginmanager:player get uuid " + currentPlayers.get( i ) ) ) );
                         }
 
                         if( allPlayers.size() == 1 ) {
                             message = message.appendNewline().append( Component.text( "1 Total Player:" ).color( NamedTextColor.AQUA ) ).appendSpace();
-                            message = message.append( Component.text( plugin.getServer().getOfflinePlayer( UUID.fromString( allPlayers.get( 0 ) ) ).getName() + "(" + allPlayers.get( 0 ) + ")" ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get uuid " + allPlayers.get( 0 ) ) ) );
+                            message = message.append( Component.text( plugin.getServer().getOfflinePlayer( UUID.fromString( allPlayers.get( 0 ) ) ).getName() + "(" + allPlayers.get( 0 ) + ")" ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/pluginmanager:player get uuid " + allPlayers.get( 0 ) ) ) );
                         }
                         if( allPlayers.size() > 1 ) {
                             message = message.appendNewline().append( Component.text( allPlayers.size() + " Total Players:" ).color( NamedTextColor.AQUA ) ).appendSpace();
-                            message = message.append( Component.text( plugin.getServer().getOfflinePlayer( UUID.fromString( allPlayers.get( 0 ) ) ).getName() + "(" + allPlayers.get( 0 ) + ")" ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get uuid " + allPlayers.get( 0 ) ) ) );
-                            for( int i = 1; i < allPlayers.size(); i++ ) message = message.append( Component.text(", " + plugin.getServer().getOfflinePlayer( UUID.fromString( allPlayers.get( i ) ) ).getName() + "(" + allPlayers.get( i ) ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get uuid " + allPlayers.get( i ) ) ) );
+                            message = message.append( Component.text( plugin.getServer().getOfflinePlayer( UUID.fromString( allPlayers.get( 0 ) ) ).getName() + "(" + allPlayers.get( 0 ) + ")" ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/pluginmanager:player get uuid " + allPlayers.get( 0 ) ) ) );
+                            for( int i = 1; i < allPlayers.size(); i++ ) message = message.append( Component.text(", " + plugin.getServer().getOfflinePlayer( UUID.fromString( allPlayers.get( i ) ) ).getName() + "(" + allPlayers.get( i ) ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/pluginmanager:player get uuid " + allPlayers.get( i ) ) ) );
                         }
                     } else if( sender.hasPermission( "appm.commands.player.get.name.this" ) ) {
                         if( currentPlayers.size() == 1 ) {
                             message = message.appendNewline().append( Component.text( "1 Current Player:" ).color( NamedTextColor.AQUA ) ).appendSpace();
-                            message = message.append( Component.text( plugin.getServer().getOfflinePlayer( UUID.fromString( currentPlayers.get( 0 ) ) ).getName() + "(" + currentPlayers.get( 0 ) + ")" ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get name " + plugin.getServer().getOfflinePlayer( UUID.fromString( currentPlayers.get( 0 ) ) ).getName() ) ) );
+                            message = message.append( Component.text( plugin.getServer().getOfflinePlayer( UUID.fromString( currentPlayers.get( 0 ) ) ).getName() + "(" + currentPlayers.get( 0 ) + ")" ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/pluginmanager:player get name " + plugin.getServer().getOfflinePlayer( UUID.fromString( currentPlayers.get( 0 ) ) ).getName() ) ) );
                         }
                         if( currentPlayers.size() > 1 ) {
                             message = message.appendNewline().append( Component.text( currentPlayers.size() + " Current Players:" ).color( NamedTextColor.AQUA ) ).appendSpace();
-                            message = message.append( Component.text( plugin.getServer().getOfflinePlayer( UUID.fromString( currentPlayers.get( 0 ) ) ).getName() + "(" + currentPlayers.get( 0 ) + ")" ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get name " + plugin.getServer().getOfflinePlayer( UUID.fromString( currentPlayers.get( 0 )  ) ).getName() ) ) );
-                            for( int i = 1; i < currentPlayers.size(); i++ ) message = message.append( Component.text(", " + plugin.getServer().getOfflinePlayer( UUID.fromString( currentPlayers.get( i ) ) ).getName() + "(" + currentPlayers.get( i ) ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get name " + plugin.getServer().getOfflinePlayer( UUID.fromString( currentPlayers.get( i ) ) ).getName() ) ) );
+                            message = message.append( Component.text( plugin.getServer().getOfflinePlayer( UUID.fromString( currentPlayers.get( 0 ) ) ).getName() + "(" + currentPlayers.get( 0 ) + ")" ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/pluginmanager:player get name " + plugin.getServer().getOfflinePlayer( UUID.fromString( currentPlayers.get( 0 )  ) ).getName() ) ) );
+                            for( int i = 1; i < currentPlayers.size(); i++ ) message = message.append( Component.text(", " + plugin.getServer().getOfflinePlayer( UUID.fromString( currentPlayers.get( i ) ) ).getName() + "(" + currentPlayers.get( i ) ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/pluginmanager:player get name " + plugin.getServer().getOfflinePlayer( UUID.fromString( currentPlayers.get( i ) ) ).getName() ) ) );
                         }
 
                         if( allPlayers.size() == 1 ) {
                             message = message.appendNewline().append( Component.text( "1 Total Player:" ).color( NamedTextColor.AQUA ) ).appendSpace();
-                            message = message.append( Component.text( plugin.getServer().getOfflinePlayer( UUID.fromString( allPlayers.get( 0 ) ) ).getName() + "(" + allPlayers.get( 0 ) + ")" ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get name " + plugin.getServer().getOfflinePlayer( UUID.fromString( allPlayers.get( 0 ) ) ).getName() ) ) );
+                            message = message.append( Component.text( plugin.getServer().getOfflinePlayer( UUID.fromString( allPlayers.get( 0 ) ) ).getName() + "(" + allPlayers.get( 0 ) + ")" ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/pluginmanager:player get name " + plugin.getServer().getOfflinePlayer( UUID.fromString( allPlayers.get( 0 ) ) ).getName() ) ) );
                         }
                         if( allPlayers.size() > 1 ) {
                             message = message.appendNewline().append( Component.text( allPlayers.size() + " Total Players:" ).color( NamedTextColor.AQUA ) ).appendSpace();
-                            message = message.append( Component.text( plugin.getServer().getOfflinePlayer( UUID.fromString( allPlayers.get( 0 ) ) ).getName() + "(" + allPlayers.get( 0 ) + ")" ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get name " + plugin.getServer().getOfflinePlayer( UUID.fromString( allPlayers.get( 0 ) ) ).getName() ) ) );
-                            for( int i = 1; i < allPlayers.size(); i++ ) message = message.append( Component.text(", " + plugin.getServer().getOfflinePlayer( UUID.fromString( allPlayers.get( i ) ) ).getName() + "(" + allPlayers.get( i ) ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get name " + plugin.getServer().getOfflinePlayer( UUID.fromString( allPlayers.get( i ) ) ).getName() ) ) );
+                            message = message.append( Component.text( plugin.getServer().getOfflinePlayer( UUID.fromString( allPlayers.get( 0 ) ) ).getName() + "(" + allPlayers.get( 0 ) + ")" ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/pluginmanager:player get name " + plugin.getServer().getOfflinePlayer( UUID.fromString( allPlayers.get( 0 ) ) ).getName() ) ) );
+                            for( int i = 1; i < allPlayers.size(); i++ ) message = message.append( Component.text(", " + plugin.getServer().getOfflinePlayer( UUID.fromString( allPlayers.get( i ) ) ).getName() + "(" + allPlayers.get( i ) ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/pluginmanager:player get name " + plugin.getServer().getOfflinePlayer( UUID.fromString( allPlayers.get( i ) ) ).getName() ) ) );
                         }
                     } else {
                         if( currentPlayers.size() == 1 ) {
@@ -693,7 +693,7 @@ public class PlayerCommand implements TabExecutor {
                         if( hours > 0 ) message = message.append( Component.text( hours + "h " ) );
                         if( minutes > 0 ) message = message.append( Component.text( minutes + "m" ) );
 
-                        if( sender.hasPermission( "appm.commands.player.get.ip.banHistory" ) ) message = message.appendNewline().append( Component.text( "View Ban History" ).color( NamedTextColor.AQUA ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get ip " + args[2] + " banHistory" ) ) );
+                        if( sender.hasPermission( "appm.commands.player.get.ip.banHistory" ) ) message = message.appendNewline().append( Component.text( "View Ban History" ).color( NamedTextColor.AQUA ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/pluginmanager:player get ip " + args[2] + " banHistory" ) ) );
                     }
 
                     if( plugin.ips.config.getBoolean( "ip." + ipPath + ".isBanned" ) ) {
@@ -702,8 +702,8 @@ public class PlayerCommand implements TabExecutor {
 
                         message = message.appendNewline().append( Component.text( "Current Ban Source:" ).color( NamedTextColor.AQUA ) ).appendSpace();
                         String source = plugin.ips.config.getStringList( "ip." + ipPath + ".banSources" ).get( plugin.ips.config.getStringList( "ip." + ipPath + ".banSources" ).size() - 1 );
-                        if( sender.hasPermission( "appm.commands.player.get.uuid.this" ) && !source.equals( "console" ) ) message = message.append( Component.text( source ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get uuid " + source ) ) );
-                        else if( sender.hasPermission( "appm.commands.player.get.name.this" ) && !source.equals( "console" ) ) message = message.append( Component.text( source ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get name " + plugin.getServer().getOfflinePlayer( UUID.fromString( source ) ) ) ) );
+                        if( sender.hasPermission( "appm.commands.player.get.uuid.this" ) && !source.equals( "console" ) ) message = message.append( Component.text( source ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/pluginmanager:player get uuid " + source ) ) );
+                        else if( sender.hasPermission( "appm.commands.player.get.name.this" ) && !source.equals( "console" ) ) message = message.append( Component.text( source ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/pluginmanager:player get name " + plugin.getServer().getOfflinePlayer( UUID.fromString( source ) ) ) ) );
                         else message = message.append( Component.text( source ) );
 
                         message = message.appendNewline().append( Component.text( "Current Ban Reason:" ).color( NamedTextColor.AQUA ) ).appendSpace();
@@ -760,7 +760,7 @@ public class PlayerCommand implements TabExecutor {
                 if( plugin.getServer().getOfflinePlayer( UUID.fromString( uuid ) ).isOnline() ) {
                     message = message.appendNewline().append( Component.text( "ONLINE" ).color( NamedTextColor.GREEN ) );
                     message = message.appendNewline().append( Component.text( "IP Address:" ).color( NamedTextColor.AQUA ) ).appendSpace();
-                    if( sender.hasPermission( "appm.commands.player.get.ip.this" ) ) message = message.append( Component.text( Objects.requireNonNull( plugin.players.config.getString( uuid + ".lastIP" ) ) ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get ip " + plugin.players.config.getString( uuid + ".lastIP" ) ) ) );
+                    if( sender.hasPermission( "appm.commands.player.get.ip.this" ) ) message = message.append( Component.text( Objects.requireNonNull( plugin.players.config.getString( uuid + ".lastIP" ) ) ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/pluginmanager:player get ip " + plugin.players.config.getString( uuid + ".lastIP" ) ) ) );
                     else message = message.append( Component.text( Objects.requireNonNull( plugin.players.config.getString( uuid + ".lastIP" ) ) ) );
                 }
 
@@ -776,8 +776,8 @@ public class PlayerCommand implements TabExecutor {
                     if( hours > 0 ) message = message.append( Component.text( hours + "h " ) );
                     if( minutes > 0 ) message = message.append( Component.text( minutes + "m" ) );
 
-                    if( sender.hasPermission( "appm.commands.player.get.uuid.banHistory" ) ) message = message.appendNewline().append( Component.text( "View Ban History" ).color( NamedTextColor.AQUA ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get uuid " + uuid + " banHistory" ) ) );
-                    else if( sender.hasPermission( "appm.commands.player.get.name.banHistory" ) ) message = message.appendNewline().append( Component.text( "View Ban History" ).color( NamedTextColor.AQUA ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get name " + plugin.getServer().getOfflinePlayer( UUID.fromString( uuid ) ).getName() + " banHistory" ) ) );
+                    if( sender.hasPermission( "appm.commands.player.get.uuid.banHistory" ) ) message = message.appendNewline().append( Component.text( "View Ban History" ).color( NamedTextColor.AQUA ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/pluginmanager:player get uuid " + uuid + " banHistory" ) ) );
+                    else if( sender.hasPermission( "appm.commands.player.get.name.banHistory" ) ) message = message.appendNewline().append( Component.text( "View Ban History" ).color( NamedTextColor.AQUA ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/pluginmanager:player get name " + plugin.getServer().getOfflinePlayer( UUID.fromString( uuid ) ).getName() + " banHistory" ) ) );
                 }
 
                 if( plugin.players.config.getBoolean( uuid + ".isBanned" ) ) {
@@ -786,8 +786,8 @@ public class PlayerCommand implements TabExecutor {
 
                     message = message.appendNewline().append( Component.text( "Current Ban Source:" ).color( NamedTextColor.AQUA ) ).appendSpace();
                     String source = plugin.players.config.getStringList( uuid + ".banSources" ).get( plugin.players.config.getStringList( uuid + ".banSources" ).size() - 1 );
-                    if( sender.hasPermission( "appm.commands.player.get.uuid.this" ) && !source.equals( "console" ) ) message = message.append( Component.text( source ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get uuid " + source )  ) );
-                    else if( sender.hasPermission( "appm.commands.player.get.name.this" ) && !source.equals( "console" ) ) message = message.append( Component.text( source ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get name " + plugin.getServer().getOfflinePlayer( UUID.fromString( source ) ).getName() ) ) );
+                    if( sender.hasPermission( "appm.commands.player.get.uuid.this" ) && !source.equals( "console" ) ) message = message.append( Component.text( source ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/pluginmanager:player get uuid " + source )  ) );
+                    else if( sender.hasPermission( "appm.commands.player.get.name.this" ) && !source.equals( "console" ) ) message = message.append( Component.text( source ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/pluginmanager:player get name " + plugin.getServer().getOfflinePlayer( UUID.fromString( source ) ).getName() ) ) );
                     else message = message.append( Component.text( source ) );
 
                     message = message.appendNewline().append( Component.text( "Current Ban Reason:" ).color( NamedTextColor.AQUA ) ).appendSpace();
@@ -802,8 +802,8 @@ public class PlayerCommand implements TabExecutor {
                     if( plugin.players.config.getStringList( uuid + ".groups" ).size() == 1 ) message = message.appendNewline().append( Component.text( "1 Group:" ).color( NamedTextColor.AQUA ) ).appendSpace();
                     else message = message.appendNewline().append( Component.text( plugin.players.config.getStringList( uuid + ".groups" ).size() + " Groups:" ).color( NamedTextColor.AQUA ) ).appendSpace();
                     if( sender.hasPermission( "appm.commands.group.get" ) ) {
-                        message = message.append( Component.text( plugin.players.config.getStringList( uuid + ".groups" ).get( 0 ) ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/group get " + plugin.players.config.getStringList( uuid + ".groups" ).get( 0 ) ) ) );
-                        for( int i = 1; i < plugin.players.config.getStringList( uuid + ".groups" ).size(); i++ ) message = message.append( Component.text( ", " ) ).append( Component.text( plugin.players.config.getStringList( uuid + ".groups" ).get( i ) ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/group get " + plugin.players.config.getStringList( uuid + ".groups" ).get( i ) ) ) );
+                        message = message.append( Component.text( plugin.players.config.getStringList( uuid + ".groups" ).get( 0 ) ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/pluginmanager:group get " + plugin.players.config.getStringList( uuid + ".groups" ).get( 0 ) ) ) );
+                        for( int i = 1; i < plugin.players.config.getStringList( uuid + ".groups" ).size(); i++ ) message = message.append( Component.text( ", " ) ).append( Component.text( plugin.players.config.getStringList( uuid + ".groups" ).get( i ) ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/pluginmanager:group get " + plugin.players.config.getStringList( uuid + ".groups" ).get( i ) ) ) );
                     } else {
                         message = message.append( Component.text( plugin.players.config.getStringList( uuid + ".groups" ).get( 0 ) ) );
                         for( int i = 1; i < plugin.players.config.getStringList( uuid + ".groups" ).size(); i++ ) message = message.append( Component.text( ", " + plugin.players.config.getStringList( uuid + ".groups" ).get( i ) ) );
@@ -820,15 +820,15 @@ public class PlayerCommand implements TabExecutor {
                 if( sender.hasPermission( "appm.commands.player.get.ip.this" ) ) {
                     if( !plugin.getServer().getOfflinePlayer( UUID.fromString( uuid ) ).isOnline() ) {
                         message = message.appendNewline().append( Component.text( "Last IP:" ).color( NamedTextColor.AQUA ) ).appendSpace();
-                        message = message.append( Component.text( Objects.requireNonNull( plugin.players.config.getString( uuid + ".lastIP" ) ) ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get ip " + plugin.players.config.getString( uuid + ".lastIP" ) ) ) );
+                        message = message.append( Component.text( Objects.requireNonNull( plugin.players.config.getString( uuid + ".lastIP" ) ) ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/pluginmanager:player get ip " + plugin.players.config.getString( uuid + ".lastIP" ) ) ) );
                     }
 
                     if( plugin.players.config.getStringList( uuid + ".pastIPs" ).size() != 0 ) {
                         if( plugin.players.config.getStringList( uuid + ".pastIPs" ).size() == 1 ) message = message.appendNewline().append( Component.text( "1 Past IP:" ).color( NamedTextColor.AQUA ) ).appendSpace();
                         else message = message.appendNewline().append( Component.text( plugin.players.config.getStringList( uuid + ".pastIPs" ).size() + " Past IPs:" ).color( NamedTextColor.AQUA ) ).appendSpace();
 
-                        message = message.append( Component.text( plugin.players.config.getStringList( uuid + ".pastIPs" ).get( 0 ) ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get ip " + plugin.players.config.getStringList( uuid + ".pastIPs" ).get( 0 ) ) ) );
-                        for( int i = 1; i < plugin.players.config.getStringList( uuid + ".pastIPs" ).size(); i++ ) message = message.append( Component.text( ", " ) ).append( Component.text( plugin.players.config.getStringList( uuid + ".pastIPs" ).get( i ) ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get ip " + plugin.players.config.getStringList( uuid + ".pastIPs" ).get( i ) ) ) );
+                        message = message.append( Component.text( plugin.players.config.getStringList( uuid + ".pastIPs" ).get( 0 ) ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/pluginmanager:player get ip " + plugin.players.config.getStringList( uuid + ".pastIPs" ).get( 0 ) ) ) );
+                        for( int i = 1; i < plugin.players.config.getStringList( uuid + ".pastIPs" ).size(); i++ ) message = message.append( Component.text( ", " ) ).append( Component.text( plugin.players.config.getStringList( uuid + ".pastIPs" ).get( i ) ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/pluginmanager:player get ip " + plugin.players.config.getStringList( uuid + ".pastIPs" ).get( i ) ) ) );
                     }
                 } else {
                     if( !plugin.getServer().getOfflinePlayer( UUID.fromString( uuid ) ).isOnline() ) {
@@ -880,8 +880,8 @@ public class PlayerCommand implements TabExecutor {
                         message = message.append( Component.text( banSentenceLengths.get( i ) ) );
 
                         message = message.appendNewline().append( Component.text( "Source:" ).color( NamedTextColor.AQUA ) ).appendSpace();
-                        if( sender.hasPermission( "appm.commands.player.get.uuid.this" ) && !banSources.get( i ).equals( "console" ) ) message = message.append( Component.text( banSources.get( i ) ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get uuid " + banSources.get( i ) ) ) );
-                        else if( sender.hasPermission( "appm.commands.player.get.name.this" ) && !banSources.get(i).equals( "console" ) ) message = message.append( Component.text( banSources.get( i ) ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get name " + plugin.getServer().getOfflinePlayer( UUID.fromString( banSources.get( i ) ) ) ) ) );
+                        if( sender.hasPermission( "appm.commands.player.get.uuid.this" ) && !banSources.get( i ).equals( "console" ) ) message = message.append( Component.text( banSources.get( i ) ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/pluginmanager:player get uuid " + banSources.get( i ) ) ) );
+                        else if( sender.hasPermission( "appm.commands.player.get.name.this" ) && !banSources.get(i).equals( "console" ) ) message = message.append( Component.text( banSources.get( i ) ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/pluginmanager:player get name " + plugin.getServer().getOfflinePlayer( UUID.fromString( banSources.get( i ) ) ) ) ) );
                         else message = message.append( Component.text( banSources.get( i ) ) );
 
                         message = message.appendNewline().append( Component.text( "Reason:" ).color( NamedTextColor.AQUA ) ).appendSpace();
@@ -931,8 +931,8 @@ public class PlayerCommand implements TabExecutor {
                     message = message.append( Component.text( banSentenceLengths.get( i ) ) );
 
                     message = message.appendNewline().append( Component.text( "Source:" ).color( NamedTextColor.AQUA ) ).appendSpace();
-                    if( sender.hasPermission( "appm.commands.player.get.uuid.this" ) && !banSources.get( i ).equals( "console" ) ) message = message.append( Component.text( banSources.get( i ) ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get uuid " + banSources.get( i ) ) ) );
-                    else if( sender.hasPermission( "appm.commands.player.get.name.this" ) && !banSources.get( i ).equals( "console" ) ) message = message.append( Component.text( banSources.get( i ) ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get name " + plugin.getServer().getOfflinePlayer( UUID.fromString( banSources.get( i ) ) ) ) ) );
+                    if( sender.hasPermission( "appm.commands.player.get.uuid.this" ) && !banSources.get( i ).equals( "console" ) ) message = message.append( Component.text( banSources.get( i ) ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/pluginmanager:player get uuid " + banSources.get( i ) ) ) );
+                    else if( sender.hasPermission( "appm.commands.player.get.name.this" ) && !banSources.get( i ).equals( "console" ) ) message = message.append( Component.text( banSources.get( i ) ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/pluginmanager:player get name " + plugin.getServer().getOfflinePlayer( UUID.fromString( banSources.get( i ) ) ) ) ) );
                     else message = message.append( Component.text( banSources.get( i ) ) );
 
                     message = message.appendNewline().append( Component.text( "Reason:" ).color( NamedTextColor.AQUA ) ).appendSpace();
@@ -975,9 +975,9 @@ public class PlayerCommand implements TabExecutor {
                         boolean first = true;
                         for( OfflinePlayer player : players ) {
                             if( first ) {
-                                message = message.append( Component.text( player.getName() + "(" + player.getUniqueId() + ")" ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get uuid " + player.getUniqueId() ) ) );
+                                message = message.append( Component.text( player.getName() + "(" + player.getUniqueId() + ")" ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/pluginmanager:player get uuid " + player.getUniqueId() ) ) );
                                 first = false;
-                            } else message = message.append( Component.text( ", " ) ).append( Component.text( player.getName() + "(" + player.getUniqueId() + ")" ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get uuid " + player.getUniqueId() ) ) );
+                            } else message = message.append( Component.text( ", " ) ).append( Component.text( player.getName() + "(" + player.getUniqueId() + ")" ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/pluginmanager:player get uuid " + player.getUniqueId() ) ) );
                         }
                     }
 
@@ -988,9 +988,9 @@ public class PlayerCommand implements TabExecutor {
                         for( OfflinePlayer player : players ) {
                             if( player.isOnline() ) {
                                 if( first ) {
-                                    temp = temp.append( Component.text( player.getName() + "(" + player.getUniqueId() + ")" ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get uuid " + player.getUniqueId() ) ) );
+                                    temp = temp.append( Component.text( player.getName() + "(" + player.getUniqueId() + ")" ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/pluginmanager:player get uuid " + player.getUniqueId() ) ) );
                                     first = false;
-                                } else temp = temp.append( Component.text( ", " ) ).append( Component.text( player.getName() + "(" + player.getUniqueId() + ")" ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get uuid " + player.getUniqueId() ) ) );
+                                } else temp = temp.append( Component.text( ", " ) ).append( Component.text( player.getName() + "(" + player.getUniqueId() + ")" ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/pluginmanager:player get uuid " + player.getUniqueId() ) ) );
                                 count++;
                             }
                         }
@@ -1007,9 +1007,9 @@ public class PlayerCommand implements TabExecutor {
                         for( OfflinePlayer player : players ) {
                             if( !player.isOnline() ) {
                                 if( first ) {
-                                    temp = temp.append( Component.text( player.getName() + "(" + player.getUniqueId() + ")" ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get uuid " + player.getUniqueId() ) ) );
+                                    temp = temp.append( Component.text( player.getName() + "(" + player.getUniqueId() + ")" ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/pluginmanager:player get uuid " + player.getUniqueId() ) ) );
                                     first = false;
-                                } else temp = temp.append( Component.text( ", " ) ).append( Component.text( player.getName() + "(" + player.getUniqueId() + ")" ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get uuid " + player.getUniqueId() ) ) );
+                                } else temp = temp.append( Component.text( ", " ) ).append( Component.text( player.getName() + "(" + player.getUniqueId() + ")" ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/pluginmanager:player get uuid " + player.getUniqueId() ) ) );
                                 count++;
                             }
                         }
@@ -1026,9 +1026,9 @@ public class PlayerCommand implements TabExecutor {
                         boolean first = true;
                         for( OfflinePlayer player : players ) {
                             if( first ) {
-                                message = message.append( Component.text( player.getName() + "(" + player.getUniqueId() + ")" ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get name " + player.getName() ) ) );
+                                message = message.append( Component.text( player.getName() + "(" + player.getUniqueId() + ")" ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/pluginmanager:player get name " + player.getName() ) ) );
                                 first = false;
-                            } else message = message.append( Component.text( ", " ) ).append( Component.text( player.getName() + "(" + player.getUniqueId() + ")" ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get name " + player.getName() ) ) );
+                            } else message = message.append( Component.text( ", " ) ).append( Component.text( player.getName() + "(" + player.getUniqueId() + ")" ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/pluginmanager:player get name " + player.getName() ) ) );
                         }
                     }
 
@@ -1039,9 +1039,9 @@ public class PlayerCommand implements TabExecutor {
                         for( OfflinePlayer player : players ) {
                             if( player.isOnline() ) {
                                 if( first ) {
-                                    temp = temp.append( Component.text( player.getName() + "(" + player.getUniqueId() + ")" ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get name " + player.getName() ) ) );
+                                    temp = temp.append( Component.text( player.getName() + "(" + player.getUniqueId() + ")" ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/pluginmanager:player get name " + player.getName() ) ) );
                                     first = false;
-                                } else temp = temp.append( Component.text( ", " ) ).append( Component.text( player.getName() + "(" + player.getUniqueId() + ")" ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get name " + player.getName() ) ) );
+                                } else temp = temp.append( Component.text( ", " ) ).append( Component.text( player.getName() + "(" + player.getUniqueId() + ")" ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/pluginmanager:player get name " + player.getName() ) ) );
                                 count++;
                             }
                         }
@@ -1058,9 +1058,9 @@ public class PlayerCommand implements TabExecutor {
                         for( OfflinePlayer player : players ) {
                             if( !player.isOnline() ) {
                                 if( first ) {
-                                    temp = temp.append( Component.text( player.getName() + "(" + player.getUniqueId() + ")" ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get name " + player.getName() ) ) );
+                                    temp = temp.append( Component.text( player.getName() + "(" + player.getUniqueId() + ")" ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/pluginmanager:player get name " + player.getName() ) ) );
                                     first = false;
-                                } else temp = temp.append( Component.text( ", " ) ).append( Component.text( player.getName() + "(" + player.getUniqueId() + ")" ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/player get name " + player.getName() ) ) );
+                                } else temp = temp.append( Component.text( ", " ) ).append( Component.text( player.getName() + "(" + player.getUniqueId() + ")" ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/pluginmanager:player get name " + player.getName() ) ) );
                                 count++;
                             }
                         }
