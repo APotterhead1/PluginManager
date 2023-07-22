@@ -56,6 +56,10 @@ public final class PluginManager extends JavaPlugin {
         Objects.requireNonNull( getCommand( "player" ) ).setExecutor( playerCommand );
         Objects.requireNonNull( getCommand( "player" ) ).setTabCompleter( playerCommand );
 
+        PermissionCommand permissionCommand = new PermissionCommand();
+        Objects.requireNonNull( getCommand( "permission" ) ).setExecutor( permissionCommand );
+        Objects.requireNonNull( getCommand( "permission" ) ).setTabCompleter( permissionCommand );
+
         getServer().getPluginManager().registerEvents( new DisablePluginsOnLoad( this ), this );
         getServer().getPluginManager().registerEvents( new UpdatePlayerInfoOnLogin( this ), this );
         getServer().getPluginManager().registerEvents( new UpdatePlayerInfoOnQuit( this ), this );
