@@ -22,6 +22,7 @@ public final class PluginManager extends JavaPlugin {
     public GroupsFile groups;
     public PlayersFile players;
     public IPsFile ips;
+    public PermissionsFile permissions;
     public Map<Player, PermissionAttachment> attachments;
     @Override
     public void onEnable() {
@@ -29,6 +30,7 @@ public final class PluginManager extends JavaPlugin {
         groups = new GroupsFile( this );
         players = new PlayersFile( this );
         ips = new IPsFile( this );
+        permissions = new PermissionsFile( this );
 
         attachments = new HashMap<>();
 
