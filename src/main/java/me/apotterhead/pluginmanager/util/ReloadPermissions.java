@@ -11,7 +11,8 @@ public class ReloadPermissions {
 
     public enum ReloadType {
         PLAYER,
-        GROUP
+        GROUP,
+        PERMISSION
     }
 
     public static @Nullable Component reload( ReloadType reloadType, String target, PluginManager plugin  ) {
