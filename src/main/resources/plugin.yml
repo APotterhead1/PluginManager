@@ -654,41 +654,6 @@ permissions:
     description: Allows access to all appm permission list subcommands
     default: op
     children:
-      appm.commands.permission.list.all: true
-      appm.commands.permission.list.true: true
-      appm.commands.permission.list.false: true
-      appm.commands.permission.list.neutral: true
-      appm.commands.permission.list.neutralTrue: true
-      appm.commands.permission.list.neutralFalse: true
-  appm.commands.permission.list.all:
-    description: Allows access to the appm permission list all subcommand
-    default: op
-    children:
-      appm.help-tab-complete.permission: true
-  appm.commands.permission.list.true:
-    description: Allows access to the appm permission list true subcommand
-    default: op
-    children:
-      appm.help-tab-complete.permission: true
-  appm.commands.permission.list.false:
-    description: Allows access to the appm permission list false subcommand
-    default: op
-    children:
-      appm.help-tab-complete.permission: true
-  appm.commands.permission.list.neutral:
-    description: Allows access to the appm permission list neutral subcommand
-    default: op
-    children:
-      appm.help-tab-complete.permission: true
-  appm.commands.permission.list.neutralTrue:
-    description: Allows access to the appm permission list neutralTrue subcommand
-    default: op
-    children:
-      appm.help-tab-complete.permission: true
-  appm.commands.permission.list.neutralFalse:
-    description: Allows access to the appm permission list neutralFalse subcommand
-    default: op
-    children:
       appm.help-tab-complete.permission: true
   appm.help-tab-complete:
     description: Puts all appm commands on the help page and tab complete
