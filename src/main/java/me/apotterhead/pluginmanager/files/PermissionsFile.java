@@ -17,7 +17,7 @@ public class PermissionsFile {
     public PermissionsFile( PluginManager plugin ) {
         this.plugin = plugin;
         try {
-            file = new File( plugin.getDataFolder(), "permission.yml" );
+            file = new File( plugin.getDataFolder(), "permissions.yml" );
             config = YamlConfiguration.loadConfiguration( file );
         } catch( Exception e ) {
             plugin.getLogger().log( Level.SEVERE, "Could not load permissions.yml" );
