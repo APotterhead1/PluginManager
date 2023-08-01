@@ -18,14 +18,11 @@ import java.util.UUID;
 import java.time.Instant;
 import org.bukkit.entity.Player;
 import me.apotterhead.pluginmanager.util.*;
-import me.apotterhead.pluginmanager.util.ReloadPermissions.ReloadType;
 import java.time.temporal.ChronoUnit;
 import java.lang.StringBuilder;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.event.ClickEvent;
 import java.util.Objects;
-import java.util.logging.Level;
-import net.kyori.adventure.text.TextComponent;
 import java.util.Collections;
 import org.bukkit.util.StringUtil;
 
@@ -114,8 +111,6 @@ public class PlayerCommand implements TabExecutor {
                     }
                 }
 
-                String oldHierarchyValue = plugin.players.config.getString( uuid + ".hierarchyValue" );
-
                 if( args[3].equals( "default" ) ) {
                     if( sender instanceof Player ) {
                         int senderHV = 0;
@@ -159,20 +154,6 @@ public class PlayerCommand implements TabExecutor {
                         sender.sendMessage( Component.text( "'" + args[3] + "' is not a whole number, is too large, or is too small" ).color( NamedTextColor.RED ) );
                         return true;
                     }
-                }
-
-                Component reloadMessage = ReloadPermissions.reload( ReloadType.PLAYER, uuid, plugin );
-
-                if( reloadMessage != null ) {
-                    sender.sendMessage( reloadMessage );
-                    plugin.getLogger().log( Level.WARNING, ( (TextComponent) reloadMessage ).content() );
-
-                    if( oldHierarchyValue == null ) plugin.players.config.set( uuid + ".hierarchyValue", null );
-                    else plugin.players.config.set( uuid + ".hierarchyValue", Integer.parseInt( oldHierarchyValue ) );
-                    plugin.players.save();
-
-                    ReloadPermissions.reload( ReloadType.PLAYER, uuid, plugin );
-                    return true;
                 }
 
                 sender.sendMessage( Component.text( "The hierarchy value for " + plugin.getServer().getOfflinePlayer( UUID.fromString( uuid ) ).getName() + "(" + uuid + ") has been set to " + args[3] ).color( NamedTextColor.GREEN ) );
