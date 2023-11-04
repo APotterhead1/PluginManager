@@ -531,18 +531,24 @@ public class GroupCommand implements TabExecutor {
                     }
                 }
 
+                Component reloadMessage = null;
+
                 List<String> players = plugin.groups.config.getStringList( "group." + args[1] + ".players" );
                 for( String player : players ) {
                     List<String> groups = plugin.players.config.getStringList( player + ".groups" );
                     groups.remove( args[1] );
                     plugin.players.config.set( player + ".groups", groups );
                     plugin.players.save();
+                    Component tempComp = ReloadPermissions.reload( ReloadType.PLAYER, player, plugin );
+                    if( tempComp != null ) {
+                        if( reloadMessage == null ) reloadMessage = tempComp;
+                        else reloadMessage = reloadMessage.append( tempComp );
+                    }
                 }
 
                 plugin.groups.config.set( "group." + args[1] + ".players", null );
                 plugin.groups.save();
 
-                Component reloadMessage = ReloadPermissions.reload( ReloadType.GROUP, args[1], plugin );
                 if( reloadMessage != null ) {
                     sender.sendMessage( reloadMessage );
                     plugin.getLogger().log( Level.WARNING, ( (TextComponent) reloadMessage ).content() );
