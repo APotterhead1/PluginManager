@@ -20,10 +20,10 @@ public class DisablePluginsOnLoad implements Listener {
 
     @EventHandler
     public void onLoad( ServerLoadEvent event ) {
-        for( String serverPluginName : plugin.disabledPlugins.config.getStringList( "plugins" ) )
-            if( !serverPluginName.equals( "PluginManager" ) )
-                plugin.getServer().getPluginManager().disablePlugin( Objects.requireNonNull( plugin.getServer().getPluginManager().getPlugin( serverPluginName ) ) );
-        if( plugin.disabledPlugins.config.getStringList( "plugins" ).contains( "PluginManager" ) )
-            plugin.getServer().getLogger().log( Level.WARNING, "Cannot disable [PluginManager] on server restart or reload" );
+        for( String serverPluginName : plugin.disabledPlugins.config.getStringList( "plugins" ) ) {
+            if (!serverPluginName.equals("PluginManager"))
+                plugin.getServer().getPluginManager().disablePlugin(Objects.requireNonNull(plugin.getServer().getPluginManager().getPlugin(serverPluginName)));
+            else plugin.getServer().getLogger().log( Level.WARNING, "Cannot disable [PluginManager] on server restart or reload" );
+        }
     }
 }
