@@ -9,6 +9,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.server.ServerLoadEvent;
 import java.util.Objects;
 import java.util.logging.Level;
+import java.util.List;
 
 public class DisablePluginsOnLoad implements Listener {
 
@@ -23,7 +24,13 @@ public class DisablePluginsOnLoad implements Listener {
         for( String serverPluginName : plugin.disabledPlugins.config.getStringList( "plugins" ) ) {
             if (!serverPluginName.equals("PluginManager"))
                 plugin.getServer().getPluginManager().disablePlugin(Objects.requireNonNull(plugin.getServer().getPluginManager().getPlugin(serverPluginName)));
-            else plugin.getServer().getLogger().log( Level.WARNING, "Cannot disable [PluginManager] on server restart or reload" );
+            else {
+                plugin.getServer().getLogger().log( Level.WARNING, "Cannot disable [PluginManager] on server restart or reload" );
+                List<String> plugins = plugin.disabledPlugins.config.getStringList( "plugins" );
+                plugins.remove( "PluginManager" );
+                plugin.disabledPlugins.config.set( "plugins", plugins );
+                plugin.disabledPlugins.save();
+            }
         }
     }
 }
