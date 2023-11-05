@@ -336,8 +336,6 @@ permissions:
       appm.commands.permission.set.player.true: true
       appm.commands.permission.set.player.false: true
       appm.commands.permission.set.player.neutral: true
-      appm.commands.permission.set.player.neutralTrue: true
-      appm.commands.permission.set.player.neutralFalse: true
   appm.commands.permission.set.player.name:
     description: Allows access to all appm permission set player name subcommands
     default: op
@@ -345,8 +343,6 @@ permissions:
       appm.commands.permission.set.player.name.true: true
       appm.commands.permission.set.player.name.false: true
       appm.commands.permission.set.player.name.neutral: true
-      appm.commands.permission.set.player.name.neutralTrue: true
-      appm.commands.permission.set.player.name.neutralFalse: true
   appm.commands.permission.set.player.uuid:
     description: Allows access to all appm permission set player uuid subcommands
     default: op
@@ -354,8 +350,6 @@ permissions:
       appm.commands.permission.set.player.uuid.true: true
       appm.commands.permission.set.player.uuid.false: true
       appm.commands.permission.set.player.uuid.neutral: true
-      appm.commands.permission.set.player.uuid.neutralTrue: true
-      appm.commands.permission.set.player.uuid.neutralFalse: true
   appm.commands.permission.set.player.true:
     description: Allows access to all appm permission set player true subcommands
     default: op
@@ -374,18 +368,6 @@ permissions:
     children:
       appm.commands.permission.set.player.name.neutral: true
       appm.commands.permission.set.player.uuid.neutral: true
-  appm.commands.permission.set.player.neutralTrue:
-    description: Allows access to all appm permission set player neutralFalse subcommands
-    default: op
-    children:
-      appm.commands.permission.set.player.name.neutralTrue: true
-      appm.commands.permission.set.player.uuid.neutralTrue: true
-  appm.commands.permission.set.player.neutralFalse:
-    description: Allows access to all appm permission set player neutralTrue subcommands
-    default: op
-    children:
-      appm.commands.permission.set.player.name.neutralFalse: true
-      appm.commands.permission.set.player.uuid.neutralFalse: true
   appm.commands.permission.set.player.name.true:
     description: Allows access to the appm permission set player name true subcommands
     default: op
@@ -398,16 +380,6 @@ permissions:
       appm.help-tab-complete.permission: true
   appm.commands.permission.set.player.name.neutral:
     description: Allows access to the appm permission set player name neutral subcommand
-    default: op
-    children:
-      appm.help-tab-complete.permission: true
-  appm.commands.permission.set.player.name.neutralTrue:
-    description: Allows access to the appm permission set player name neutralTrue subcommand
-    default: op
-    children:
-      appm.help-tab-complete.permission: true
-  appm.commands.permission.set.player.name.neutralFalse:
-    description: Allows access to the appm permission set player name neutralFalse subcommand
     default: op
     children:
       appm.help-tab-complete.permission: true
@@ -426,16 +398,6 @@ permissions:
     default: op
     children:
       appm.help-tab-complete.permission: true
-  appm.commands.permission.set.player.uuid.neutralTrue:
-    description: Allows access to the appm permission set player uuid neutralTrue subcommand
-    default: op
-    children:
-      appm.help-tab-complete.permission: true
-  appm.commands.permission.set.player.uuid.neutralFalse:
-    description: Allows access to the appm permission set player uuid neutralFalse subcommand
-    default: op
-    children:
-      appm.help-tab-complete.permission: true
   appm.commands.permission.set.group:
     description: Allows access to all appm permission set group subcommands
     default: op
@@ -443,8 +405,6 @@ permissions:
       appm.commands.permission.set.group.true: true
       appm.commands.permission.set.group.false: true
       appm.commands.permission.set.group.neutral: true
-      appm.commands.permission.set.group.neutralTrue: true
-      appm.commands.permission.set.group.neutralFalse: true
   appm.commands.permission.set.group.true:
     description: Allows access to the appm permission set group true subcommand
     default: op
@@ -457,16 +417,6 @@ permissions:
       appm.help-tab-complete.permission: true
   appm.commands.permission.set.group.neutral:
     description: Allows access to the appm permission set group neutral subcommand
-    default: op
-    children:
-      appm.help-tab-complete.permission: true
-  appm.commands.permission.set.group.neutralTrue:
-    description: Allows access to the appm permission set group neutralTrue subcommand
-    default: op
-    children:
-      appm.help-tab-complete.permission: true
-  appm.commands.permission.set.group.neutralFalse:
-    description: Allows access to the appm permission set group neutralFalse subcommand
     default: op
     children:
       appm.help-tab-complete.permission: true
@@ -492,8 +442,6 @@ permissions:
       appm.commands.permission.get.player.true: true
       appm.commands.permission.get.player.false: true
       appm.commands.permission.get.player.neutral: true
-      appm.commands.permission.get.player.neutralTrue: true
-      appm.commands.permission.get.player.neutralFalse: true
   appm.commands.permission.get.player.name:
     description: Allows access to all appm permission get name subcommands
     default: op
@@ -502,8 +450,6 @@ permissions:
       appm.commands.permission.get.player.name.true: true
       appm.commands.permission.get.player.name.false: true
       appm.commands.permission.get.player.name.neutral: true
-      appm.commands.permission.get.player.name.neutralTrue: true
-      appm.commands.permission.get.player.name.neutralFalse: true
   appm.commands.permission.get.player.uuid:
     description: Allows access to all appm permission get uuid subcommands
     default: op
@@ -512,8 +458,6 @@ permissions:
       appm.commands.permission.get.player.uuid.true: true
       appm.commands.permission.get.player.uuid.false: true
       appm.commands.permission.get.player.uuid.neutral: true
-      appm.commands.permission.get.player.uuid.neutralTrue: true
-      appm.commands.permission.get.player.uuid.neutralFalse: true
   appm.commands.permission.get.player.all:
     description: Allows access to all appm permission get all subcommands
     default: op
@@ -538,18 +482,6 @@ permissions:
     children:
       appm.commands.permission.get.player.name.neutral: true
       appm.commands.permission.get.player.uuid.neutral: true
-  appm.commands.permission.get.player.neutralTrue:
-    description: Allows access to all appm permission get neutralTrue subcommands
-    default: op
-    children:
-      appm.commands.permission.get.player.name.neutralTrue: true
-      appm.commands.permission.get.player.uuid.neutralTrue: true
-  appm.commands.permission.get.player.neutralFalse:
-    description: Allows access to all appm permission get neutralFalse subcommands
-    default: op
-    children:
-      appm.commands.permission.get.player.name.neutralFalse: true
-      appm.commands.permission.get.player.uuid.neutralFalse: true
   appm.commands.permission.get.player.name.all:
     description: Allows access to the appm permission get player name all subcommand
     default: op
@@ -567,16 +499,6 @@ permissions:
       appm.help-tab-complete.permission: true
   appm.commands.permission.get.player.name.neutral:
     description: Allows access to the appm permission get player name neutral subcommand
-    default: op
-    children:
-      appm.help-tab-complete.permission: true
-  appm.commands.permission.get.player.name.neutralTrue:
-    description: Allows access to the appm permission get player name neutralTrue subcommand
-    default: op
-    children:
-      appm.help-tab-complete.permission: true
-  appm.commands.permission.get.player.name.neutralFalse:
-    description: Allows access to the appm permission get player name neutralFalse subcommand
     default: op
     children:
       appm.help-tab-complete.permission: true
@@ -600,16 +522,6 @@ permissions:
     default: op
     children:
       appm.help-tab-complete.permission: true
-  appm.commands.permission.get.player.uuid.neutralTrue:
-    description: Allows access to the appm permission get player uuid neutralTrue subcommand
-    default: op
-    children:
-      appm.help-tab-complete.permission: true
-  appm.commands.permission.get.player.uuid.neutralFalse:
-    description: Allows access to the appm permission get player uuid neutralFalse subcommand
-    default: op
-    children:
-      appm.help-tab-complete.permission: true
   appm.commands.permission.get.group:
     description: Allows access to all appm permission get group subcommands
     default: op
@@ -618,8 +530,6 @@ permissions:
       appm.commands.permission.get.group.true: true
       appm.commands.permission.get.group.false: true
       appm.commands.permission.get.group.neutral: true
-      appm.commands.permission.get.group.neutralTrue: true
-      appm.commands.permission.get.group.neutralFalse: true
   appm.commands.permission.get.group.all:
     description: Allows access to the appm permission get group all subcommand
     default: op
@@ -637,16 +547,6 @@ permissions:
       appm.help-tab-complete.permission: true
   appm.commands.permission.get.group.neutral:
     description: Allows access to the appm.permission get group neutral subcommand
-    default: op
-    children:
-      appm.help-tab-complete.permission: true
-  appm.commands.permission.get.group.neutralTrue:
-    description: Allows access to the appm permission get group neutralTrue subcommand
-    default: op
-    children:
-      appm.help-tab-complete.permission: true
-  appm.commands.permission.get.group.neutralFalse:
-    description: Allows access to the appm permission get group neutralFalse subcommand
     default: op
     children:
       appm.help-tab-complete.permission: true
