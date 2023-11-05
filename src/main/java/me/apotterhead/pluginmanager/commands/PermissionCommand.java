@@ -100,7 +100,7 @@ public class PermissionCommand implements TabExecutor {
                 Collections.sort( perms );
 
                 if( sender.hasPermission( "appm.commands.permission.get.permission" ) ) {
-                    message = message.append( Component.text( "[" + perms.get( 0 ) + "]" ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/permission get " + perms.get( 0 ) ) ) );
+                    message = message.append( Component.text( "[" + perms.get( 0 ) + "]" ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/permission get permission " + perms.get( 0 ) ) ) );
                     for( int i = 1; i < perms.size(); i++ ) message = message.append( Component.text( ", " ) ).append( Component.text( "[" + perms.get( i ) + "]" ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/permission get " + perms.get( i ) ) ) );
                 } else {
                     message = message.append( Component.text( "[" + perms.get( 0 ) + "]" ) );
