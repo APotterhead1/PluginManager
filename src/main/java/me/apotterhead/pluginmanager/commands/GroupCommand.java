@@ -541,7 +541,7 @@ public class GroupCommand implements TabExecutor {
                     plugin.players.save();
                     Component tempComp = ReloadPermissions.reload( ReloadType.PLAYER, player, plugin );
                     if( tempComp != null ) {
-                        if( reloadMessage == null ) reloadMessage = tempComp;
+                        if( reloadMessage == null ) reloadMessage = Component.text( "" ).append( tempComp );
                         else reloadMessage = reloadMessage.appendNewline().append( tempComp );
                     }
                 }
