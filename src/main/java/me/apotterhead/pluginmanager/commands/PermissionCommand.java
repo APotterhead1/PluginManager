@@ -20,6 +20,7 @@ import org.bukkit.permissions.Permission;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.event.ClickEvent;
 import java.util.Collections;
+import org.bukkit.util.StringUtil;
 
 public class PermissionCommand implements TabExecutor {
 
@@ -100,11 +101,33 @@ public class PermissionCommand implements TabExecutor {
                 Collections.sort( perms );
 
                 if( sender.hasPermission( "appm.commands.permission.get.permission" ) ) {
-                    message = message.append( Component.text( "[" + perms.get( 0 ) + "]" ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/permission get permission " + perms.get( 0 ) ) ) );
-                    for( int i = 1; i < perms.size(); i++ ) message = message.append( Component.text( ", " ) ).append( Component.text( "[" + perms.get( i ) + "]" ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/permission get " + perms.get( i ) ) ) );
+                    message = message.append( Component.text( "[" + perms.get( 0 ) + "]" ).color( NamedTextColor.AQUA ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/permission get permission " + perms.get( 0 ) ) ) );
+                    for( int i = 1; i < perms.size(); i++ ) message = message.append( Component.text( ", " ) ).append( Component.text( "[" + perms.get( i ) + "]" ).color( NamedTextColor.AQUA ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/permission get " + perms.get( i ) ) ) );
                 } else {
-                    message = message.append( Component.text( "[" + perms.get( 0 ) + "]" ) );
-                    for( int i = 1; i < perms.size(); i++ ) message = message.append( Component.text( ", [" + perms.get( 0 ) + "]" ) );
+                    message = message.append( Component.text( "[" + perms.get( 0 ) + "]" ).color( NamedTextColor.AQUA ) );
+                    for( int i = 1; i < perms.size(); i++ ) message = message.append( Component.text( ", [" + perms.get( 0 ) + "]" ).color( NamedTextColor.AQUA ) );
+                }
+
+                sender.sendMessage( message );
+                return true;
+            }
+
+            if( args.length == 2 ) {
+                Component message = Component.text( "" ).append( Component.text( "Permissions: ").color( NamedTextColor.GOLD ).appendNewline() );
+
+                List<Permission> permissions = new ArrayList<>( plugin.getServer().getPluginManager().getPermissions() );
+                List<String> perms = new ArrayList<>();
+                for( Permission perm : permissions ) perms.add( perm.getName() );
+                List<String> matches = new ArrayList<>();
+                StringUtil.copyPartialMatches( args[1], perms, matches );
+                Collections.sort( matches );
+
+                if( sender.hasPermission( "appm.commands.permission.get.permission" ) ) {
+                    if( !matches.isEmpty() )message = message.append( Component.text( "[" + matches.get( 0 ) + "]" ).color( NamedTextColor.AQUA ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/permission get permission " + matches.get( 0 ) ) ) );
+                    for( int i = 1; i < matches.size(); i++ ) message = message.append( Component.text( ", " ) ).append( Component.text( "[" + matches.get( i ) + "]" ).color( NamedTextColor.AQUA ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/permission get permission " + matches.get( i ) ) ) );
+                } else {
+                    if( !matches.isEmpty() ) message = message.append( Component.text( "[" + matches.get( 0 ) + "]" ).color( NamedTextColor.AQUA ) );
+                    for( int i = 1; i < matches.size(); i++ ) message = message.append( Component.text( ", " ) ).append( Component.text( "[" + matches.get( i ) + "]" ) );
                 }
 
                 sender.sendMessage( message );
