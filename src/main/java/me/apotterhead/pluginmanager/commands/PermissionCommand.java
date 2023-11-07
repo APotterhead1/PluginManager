@@ -8,6 +8,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.Command;
 import java.util.List;
 import java.util.ArrayList;
+
 import org.jetbrains.annotations.NotNull;
 import me.apotterhead.pluginmanager.util.*;
 import me.apotterhead.pluginmanager.PluginManager;
@@ -21,6 +22,8 @@ import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.event.ClickEvent;
 import java.util.Collections;
 import org.bukkit.util.StringUtil;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
 
 public class PermissionCommand implements TabExecutor {
 
@@ -135,6 +138,111 @@ public class PermissionCommand implements TabExecutor {
             }
 
             sender.sendMessage( CommandErrorMessage.EXTRA_ARGUMENT.send( label, args, 2 ) );
+            return true;
+        }
+
+        if( args[0].equals( "set" ) ) {
+            if( !sender.hasPermission( "appm.commands.permission.set.player.name.true" ) && !sender.hasPermission( "appm.commands.permission.set.player.name.false" ) && !sender.hasPermission( "appm.commands.permission.set.player.name.neutral" ) && !sender.hasPermission( "appm.commands.permission.set.player.uuid.true" ) && !sender.hasPermission( "appm.commands.permission.set.player.uuid.false" ) && !sender.hasPermission( "appm.commands.permission.set.player.uuid.neutral" ) && !sender.hasPermission( "appm.commands.permission.set.group.true" ) && !sender.hasPermission( "appm.commands.permission.set.group.false" ) && !sender.hasPermission( "appm.commands.permission.set.group.neutral" ) ) {
+                sender.sendMessage( CommandErrorMessage.INCORRECT.send( label, args, 0 ) );
+                return true;
+            }
+
+            if( args.length < 2 ) {
+                sender.sendMessage( CommandErrorMessage.INCOMPLETE.send( label, args ) );
+                return true;
+            }
+
+            if( args[1].equals( "player" ) ) {
+                if( !sender.hasPermission( "appm.commands.permission.set.player.name.true" ) && !sender.hasPermission( "appm.commands.permission.set.player.name.false" ) && !sender.hasPermission( "appm.commands.permission.set.player.name.neutral" ) && !sender.hasPermission( "appm.commands.permission.set.player.uuid.true" ) && !sender.hasPermission( "appm.commands.permission.set.player.uuid.false" ) && !sender.hasPermission( "appm.commands.permission.set.player.uuid.neutral" ) ) {
+                    sender.sendMessage( CommandErrorMessage.INCORRECT.send( label, args, 1 ) );
+                    return true;
+                }
+
+                if( args.length < 3 ) {
+                    sender.sendMessage( CommandErrorMessage.INCOMPLETE.send( label, args ) );
+                    return true;
+                }
+
+                if( !( args[2].equals( "name" ) && ( sender.hasPermission( "appm.commands.permission.set.player.name.true" ) || sender.hasPermission( "appm.commands.permission.set.player.name.false" ) || sender.hasPermission( "appm.commands.permission.set.player.name.neutral" ) ) ) && !( args[2].equals( "uuid" ) && ( sender.hasPermission( "appm.commands.permission.set.player.uuid.true") || sender.hasPermission( "appm.commands.permission.set.player.uuid.false" ) || sender.hasPermission( "appm.commands.permission.set.player.uuid.neutral" ) ) ) ) {
+                    sender.sendMessage( CommandErrorMessage.INCORRECT.send( label, args, 2 ) );
+                    return true;
+                }
+
+                if( args.length < 6 ) {
+                    sender.sendMessage( CommandErrorMessage.INCOMPLETE.send( label, args ) );
+                    return true;
+                }
+
+                if( !( args[5].equals( "true" ) && ( sender.hasPermission( "appm.commands.permission.set.player.name.true" ) || sender.hasPermission( "appm.commands.permission.set.player.uuid.true" ) ) ) && !( args[5].equals( "false" ) && ( sender.hasPermission( "appm.commands.permission.set.player.name.false" ) || sender.hasPermission( "appm.commands.permission.set.player.uuid.false" ) ) ) && !( args[5].equals( "neutral" ) && ( sender.hasPermission( "appm.commands.permission.set.player.name.neutral" ) || sender.hasPermission( "appm.commands.permission.set.player.uuid.neutral" ) ) ) ) {
+                    sender.sendMessage( CommandErrorMessage.INCORRECT.send( label, args, 5 ) );
+                    return true;
+                }
+
+                String uuid = null;
+                OfflinePlayer[] players = plugin.getServer().getOfflinePlayers();
+
+                if( args[2].equals( "name" ) ) {
+                    for( OfflinePlayer player : players ) {
+                        assert player.getName() != null;
+                        if( player.getName().equals( args[3] ) ) {
+                            uuid = player.getUniqueId().toString();
+                            break;
+                        }
+                    }
+                }
+
+                if( args[2].equals( "uuid" ) ) {
+                    for( OfflinePlayer player : players ) {
+                        if( player.getUniqueId().toString().equalsIgnoreCase( args[3] ) ) {
+                            uuid = player.getUniqueId().toString();
+                            break;
+                        }
+                    }
+                }
+
+                if( uuid == null ) {
+                    sender.sendMessage( CommandErrorMessage.UNKNOWN.send( label, args, 3, "player" ) );
+                    return true;
+                }
+
+                if( plugin.getServer().getPluginManager().getPermission( args[4] ) == null ) {
+                    sender.sendMessage( CommandErrorMessage.UNKNOWN.send( label, args, 4, "permission" ) );
+                    return true;
+                }
+
+                if( sender instanceof Player ) {
+                    int senderHV = 0;
+                    if( plugin.players.config.contains( ( (Player) sender ).getUniqueId() + ".hierarchyValue" ) ) senderHV = plugin.players.config.getInt( ( (Player) sender ).getUniqueId() + ".hierarchyValue" );
+                    else if( !plugin.players.config.getStringList( ( (Player) sender ).getUniqueId() + ".groups" ).isEmpty() ) {
+                        senderHV = plugin.groups.config.getInt( "group." + plugin.players.config.getStringList( ( (Player) sender ).getUniqueId() + ".groups" ).get( 0 ) + ".hierarchyValue" );
+                        for( String group : plugin.players.config.getStringList( ( (Player) sender ).getUniqueId() + ".groups" ) ) if( senderHV < plugin.groups.config.getInt( "group." + group + ".hierarchyValue" ) ) senderHV = plugin.groups.config.getInt( "group." + group + ".hierarchyValue" );
+                    }
+
+                    int targetHV = 0;
+                    if( plugin.players.config.contains( uuid + ".hierarchyValue" ) ) targetHV = plugin.players.config.getInt( uuid + ".hierarchyValue" );
+                    else if( !plugin.players.config.getStringList( uuid + ".groups" ).isEmpty() ) {
+                        targetHV = plugin.groups.config.getInt( "group." + plugin.players.config.getStringList( uuid + ".groups" ).get( 0 ) + ".hierarchyValue" );
+                        for( String group : plugin.players.config.getStringList( uuid + ".groups" ) ) if( targetHV < plugin.groups.config.getInt( "group." + group + ".hierarchyValue" ) ) targetHV = plugin.groups.config.getInt( "group." + group + ".hierarchyValue" );
+                    }
+
+                    if( !( senderHV > targetHV ) ) {
+                        sender.sendMessage( CommandErrorMessage.HIERARCHY_VALUE.send() );
+                        return true;
+                    }
+                }
+
+
+            }
+
+            if( args[1].equals( "group" ) ) {
+                if( !sender.hasPermission( "appm.commands.permission.set.group.true" ) && !sender.hasPermission( "appm.commands.permission.set.group.false" ) && !sender.hasPermission( "appm.commands.permission.set.group.neutral" ) ) {
+                    sender.sendMessage( CommandErrorMessage.INCORRECT.send( label, args, 1 ) );
+                    return true;
+                }
+
+            }
+
+            sender.sendMessage( CommandErrorMessage.INCORRECT.send( label, args, 1 ) );
             return true;
         }
 
