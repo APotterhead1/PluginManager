@@ -1,5 +1,5 @@
 // APotterhead
-// 22072023-31072023
+// 22072023-18112023
 
 package me.apotterhead.pluginmanager.commands;
 
@@ -24,6 +24,7 @@ import java.util.Collections;
 import org.bukkit.util.StringUtil;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+import java.util.UUID;
 
 public class PermissionCommand implements TabExecutor {
 
@@ -231,7 +232,45 @@ public class PermissionCommand implements TabExecutor {
                     }
                 }
 
+                String permPath = args[4].replace( ".", "," );
 
+                if( !plugin.permissions.config.getBoolean( permPath + ".negative" ) && !sender.hasPermission( args[4] ) || plugin.permissions.config.getBoolean( permPath + ".negative" ) && sender.hasPermission( args[4] ) ) {
+                    sender.sendMessage( CommandErrorMessage.HIERARCHY_VALUE.send() );
+                    return true;
+                }
+
+                List<String> truePerms = plugin.players.config.getStringList( uuid + ".truePerms" );
+                List<String> falsePerms = plugin.players.config.getStringList( uuid + ".falsePerms" );
+
+                List<String> originalTruePerms = new ArrayList<>( truePerms );
+                List<String> originalFalsePerms = new ArrayList<>( falsePerms );
+
+                truePerms.remove( args[4] );
+                falsePerms.remove( args[4] );
+
+                if( args[5].equals( "true" ) ) truePerms.add( args[4] );
+                if( args[5].equals( "false" ) ) falsePerms.add( args[4] );
+
+                plugin.players.config.set( uuid + ".truePerms", truePerms );
+                plugin.players.config.set( uuid + ".falsePerms", falsePerms );
+                plugin.players.save();
+
+                Component reloadMessage = ReloadPermissions.reload( ReloadType.PLAYER, uuid, plugin );
+
+                if( reloadMessage != null ) {
+                    sender.sendMessage( reloadMessage );
+                    plugin.getLogger().log( Level.WARNING, ( (TextComponent) reloadMessage ).content() );
+
+                    plugin.players.config.set( uuid + ".truePerms", originalTruePerms );
+                    plugin.players.config.set( uuid + ".falsePerms", originalFalsePerms );
+                    plugin.players.save();
+
+                    ReloadPermissions.reload( ReloadType.PLAYER, uuid, plugin );
+                    return true;
+                }
+
+                sender.sendMessage( Component.text( "The permission '" + args[4] + "' has been set to " + args[5] + " for " + plugin.getServer().getOfflinePlayer( UUID.fromString( uuid ) ).getName() + "(" + uuid + ")" ).color( NamedTextColor.GREEN ) );
+                return true;
             }
 
             if( args[1].equals( "group" ) ) {
