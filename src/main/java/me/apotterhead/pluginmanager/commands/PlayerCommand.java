@@ -286,7 +286,7 @@ public class PlayerCommand implements TabExecutor {
                     StringBuilder banReason = new StringBuilder( args[ args[3].equals( "infinite" ) ? 4: 5 ] );
                     for( int i = args[3].equals( "infinite" ) ? 5 : 6; i < args.length; i++ ) banReason.append( " " ).append( args[i] );
                     banReasons.add( banReason.toString() );
-                } else banReasons.add( null );
+                } else banReasons.add( "No Reason Specified" );
                 plugin.ips.config.set( "ip." + ipPath + ".banReasons", banReasons );
                 plugin.ips.save();
 
@@ -384,7 +384,7 @@ public class PlayerCommand implements TabExecutor {
                 StringBuilder banReason = new StringBuilder( args[ args[3].equals( "infinite" ) ? 4 : 5 ] );
                 for( int i = args[3].equals( "infinite" ) ? 5 : 6; i < args.length; i++ ) banReason.append( " " ).append( args[i] );
                 banReasons.add( banReason.toString() );
-            } else banReasons.add( null );
+            } else banReasons.add( "No Reason Specified" );
             plugin.players.config.set( uuid + ".banReasons", banReasons );
             plugin.players.save();
 
@@ -687,8 +687,10 @@ public class PlayerCommand implements TabExecutor {
                         else if( sender.hasPermission( "appm.commands.player.get.name.this" ) && !source.equals( "console" ) ) message = message.append( Component.text( source ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/pluginmanager:player get name " + plugin.getServer().getOfflinePlayer( UUID.fromString( source ) ) ) ) );
                         else message = message.append( Component.text( source ) );
 
-                        message = message.appendNewline().append( Component.text( "Current Ban Reason:" ).color( NamedTextColor.AQUA ) ).appendSpace();
-                        message = message.append( Component.text( plugin.ips.config.getStringList( "ip." + ipPath + ".banReasons" ).get( plugin.ips.config.getStringList( "ip." + ipPath + ".banReasons" ).size() - 1 ) ) );
+                        if( plugin.ips.config.getStringList( "ip." + ipPath + ".banSentenceLengths" ).size() == plugin.ips.config.getStringList( "ip." + ipPath + ".banReasons" ).size() ) {
+                            message = message.appendNewline().append( Component.text( "Current Ban Reason:" ).color( NamedTextColor.AQUA ) ).appendSpace();
+                            message = message.append( Component.text( plugin.ips.config.getStringList( "ip." + ipPath + ".banReasons" ).get( plugin.ips.config.getStringList( "ip." + ipPath + ".banReasons" ).size() - 1 ) ) );
+                        }
                     }
 
                     sender.sendMessage( message );
@@ -771,8 +773,10 @@ public class PlayerCommand implements TabExecutor {
                     else if( sender.hasPermission( "appm.commands.player.get.name.this" ) && !source.equals( "console" ) ) message = message.append( Component.text( source ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/pluginmanager:player get name " + plugin.getServer().getOfflinePlayer( UUID.fromString( source ) ).getName() ) ) );
                     else message = message.append( Component.text( source ) );
 
-                    message = message.appendNewline().append( Component.text( "Current Ban Reason:" ).color( NamedTextColor.AQUA ) ).appendSpace();
-                    message = message.append( Component.text( plugin.players.config.getStringList( uuid + ".banReasons" ).get( plugin.players.config.getStringList( uuid + ".banReasons" ).size() - 1 ) ) );
+                    if( plugin.players.config.getStringList( uuid + ".banSentenceLengths" ).size() == plugin.players.config.getStringList( uuid + ".banReasons" ).size() ) {
+                        message = message.appendNewline().append( Component.text( "Current Ban Reason:" ).color( NamedTextColor.AQUA ) ).appendSpace();
+                        message = message.append( Component.text( plugin.players.config.getStringList( uuid + ".banReasons" ).get( plugin.players.config.getStringList( uuid + ".banReasons" ).size() - 1 ) ) );
+                    }
                 }
 
                 message = message.appendNewline().append( Component.text( "Hierarchy Value:" ).color( NamedTextColor.AQUA ) ).appendSpace();
