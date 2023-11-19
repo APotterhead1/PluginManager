@@ -211,6 +211,11 @@ public class PermissionCommand implements TabExecutor {
                     return true;
                 }
 
+                if( args.length != 6 ) {
+                    sender.sendMessage( CommandErrorMessage.EXTRA_ARGUMENT.send( label, args, 6 ) );
+                    return true;
+                }
+
                 if( sender instanceof Player ) {
                     int senderHV = 0;
                     if( plugin.players.config.contains( ( (Player) sender ).getUniqueId() + ".hierarchyValue" ) ) senderHV = plugin.players.config.getInt( ( (Player) sender ).getUniqueId() + ".hierarchyValue" );
@@ -279,6 +284,75 @@ public class PermissionCommand implements TabExecutor {
                     return true;
                 }
 
+                if( args.length < 5 ) {
+                    sender.sendMessage( CommandErrorMessage.INCOMPLETE.send( label, args ) );
+                    return true;
+                }
+
+                if( !plugin.groups.config.getStringList( "groups" ).contains( args[2] ) ) {
+                    sender.sendMessage( CommandErrorMessage.UNKNOWN.send( label, args, 2, "group" ) );
+                    return true;
+                }
+
+                if( plugin.getServer().getPluginManager().getPermission( args[3] ) == null ) {
+                    sender.sendMessage( CommandErrorMessage.UNKNOWN.send( label, args, 3, "permission" ) );
+                    return true;
+                }
+
+                if( args.length == 5 ) {
+                    if( sender instanceof Player ) {
+                        int senderHV = 0;
+                        if( plugin.players.config.contains( ( (Player) sender ).getUniqueId() + ".hierarchyValue" ) ) senderHV = plugin.players.config.getInt( ( (Player) sender ).getUniqueId() + ".hierarchyValue" );
+                        else if( !plugin.players.config.getStringList( ( (Player) sender ).getUniqueId() + "groups" ).isEmpty() ) {
+                            senderHV = plugin.groups.config.getInt( "group." + plugin.players.config.getStringList( ( (Player) sender ).getUniqueId() + ".groups" ).get( 0 ) + ".hierarchyValue" );
+                            for( String group : plugin.players.config.getStringList( ( (Player) sender ).getUniqueId() + ".groups" ) ) if( plugin.groups.config.getInt( "group." + group + ".hierarchyValue" ) < senderHV ) senderHV = plugin.groups.config.getInt( "group." + group + ".hierarchyValue" );
+                        }
+
+                        if( !( senderHV > plugin.groups.config.getInt( "group." + args[2] + "hierarchyValue" ) ) ) {
+                            sender.sendMessage( CommandErrorMessage.HIERARCHY_VALUE.send() );
+                            return true;
+                        }
+                    }
+
+                    String permPath = args[3].replace( ".", "," );
+                    if( !plugin.permissions.config.getBoolean( permPath + ".negative" ) && !sender.hasPermission( args[3] ) || plugin.permissions.config.getBoolean( permPath + ".negative" ) && sender.hasPermission( args[3] ) ) {
+                        sender.sendMessage( CommandErrorMessage.HIERARCHY_VALUE.send() );
+                        return true;
+                    }
+
+                    List<String> truePerms = plugin.groups.config.getStringList( "group." + args[2] + ".truePerms" );
+                    List<String> falsePerms = plugin.groups.config.getStringList( "group." + args[2] + ".falsePerms" );
+
+                    List<String> originalTruePerms = new ArrayList<>( truePerms );
+                    List<String> originalFalsePerms = new ArrayList<>( falsePerms );
+
+                    truePerms.remove( args[3] );
+                    falsePerms.remove( args[3] );
+
+                    plugin.groups.config.set( "group." + args[2] + ".truePerms", truePerms );
+                    plugin.groups.config.set( "group." + args[2] + ".falsePerms", falsePerms );
+                    plugin.groups.save();
+
+                    Component reloadMessage = ReloadPermissions.reload( ReloadType.GROUP, args[2], plugin );
+
+                    if( reloadMessage != null ) {
+                        sender.sendMessage( reloadMessage );
+                        plugin.getLogger().log( Level.WARNING, ( (TextComponent) reloadMessage ).content() );
+
+                        plugin.groups.config.set( "group." + args[2] + ".truePerms", originalTruePerms );
+                        plugin.groups.config.set( "group." + args[2] + ".falsePerms", originalFalsePerms );
+                        plugin.groups.save();
+
+                        ReloadPermissions.reload( ReloadType.GROUP, args[2], plugin );
+                        return true;
+                    }
+
+                    sender.sendMessage( Component.text( "The permission '" + args[3] + "' has been set to " + args[4] + " for the group " + args[2] ).color( NamedTextColor.GREEN ) );
+                    return true;
+                }
+
+                sender.sendMessage( CommandErrorMessage.EXTRA_ARGUMENT.send( label, args, 5 ) );
+                return true;
             }
 
             sender.sendMessage( CommandErrorMessage.INCORRECT.send( label, args, 1 ) );
