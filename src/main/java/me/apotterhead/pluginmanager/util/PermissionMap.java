@@ -1,5 +1,5 @@
 // APotterhead
-// 19112023-19112023
+// 19112023-20112023
 
 package me.apotterhead.pluginmanager.util;
 
@@ -13,14 +13,15 @@ import java.util.HashMap;
 import java.util.Set;
 import java.util.HashSet;
 import java.util.logging.Level;
-import net.kyori.adventure.util.TriState;
 
 public class PermissionMap {
     public static class PermissionNode {
         public final Permission perm;
-        public TriState value;
         public int HV;
         public boolean playerPerm;
+
+        public List<String> truePerms;
+        public List<String> falsePerms;
 
         public final Map<PermissionNode, Boolean> children;
         public final Map<PermissionNode, Boolean> parents;
@@ -29,9 +30,10 @@ public class PermissionMap {
             this.perm = perm;
             children = new HashMap<>();
             parents = new HashMap<>();
-            value = TriState.NOT_SET;
             HV = 0;
             playerPerm = false;
+            truePerms = new ArrayList<>();
+            falsePerms = new ArrayList<>();
         }
 
     }
@@ -68,6 +70,8 @@ public class PermissionMap {
             root.children.put( topPerm, true );
             topPerm.parents.put( root, true );
         }
+
+        root.perm.recalculatePermissibles();
 
         perms = new ArrayList<>( plugin.getServer().getPluginManager().getPermissions() );
     }
