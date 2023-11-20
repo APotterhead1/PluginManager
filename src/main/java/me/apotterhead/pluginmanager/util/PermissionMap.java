@@ -13,13 +13,14 @@ import java.util.HashMap;
 import java.util.Set;
 import java.util.HashSet;
 import java.util.logging.Level;
+import net.kyori.adventure.util.TriState;
 
 public class PermissionMap {
     public static class PermissionNode {
         public final Permission perm;
-        public boolean neutral;
+        public TriState value;
         public int HV;
-        public boolean strong;
+        public boolean playerPerm;
 
         public final Map<PermissionNode, Boolean> children;
         public final Map<PermissionNode, Boolean> parents;
@@ -28,24 +29,17 @@ public class PermissionMap {
             this.perm = perm;
             children = new HashMap<>();
             parents = new HashMap<>();
-            neutral = true;
+            value = TriState.NOT_SET;
             HV = 0;
-            strong = false;
-        }
-
-        private PermissionNode( Permission perm, Map<PermissionNode, Boolean> children, Map<PermissionNode, Boolean> parents ) {
-            this.perm = perm;
-            this.children = children;
-            this.parents = parents;
-            neutral = true;
+            playerPerm = false;
         }
 
     }
     public PermissionNode root;
     public List<Permission> perms;
     private final PluginManager plugin;
-    private Set<PermissionNode> nodes;
-    private List<PermissionNode> topPerms;
+    public Set<PermissionNode> nodes;
+    private final List<PermissionNode> topPerms;
 
     public PermissionMap( PluginManager plugin ) {
         this.plugin = plugin;
@@ -53,14 +47,9 @@ public class PermissionMap {
         Permission rootPerm = new Permission( "*", "Root of all Permissions", PermissionDefault.FALSE );
         plugin.getServer().getPluginManager().addPermission( rootPerm );
 
-        loadMap();
-    }
-
-    public void loadMap() {
         perms = new ArrayList<>( plugin.getServer().getPluginManager().getPermissions() );
         perms.remove( plugin.getServer().getPluginManager().getPermission( "*" ) );
         nodes = new HashSet<>();
-
         topPerms = new ArrayList<>();
 
         while( !perms.isEmpty() ) {
@@ -70,6 +59,7 @@ public class PermissionMap {
         }
 
         root = new PermissionNode(plugin.getServer().getPluginManager().getPermission( "*" ) );
+        nodes.add( root );
 
         root.perm.getChildren().clear();
 
