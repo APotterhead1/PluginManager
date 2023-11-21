@@ -42,12 +42,12 @@ public class ReloadPermissions {
 
         PermissionMap permMap = new PermissionMap( plugin );
 
-        List<String> truePerms = plugin.players.config.getStringList( target + ".truePerms" );
-        List<String> falsePerms = plugin.players.config.getStringList( target + ".falsePerms" );
+        List<String> playerTruePerms = plugin.players.config.getStringList( target + ".truePerms" );
+        List<String> playerFalsePerms = plugin.players.config.getStringList( target + ".falsePerms" );
 
         Component reloadMessage = null;
 
-        for( String perm : truePerms ) {
+        for( String perm : playerTruePerms ) {
             PermissionNode node = null;
             for( PermissionNode mapNode : permMap.nodes ) {
                 if( mapNode.perm.getName().equals( perm ) ) {
@@ -57,9 +57,68 @@ public class ReloadPermissions {
             }
             assert node != null;
 
-            reloadMessage = setPerms( node, true, perm, target );
+            Component tempRM = setPerms( node, true, perm, target );
 
+            if( reloadMessage == null && tempRM != null ) reloadMessage = tempRM;
+            if( reloadMessage != null && tempRM != null ) reloadMessage = reloadMessage.appendNewline().append( tempRM );
         }
+
+        for( String perm : playerFalsePerms ) {
+            PermissionNode node = null;
+            for( PermissionNode mapNode : permMap.nodes ) {
+                if( mapNode.perm.getName().equals( perm ) ) {
+                    node = mapNode;
+                    break;
+                }
+            }
+            assert node != null;
+
+            Component tempRM = setPerms( node, false, perm, target );
+
+            if( reloadMessage == null && tempRM != null ) reloadMessage = tempRM;
+            if( reloadMessage != null && tempRM != null ) reloadMessage = reloadMessage.appendNewline().append( tempRM );
+        }
+
+        for( String group : plugin.players.config.getStringList( target + ".groups" ) ) {
+            List<String> groupTruePerms = plugin.groups.config.getStringList( "group." + group + ".truePerms" );
+            List<String> groupFalsePerms = plugin.groups.config.getStringList( "group." + group + ".falsePerms" );
+
+            for( String perm : groupTruePerms ) {
+                PermissionNode node = null;
+                for( PermissionNode mapNode : permMap.nodes ) {
+                    if( mapNode.perm.getName().equals( perm ) ) {
+                        node = mapNode;
+                        break;
+                    }
+                }
+                assert node != null;
+
+                Component tempRM = setPerms( node, true, perm, target, plugin.players.config.getInt( "group." + group + ".hierarchyValue" ) );
+
+                if( reloadMessage == null && tempRM != null ) reloadMessage = tempRM;
+                if( reloadMessage != null && tempRM != null ) reloadMessage = reloadMessage.appendNewline().append( tempRM );
+
+            }
+
+            for( String perm : groupFalsePerms ) {
+                PermissionNode node = null;
+                for( PermissionNode mapNode : permMap.nodes ) {
+                    if( mapNode.perm.getName().equals( perm ) ) {
+                        node = mapNode;
+                        break;
+                    }
+                }
+                assert node != null;
+
+                Component tempRM = setPerms( node, false, perm, target, plugin.players.config.getInt( "group." + group + ".hierarchyValue" ) );
+
+                if( reloadMessage == null && tempRM != null ) reloadMessage = tempRM;
+                if( reloadMessage != null && tempRM != null ) reloadMessage = reloadMessage.appendNewline().append( tempRM );
+
+            }
+        }
+
+        return reloadMessage;
     }
 
     private static @Nullable Component setPerms( PermissionNode node, boolean value, String source, String uuid, int HV ) {
@@ -92,7 +151,7 @@ public class ReloadPermissions {
                 else tempRM = setPerms( child, !value, source, uuid );
 
                 if( reloadMessage == null && tempRM != null ) reloadMessage = tempRM;
-                if( reloadMessage != null && tempRM != null ) reloadMessage = reloadMessage.append( tempRM );
+                if( reloadMessage != null && tempRM != null ) reloadMessage = reloadMessage.appendNewline().append( tempRM );
             }
 
             return reloadMessage;
@@ -132,13 +191,13 @@ public class ReloadPermissions {
                 else tempRM = setPerms( child, !value, source, uuid );
 
                 if( reloadMessage == null && tempRM != null ) reloadMessage = tempRM;
-                if( reloadMessage != null && tempRM != null ) reloadMessage = tempRM;
+                if( reloadMessage != null && tempRM != null ) reloadMessage = reloadMessage.appendNewline().append( tempRM );
             }
 
             return reloadMessage;
         }
 
-        if( node.HV < HV ) {
+        if( node.truePerms.isEmpty() && node.falsePerms.isEmpty() || node.HV < HV ) {
             node.truePerms.clear();
             node.falsePerms.clear();
 
@@ -151,10 +210,53 @@ public class ReloadPermissions {
                 if( node.children.get( child ) ) tempRM = setPerms( child, value, source, uuid, HV );
                 else tempRM = setPerms( child, !value, source, uuid, HV );
 
-                if( reloadMessage == null )
+                if( reloadMessage == null && tempRM != null ) reloadMessage = tempRM;
+                if( reloadMessage != null && tempRM != null ) reloadMessage = reloadMessage.appendNewline().append( tempRM );
             }
 
             return reloadMessage;
         }
+
+        if( node.HV == HV ) {
+            if( value && !node.falsePerms.isEmpty() ) {
+                for( String falsePerm : node.falsePerms ) {
+                    Component nameComp = Component.text( Objects.requireNonNull( Bukkit.getOfflinePlayer( UUID.fromString( uuid ) ) ).getName() ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.copyToClipboard( Objects.requireNonNull( Bukkit.getOfflinePlayer( UUID.fromString( uuid ) ) ).getName() ) );
+                    Component uuidComp = Component.text( uuid ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.copyToClipboard( uuid ) );
+                    Component sourceComp = Component.text( source ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.copyToClipboard( source ) );
+                    Component falsePermComp = Component.text( falsePerm ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.copyToClipboard( falsePerm ) );
+                    if( reloadMessage == null ) reloadMessage = Component.text( "" ).color( NamedTextColor.RED );
+                    else reloadMessage = reloadMessage.appendNewline();
+                    reloadMessage = reloadMessage.append( Component.text( "There is a contradiction for " ) ).append( nameComp ).append( Component.text( "(" ) ).append( uuidComp ).append( Component.text( ") between the permissions '" ) ).append( sourceComp ).append( Component.text( "' and '" ) ).append( falsePermComp );
+                }
+            }
+
+            if( !value && !node.truePerms.isEmpty() ) {
+                for( String truePerm : node.truePerms ) {
+                    Component nameComp = Component.text( Objects.requireNonNull( Bukkit.getOfflinePlayer( UUID.fromString( uuid ) ) ).getName() ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.copyToClipboard( Objects.requireNonNull( Bukkit.getOfflinePlayer( UUID.fromString( uuid ) ) ).getName() ) );
+                    Component uuidComp = Component.text( uuid ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.copyToClipboard( uuid ) );
+                    Component sourceComp = Component.text( source ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.copyToClipboard( source ) );
+                    Component truePermComp = Component.text( truePerm ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.copyToClipboard( truePerm ) );
+                    if( reloadMessage == null ) reloadMessage = Component.text( "" ).color( NamedTextColor.RED );
+                    else reloadMessage = reloadMessage.appendNewline();
+                    reloadMessage = reloadMessage.append( Component.text( "There is a contradiction for " ) ).append( nameComp ).append( Component.text( "(" ) ).append( uuidComp ).append( Component.text( ") between the permissions '" ) ).append( sourceComp ).append( Component.text( "' and '" ) ).append( truePermComp );
+                }
+            }
+
+            if( value ) node.truePerms.add( source );
+            else node.falsePerms.add( source );
+
+            for( PermissionNode child : node.children.keySet() ) {
+                Component tempRM;
+                if( node.children.get( child ) ) tempRM = setPerms( child, value, source, uuid );
+                else tempRM = setPerms( child, !value, source, uuid );
+
+                if( reloadMessage == null && tempRM != null ) reloadMessage = tempRM;
+                if( reloadMessage != null && tempRM != null ) reloadMessage = reloadMessage.appendNewline().append( tempRM );
+            }
+
+            return reloadMessage;
+        }
+
+        return reloadMessage;
     }
 }
