@@ -78,7 +78,6 @@ public class PermissionCommand implements TabExecutor {
                     plugin.permissions.config.set( permPath + ".negative", originalValue );
                     plugin.permissions.save();
 
-                    ReloadPermissions.reload( ReloadType.PERMISSION, args[1], plugin );
                     return true;
                 }
 
@@ -270,7 +269,6 @@ public class PermissionCommand implements TabExecutor {
                     plugin.players.config.set( uuid + ".falsePerms", originalFalsePerms );
                     plugin.players.save();
 
-                    ReloadPermissions.reload( ReloadType.PLAYER, uuid, plugin );
                     return true;
                 }
 
@@ -343,7 +341,6 @@ public class PermissionCommand implements TabExecutor {
                         plugin.groups.config.set( "group." + args[2] + ".falsePerms", originalFalsePerms );
                         plugin.groups.save();
 
-                        ReloadPermissions.reload( ReloadType.GROUP, args[2], plugin );
                         return true;
                     }
 

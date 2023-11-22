@@ -219,7 +219,6 @@ public class GroupCommand implements TabExecutor {
                     plugin.groups.config.set( "group." + args[1] + ".hierarchyValue", oldHierarchyValue );
                     plugin.groups.save();
 
-                    ReloadPermissions.reload( ReloadType.GROUP, args[1], plugin );
                     return true;
                 }
 
@@ -348,7 +347,6 @@ public class GroupCommand implements TabExecutor {
                     plugin.players.config.set( uuid + ".groups", playerGroups );
                     plugin.players.save();
 
-                    ReloadPermissions.reload( ReloadType.PLAYER, uuid, plugin );
                     return true;
                 }
 
@@ -479,7 +477,6 @@ public class GroupCommand implements TabExecutor {
                     plugin.players.config.set( uuid + ".groups", playerGroups );
                     plugin.players.save();
 
-                    ReloadPermissions.reload( ReloadType.PLAYER, uuid, plugin );
                     return true;
                 }
 
@@ -558,7 +555,6 @@ public class GroupCommand implements TabExecutor {
                         groups.add( args[1] );
                         plugin.groups.config.set( player + ".groups", groups );
                         plugin.groups.save();
-                        ReloadPermissions.reload( ReloadType.PLAYER, player, plugin );
                     }
                     plugin.groups.config.set( "group." + args[1] + ".players", players );
                     plugin.groups.save();
