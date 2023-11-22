@@ -16,6 +16,8 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.TextDecoration;
 import java.util.UUID;
+import org.bukkit.permissions.PermissionAttachment;
+import org.bukkit.permissions.PermissionDefault;
 
 public class ReloadPermissions {
 
@@ -117,6 +119,14 @@ public class ReloadPermissions {
 
             }
         }
+
+        for( PermissionNode node : permMap.nodes ) {
+            if( !node.truePerms.isEmpty() || !node.falsePerms.isEmpty() ) continue;
+
+            setPerms( node, node.perm.getDefault() == PermissionDefault.TRUE || node.perm.getDefault() == PermissionDefault.OP && plugin.getServer().getOfflinePlayer(UUID.fromString(target)).isOp() || node.perm.getDefault() == PermissionDefault.NOT_OP && !plugin.getServer().getOfflinePlayer(UUID.fromString(target)).isOp(), node.perm.getName(), target, 0 );
+        }
+
+        if( reloadMessage == null && plugin.getServer().getPlayer( UUID.fromString( target ) ) != null ) loadPerms( permMap.root, plugin.attachments.get( plugin.getServer().getPlayer( UUID.fromString( target ) ) ) );
 
         return reloadMessage;
     }
@@ -258,5 +268,12 @@ public class ReloadPermissions {
         }
 
         return reloadMessage;
+    }
+
+    private static void loadPerms( PermissionNode node, PermissionAttachment attachment ) {
+        if( node.falsePerms.isEmpty() ) attachment.setPermission( node.perm, true );
+        else attachment.unsetPermission( node.perm );
+
+        for( PermissionNode child : node.children.keySet() ) loadPerms( child, attachment );
     }
 }
