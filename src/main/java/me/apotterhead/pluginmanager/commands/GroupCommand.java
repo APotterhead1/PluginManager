@@ -1,5 +1,5 @@
 // APotterhead
-// 23062023-21072023
+// 23062023-21112023
 
 package me.apotterhead.pluginmanager.commands;
 
@@ -9,7 +9,6 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import java.util.List;
 import java.util.ArrayList;
-
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import net.kyori.adventure.text.Component;
