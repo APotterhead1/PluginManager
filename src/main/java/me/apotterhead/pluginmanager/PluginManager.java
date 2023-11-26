@@ -15,6 +15,7 @@ import me.apotterhead.pluginmanager.commands.*;
 import me.apotterhead.pluginmanager.events.*;
 import me.apotterhead.pluginmanager.util.ReloadPermissions;
 import me.apotterhead.pluginmanager.util.ReloadPermissions.ReloadType;
+import me.apotterhead.pluginmanager.util.PermissionMap;
 
 public final class PluginManager extends JavaPlugin {
 
@@ -32,6 +33,7 @@ public final class PluginManager extends JavaPlugin {
         ips = new IPsFile( this );
         permissions = new PermissionsFile( this );
 
+        new PermissionMap( this );
         attachments = new HashMap<>();
 
         for( Player player : getServer().getOnlinePlayers() ) {

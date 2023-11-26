@@ -104,7 +104,7 @@ public class PermissionMap {
                     }
                 }
             } else {
-                childNode = loadChildren( child, circlePerms );
+                childNode = loadChildren( child, new HashSet<>( circlePerms ) );
             }
 
             assert childNode != null;

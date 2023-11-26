@@ -8,7 +8,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.Command;
 import java.util.List;
 import java.util.ArrayList;
-
 import org.jetbrains.annotations.NotNull;
 import me.apotterhead.pluginmanager.util.*;
 import me.apotterhead.pluginmanager.PluginManager;
@@ -272,6 +271,20 @@ public class PermissionCommand implements TabExecutor {
                     return true;
                 }
 
+                if( args[5].equals( "true" ) ) {
+                    List<String> truePlayers = plugin.permissions.config.getStringList( args[4].replace( ".", "," ) + ".truePlayers" );
+                    truePlayers.add( uuid );
+                    plugin.permissions.config.set( args[4].replace( ".", "," ) + ".truePlayers", truePlayers );
+                }
+
+                if( args[5].equals( "false" ) ) {
+                    List<String> falsePlayers = plugin.permissions.config.getStringList( args[4].replace( ".", "," ) + ".falsePlayers" );
+                    falsePlayers.add( uuid );
+                    plugin.permissions.config.set( args[4].replace( ".", "," ) + ".falsePlayers", falsePlayers );
+                }
+
+                plugin.permissions.save();
+
                 sender.sendMessage( Component.text( "The permission '" + args[4] + "' has been set to " + args[5] + " for " + plugin.getServer().getOfflinePlayer( UUID.fromString( uuid ) ).getName() + "(" + uuid + ")" ).color( NamedTextColor.GREEN ) );
                 return true;
             }
@@ -344,12 +357,94 @@ public class PermissionCommand implements TabExecutor {
                         return true;
                     }
 
+                    if( args[5].equals( "true" ) ) {
+                        List<String> trueGroups = plugin.permissions.config.getStringList( args[4].replace( ".", "," ) + ".trueGroups" );
+                        trueGroups.add( args[2] );
+                        plugin.permissions.config.set( args[4].replace( ".", "," ) + ".trueGroups", trueGroups );
+                    }
+
+                    if( args[5].equals( "false" ) ) {
+                        List<String> falseGroups = plugin.permissions.config.getStringList( args[4].replace( ".", "," ) + ".falseGroups" );
+                        falseGroups.add( args[2] );
+                        plugin.permissions.config.set( args[4].replace( ".", "," ) + ".falseGroups", falseGroups );
+                    }
+
+                    plugin.permissions.save();
+
                     sender.sendMessage( Component.text( "The permission '" + args[3] + "' has been set to " + args[4] + " for the group " + args[2] ).color( NamedTextColor.GREEN ) );
                     return true;
                 }
 
                 sender.sendMessage( CommandErrorMessage.EXTRA_ARGUMENT.send( label, args, 5 ) );
                 return true;
+            }
+
+            sender.sendMessage( CommandErrorMessage.INCORRECT.send( label, args, 1 ) );
+            return true;
+        }
+
+        if( args[0].equals( "get" ) ) {
+            boolean hasPlayerNamePerm = sender.hasPermission( "appm.commands.permission.get.player.name.all" ) || sender.hasPermission( "appm.commands.permission.get.player.name.true" ) || sender.hasPermission( "appm.commands.permission.get.player.name.false" ) || sender.hasPermission( "appm.commands.permission.get.player.name.neutral" );
+            boolean hasPlayerUUIDPerm = sender.hasPermission( "appm.commands.permission.get.player.uuid.all" ) || sender.hasPermission( "appm.commands.permission.get.player.uuid.true" ) || sender.hasPermission( "appm.commands.permission.get.player.uuid.false" ) || sender.hasPermission( "appm.commands.permission.get.player.uuid.neutral" );
+            boolean hasPlayerPerm = hasPlayerNamePerm || hasPlayerUUIDPerm;
+            boolean hasGroupPerm = sender.hasPermission( "appm.commands.permission.get.group.all" ) || sender.hasPermission( "appm.commands.permission.get.group.true" ) || sender.hasPermission( "appm.commands.permission.get.group.false" ) || sender.hasPermission( "appm.commands.permission.get.group.neutral" );
+            if( !sender.hasPermission( "appm.commands.permission.get.permission" ) && !hasPlayerPerm && !hasGroupPerm ) {
+                sender.sendMessage( CommandErrorMessage.INCORRECT.send( label, args, 0 ) );
+                return true;
+            }
+
+            if( args.length < 2 ) {
+                sender.sendMessage( CommandErrorMessage.INCOMPLETE.send( label, args ) );
+                return true;
+            }
+
+            if( args[1].equals( "permission") ) {
+                if( !sender.hasPermission( "appm.commands.permission.get.permission" ) ) {
+                    sender.sendMessage( CommandErrorMessage.INCORRECT.send( label, args, 1 ) );
+                    return true;
+                }
+
+                if( args.length < 3 ) {
+                    sender.sendMessage( CommandErrorMessage.INCOMPLETE.send( label, args ) );
+                    return true;
+                }
+
+                if( args.length == 3 ) {
+                    if( plugin.getServer().getPluginManager().getPermission( args[2] ) == null ) {
+                        sender.sendMessage( CommandErrorMessage.UNKNOWN.send( label, args, 2, "permission" ) );
+                        return true;
+                    }
+
+                    Permission perm = plugin.getServer().getPluginManager().getPermission( args[2] );
+
+                    Component message = Component.text( "" );
+                    message = message.append( Component.text( perm.getName() ).color( NamedTextColor.GOLD ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.copyToClipboard( perm.getName() ) ) ).append( Component.text( ":" ).color( NamedTextColor.GOLD ) );
+                    if( !perm.getDescription().isEmpty() ) message = message.appendNewline().append( Component.text( "Description: " + perm.getDescription() ).color( NamedTextColor.AQUA ) );
+                    if( plugin.permissions.config.getBoolean( perm.getName().replace( ".", "," ) + ".negative" ) ) message.appendNewline().append( Component.text( "NEGATIVE" ).color( NamedTextColor.AQUA ).decorate( TextDecoration.BOLD ) );
+                    message = message.appendNewline().append( Component.text( "Default: " + perm.getDefault() ).color( NamedTextColor.AQUA ) );
+                    if( !perm.getChildren().isEmpty() ) {
+                        Component tempComp = Component.text( "Children: " ).color( NamedTextColor.AQUA );
+                        List<String> keys = new ArrayList<>( perm.getChildren().keySet() );
+                        tempComp = tempComp.append( Component.text( keys.get( 0 ) ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/permission get " + keys.get( 0 ) ) ) ).append( Component.text( " - " + perm.getChildren().get( keys.get( 0 ) ) ) );
+                        for( int i = 1; i < keys.size(); i++ ) tempComp = tempComp.append( Component.text( ", " ) ).append( Component.text( keys.get( i ) ).decorate( TextDecoration.UNDERLINED ).clickEvent( ClickEvent.runCommand( "/permission get " + keys.get( i ) ) ) ).append( Component.text( " - " + perm.getChildren().get( keys.get( i ) ) ) );
+                        message = message.append( tempComp );
+                    }
+
+
+                    sender.sendMessage( message );
+                    return true;
+                }
+
+                sender.sendMessage( CommandErrorMessage.EXTRA_ARGUMENT.send( label, args, 3 ) );
+                return true;
+            }
+
+            if( args[1].equals( "player" ) ) {
+
+            }
+
+            if( args[1].equals( "group" ) ) {
+
             }
 
             sender.sendMessage( CommandErrorMessage.INCORRECT.send( label, args, 1 ) );
